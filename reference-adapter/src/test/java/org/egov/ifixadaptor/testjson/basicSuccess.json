@@ -1,0 +1,22 @@
+{
+  "RequestInfo": {
+    "apiId": "Rainmaker",
+    "ver": ".01",
+    "action": "",
+    "did": "1",
+    "key": "",
+    "msgId": "20170310130900|en_IN",
+    "requesterId": "",
+    "authToken": "c13532b4-81df-4159-b7d8-5a65bbbea2c3"
+      },
+  "eventType":"Demand",
+  "id":"43343434343",
+  "tenantId":"pb.jalandhar",  
+  "demands": {
+  	"propertyId":"PB-PT-2021-07-15-000010",
+		"tenantId":"pb.lodhipur",
+    "action": "INITIATE",
+    "documents": null,
+    "proposedTaps": "10"
+}
+}
