@@ -18,5 +18,21 @@ public class ApplicationConfiguration {
 	
 	@Value("${state.goverment.code}")
 	private String tenantId;
+	
+	@Value("${keycloak.credentials.clientid}")
+	private String clientId;
+	
+	@Value("${keycloak.credentials.clientsecret}")
+	private String clientSecret;
+	
+	@Value("${keycloak.credentials.granttype}")
+	private String grantType;
+	
+	@Value("${keycloak.host}")
+	private String keyCloakHost;
+	
+	@Value("${keycloak.token.url}")
+	private String keyCloakAuthEndPoint;
+
 
 }

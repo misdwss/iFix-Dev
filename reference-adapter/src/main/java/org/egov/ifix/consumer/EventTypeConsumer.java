@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.FiscalEvent;
+import org.egov.ifix.service.PostEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,14 @@ public class EventTypeConsumer {
 	private List<EventMapper> eventMappers;
 
 	private Map<String, EventMapper> eventTypeMap = new HashMap<>();
+	
+	private PostEvent postEvent;
 		
 
 	@Autowired
-	public EventTypeConsumer(List<EventMapper> eventMappers) {
+	public EventTypeConsumer(List<EventMapper> eventMappers,PostEvent postEvent) {
 		this.eventMappers = Collections.unmodifiableList(eventMappers);
+		this.postEvent=postEvent;
 		initializeEventTypeMap();
 
 	}
@@ -44,9 +48,11 @@ public class EventTypeConsumer {
 	    JsonObject jsonObject = JsonParser.parseString(record).getAsJsonObject();
 	    EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject("event").get("eventType").getAsString());
 	    List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
-	    
+	   
 	    Gson gson = new Gson();
 	    String json = gson.toJson(fiscalEvents);
+	    postEvent.post(json);
+	    
 	    log.info(json);
 	}
 

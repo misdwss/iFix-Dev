@@ -13,12 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class EventService {
-
+	 
 	private KafkaTemplate<String, Object> kafkaTemplate;
-
+	
 	private ApplicationConfiguration applicationConfiguration;
 
 
+	 
+	
 	@Autowired
 	public EventService(KafkaTemplate<String, Object> kafkaTemplate, 
 			ApplicationConfiguration applicationConfiguration
@@ -37,6 +39,24 @@ public class EventService {
 
 	}
 
-	
+	public KafkaTemplate<String, Object> getKafkaTemplate() {
+		return kafkaTemplate;
+	}
+
+
+	public void setKafkaTemplate(KafkaTemplate<String, Object> kafkaTemplate) {
+		this.kafkaTemplate = kafkaTemplate;
+	}
+
+
+	public ApplicationConfiguration getApplicationConfiguration() {
+		return applicationConfiguration;
+	}
+
+
+	public void setApplicationConfiguration(ApplicationConfiguration applicationConfiguration) {
+		this.applicationConfiguration = applicationConfiguration;
+	}
+
 
 }

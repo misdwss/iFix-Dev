@@ -1,5 +1,5 @@
 package org.egov.ifixadaptor.repository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+/*import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.admin.client.Keycloak;
@@ -21,11 +21,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
-import java.util.Map;
+import java.util.Map;*/
 
 public class KeyCloakRepository {
 
-	private final String serverUrl;
+	/*private final String serverUrl;
 
     private final String realmId;
 
@@ -205,6 +205,6 @@ public class KeyCloakRepository {
       } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
         return null;
       }
-    }
+    }*/
   
 }
