@@ -1,6 +1,5 @@
 package org.egov.ifix.service;
 
-import org.egov.ifix.models.EventResponse;
 import org.egov.ifix.models.FiscalEventRequest;
 import org.egov.ifix.models.FiscalEventResponse;
 import org.egov.ifix.models.KeyCloackData;
@@ -32,7 +31,7 @@ public class PostEvent {
 	// when redis cache implemented this will be removed
 	private String token = null;
 
-	public FiscalEventResponse post(FiscalEventRequest event) {
+	public ResponseEntity<FiscalEventResponse> post(FiscalEventRequest event) {
 
 		token = getAuthToken();
 
@@ -47,14 +46,16 @@ public class PostEvent {
 
 		try {
 			   response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
+			  
 		} catch (RestClientException e) {
-			e.printStackTrace();
+			log.info(e.getMessage(),e);
+			throw new RuntimeException(e.getMessage());
 			
 			
 		}
 		log.info("status" +response.getStatusCode());
 
-		return response.getBody();
+		return response;
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class PostEvent {
 				throw new RuntimeException("Unable to get authtoken from keycloak");
 			}
 			if (response != null) {
-				log.info("statuss  " + response.getStatusCode() + "  token and other details " + response.getBody());
+				log.info("status  " + response.getStatusCode() + "  token and other details " + response.getBody());
 				token = response.getBody().getAccess_token();
 				// store the expires and then check evertime to find out to call
 				// refresh api or not
