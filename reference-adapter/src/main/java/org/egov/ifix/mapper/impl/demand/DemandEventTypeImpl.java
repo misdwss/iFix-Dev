@@ -49,7 +49,7 @@ public class DemandEventTypeImpl implements EventMapper {
 			JsonObject demand = demands.get(i).getAsJsonObject().getAsJsonObject(DEMAND);
 
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
-					.projectId(null).eventType(getEventType()).eventTime(null)
+					.projectId("3d9ef18a-361a-40cf-b142-dd6f998e1ac5").eventType("Demand").eventTime(null)
 					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
 					.amountDetails(getAmounts(demand)).build();
 

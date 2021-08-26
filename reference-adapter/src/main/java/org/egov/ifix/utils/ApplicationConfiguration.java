@@ -33,6 +33,12 @@ public class ApplicationConfiguration {
 	
 	@Value("${keycloak.token.url}")
 	private String keyCloakAuthEndPoint;
+	
+	@Value("${ifix.host}")
+	private String ifixHost;
+	
+	@Value("${ifix.event.url}")
+	private String ifixEventEndPoint;
 
 
 }
