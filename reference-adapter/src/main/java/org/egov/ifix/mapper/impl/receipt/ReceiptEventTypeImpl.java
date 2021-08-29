@@ -1,8 +1,8 @@
 package org.egov.ifix.mapper.impl.receipt;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.Amount;
@@ -59,7 +59,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 			JsonObject payment = payments.get(i).getAsJsonObject().getAsJsonObject(PAYMENTS);
 
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
-					.projectId("901f76a8-1911-4960-b389-57b62bd4dcdb").eventType(getEventType()).eventTime(null)
+					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(payment.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
 					.amountDetails(getAmounts(payment)).build();
 

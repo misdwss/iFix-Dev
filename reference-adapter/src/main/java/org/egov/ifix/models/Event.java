@@ -34,6 +34,9 @@ public class Event   {
 
   @JsonProperty("tenantId")
   private String tenantId;
+  
+  @JsonProperty("projectId")
+  private String projectId;
 
   @JsonProperty("eventType")
   private EventTypeEnum eventType;

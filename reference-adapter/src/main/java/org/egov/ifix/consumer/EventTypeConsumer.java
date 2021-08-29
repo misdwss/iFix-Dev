@@ -68,6 +68,11 @@ public class EventTypeConsumer {
 
  loop:		for(FiscalEvent event:fiscalEvents)
 		{
+	      
+	      if(jsonObject.get("projectId")!=null)
+	      {
+	    	  event.setProjectId(jsonObject.get("projectId").toString());
+	      }
 
 			request.setFiscalEvent(event);
 
