@@ -66,9 +66,6 @@ public class EventTypeConsumer {
 		header.setTs(1111l);
 		request.setRequestHeader(header);
 
-		Optional<EventPostingDetail> findById = eventPostingDetailRepository.findById(4l);
-		log.info(findById.get().getEventType() +"   "+findById.get().getRecord());
-
  loop:		for(FiscalEvent event:fiscalEvents)
 		{
 
