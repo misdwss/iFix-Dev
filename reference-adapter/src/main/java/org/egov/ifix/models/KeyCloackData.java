@@ -1,11 +1,20 @@
 package org.egov.ifix.models;
 
+import java.io.Serializable;
+
+import org.springframework.data.redis.core.RedisHash;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public class KeyCloackData {
+@ToString
+@EqualsAndHashCode
+@RedisHash
+public class KeyCloackData implements Serializable{
 	
 	public String client_id;
 	public String client_secret;

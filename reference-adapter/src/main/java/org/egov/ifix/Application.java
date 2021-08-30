@@ -30,25 +30,23 @@ public class Application {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	
-	  @PostConstruct public void readConfig() throws IOException {
-	  
-	  ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-	  Resource resource = resourceLoader.getResource(configFilePath);
-	  
-	  Map<Object, Object> map = objectMapper.readValue(resource.getInputStream(),
-	  Map.class);
-	  
-	  System.out.println(map.toString());
-	  
-	  }
-	 
-	
+	@PostConstruct
+	public void readConfig() throws IOException {
+
+		ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+		Resource resource = resourceLoader.getResource(configFilePath);
+
+		Map<Object, Object> map = objectMapper.readValue(resource.getInputStream(), Map.class);
+
+		System.out.println(map.toString());
+
+	}
+
 	@Bean
-    public ObjectMapper objectMapper(){
-        return new ObjectMapper();
-    }
-	
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
+
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();

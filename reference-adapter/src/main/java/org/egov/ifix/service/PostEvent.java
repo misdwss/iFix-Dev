@@ -24,20 +24,23 @@ public class PostEvent {
 
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	AuthTokenService authTokenService;
 
 	@Autowired
 	ApplicationConfiguration applicationConfiguration;
 
 	// when redis cache implemented this will be removed
-	private String token = null;
+	 
 
 	public ResponseEntity<FiscalEventResponse> post(FiscalEventRequest event) {
 
-		token = getAuthToken();
+		log.info("Posting to IFix ");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setBearerAuth(token);
+		headers.setBearerAuth(authTokenService.getAuthToken());
 		ResponseEntity<FiscalEventResponse> response =null; 
 		
 		HttpEntity<FiscalEventRequest> request = new HttpEntity<>(event, headers);
@@ -53,7 +56,7 @@ public class PostEvent {
 			
 			
 		}
-		log.info("status" +response.getStatusCode());
+		log.info("Posting to IFix status" +response.getStatusCode());
 
 		return response;
 	}
@@ -63,40 +66,6 @@ public class PostEvent {
 	 * @return token Get the keyCloak Bearer token from redis if expired refresh
 	 *         the token
 	 */
-	private String getAuthToken() {
-
-		if (token == null) {
-			String url = applicationConfiguration.getKeyCloakHost()
-					+ applicationConfiguration.getKeyCloakAuthEndPoint();
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-			MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-			map.add("client_id", applicationConfiguration.getClientId());
-			map.add("client_secret", applicationConfiguration.getClientSecret());
-			map.add("grant_type", applicationConfiguration.getGrantType());
-
-			HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-
-			ResponseEntity<KeyCloackData> response = null;
-			try {
-
-				response = restTemplate.exchange(url, HttpMethod.POST, entity, KeyCloackData.class);
-			} catch (RestClientException e) {
-				log.error("Unable to get authtoken from keycloak");
-				throw new RuntimeException("Unable to get authtoken from keycloak");
-			}
-			if (response != null) {
-				log.info("status  " + response.getStatusCode() + "  token and other details " + response.getBody());
-				token = response.getBody().getAccess_token();
-				// store the expires and then check evertime to find out to call
-				// refresh api or not
-			}
-
-		}
-		return token;
-
-	}
+	
 
 }
