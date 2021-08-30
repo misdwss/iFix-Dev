@@ -1,4 +1,4 @@
-package org.egov.ifix.service;
+package org.egov.ifix.repository;
 
 import org.egov.ifix.models.KeyCloackData;
 import org.egov.ifix.utils.ApplicationConfiguration;

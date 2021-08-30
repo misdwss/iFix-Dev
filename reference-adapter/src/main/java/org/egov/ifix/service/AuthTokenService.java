@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.egov.ifix.cache.AdapterCache;
 import org.egov.ifix.models.KeyCloackData;
+import org.egov.ifix.repository.AuthTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
