@@ -77,10 +77,10 @@ public class EventTypeConsumer {
 			JsonElement requestHeader = jsonObject.get(REQUEST_HEADER);
 			JsonObject requestJsonObject = requestHeader.getAsJsonObject();
 			if (requestJsonObject.get(VERSION) != null) {
-				header.setVersion(requestJsonObject.get(VERSION).toString());
+				header.setVersion(requestJsonObject.get(VERSION).getAsString());
 			}
 			if (requestJsonObject.get(MSG_ID) != null) {
-				header.setMsgId(requestJsonObject.get(MSG_ID).toString());
+				header.setMsgId(requestJsonObject.get(MSG_ID).getAsString());
 			}
 			header.setTs(Instant.now().toEpochMilli());
 		}
@@ -89,11 +89,14 @@ public class EventTypeConsumer {
 
 		loop: for (FiscalEvent event : fiscalEvents) {
 
+		 
 			if (jsonObject.getAsJsonObject(EVENT).get("projectId")!= null) {
-				event.setProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").toString());
+				event.setProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString());
+				 
 			}
 
 			request.setFiscalEvent(event);
+			log.info(event.getProjectId());
 
 			try {
 				ResponseEntity<FiscalEventResponse> response = postEvent.post(request);
