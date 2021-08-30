@@ -29,7 +29,7 @@ public class EventController {
 	
 	@PostMapping("/events/_push")
 	public ResponseEntity<?>pushEvents( @Valid @RequestBody EventRequest eventRequest) {
-		log.info("request received");
+		log.debug("request received");
 		eventService.pushEvent(eventRequest);
 		EventResponse response=new EventResponse();
 		List<Event> events=new ArrayList<>();

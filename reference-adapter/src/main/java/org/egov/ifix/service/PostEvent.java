@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -46,16 +47,7 @@ public class PostEvent {
 		HttpEntity<FiscalEventRequest> request = new HttpEntity<>(event, headers);
 		
 		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventEndPoint();
-
-		try {
-			   response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
-			  
-		} catch (RestClientException e) {
-			log.info(e.getMessage(),e);
-			throw new RuntimeException(e.getMessage());
-			
-			
-		}
+		response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
 		log.info("Posting to IFix status" +response.getStatusCode());
 
 		return response;

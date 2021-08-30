@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -26,12 +27,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventPostingDetail {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
 	
 	@Size(max=64)
 	private String tenantId;
+	
+	
+	@Size(max=64)
+	private String eventId;
 	
 	@Size(max=64)
 	private String referenceId;
