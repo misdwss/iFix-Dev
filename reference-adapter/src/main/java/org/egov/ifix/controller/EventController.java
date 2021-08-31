@@ -27,7 +27,7 @@ public class EventController {
 	@Autowired
 	private EventService eventService;
 	
-	@PostMapping("/events/_push")
+	@PostMapping("/events/v1/_push")
 	public ResponseEntity<?>pushEvents( @Valid @RequestBody EventRequest eventRequest) {
 		log.debug("request received");
 		eventService.pushEvent(eventRequest);
