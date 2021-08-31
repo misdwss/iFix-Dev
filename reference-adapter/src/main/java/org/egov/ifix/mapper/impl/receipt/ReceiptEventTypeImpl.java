@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReceiptEventTypeImpl implements EventMapper {
 
-	private static final String PAYMENTS = "Payments";
+	private static final String PAYMENT = "Payment";
 
 	private static final String REFERANCE_ID = "id";
 
@@ -56,7 +56,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 		JsonArray payments = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
 		for (int i = 0; i < payments.size(); i++) {
-			JsonObject payment = payments.get(i).getAsJsonObject().getAsJsonObject(PAYMENTS);
+			JsonObject payment = payments.get(i).getAsJsonObject().getAsJsonObject(PAYMENT);
 
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())

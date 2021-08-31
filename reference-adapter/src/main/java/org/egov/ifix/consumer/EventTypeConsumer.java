@@ -69,11 +69,13 @@ public class EventTypeConsumer {
 
 	@KafkaListener(topics = "${kafka.topics.ifix.adaptor.mapper}")
 	public void listen(final String record) {
+		
 		process(record, null);
 	}
 
 	public void process(final String record, EventPostingDetail detail) {
-		log.debug("Received Message in group foo: " + record);
+		log.info("Received Message from topic: " + record);
+		log.info("\n\n");
 		JsonObject jsonObject = JsonParser.parseString(record).getAsJsonObject();
 		EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
 		List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
@@ -89,7 +91,7 @@ public class EventTypeConsumer {
 
 			}
 			request.setFiscalEvent(event);
-			log.info(event.getProjectId());
+			log.info("Project Id" +event.getProjectId());
 
 			if (detail == null) {
 				detail = new EventPostingDetail();

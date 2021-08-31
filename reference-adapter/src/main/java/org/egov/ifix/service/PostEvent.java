@@ -32,7 +32,7 @@ public class PostEvent {
 	@Autowired
 	ApplicationConfiguration applicationConfiguration;
 
-	// when redis cache implemented this will be removed
+	 
 	 
 
 	public ResponseEntity<FiscalEventResponse> post(FiscalEventRequest event) {
@@ -48,6 +48,7 @@ public class PostEvent {
 		
 		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventEndPoint();
 		response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
+	
 		log.info("Posting to IFix status" +response.getStatusCode());
 
 		return response;
