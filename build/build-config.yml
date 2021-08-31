@@ -46,3 +46,8 @@ config:
       - work-dir: "reference-adapter"
         image-name: "ifix-reference-adapter"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/reference-dashboard/aggregator"
+    build:
+      - work-dir: "aggregator"
+        image-name: "aggregator"
+        dockerfile: "reference-dashboard/aggregator/Dockerfile"
