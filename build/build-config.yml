@@ -41,3 +41,8 @@ config:
       - work-dir: "domain-services/ifix-department-entity-service"
         image-name: "ifix-department-entity-service"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/reference-dashboard/aggregator"
+    build:
+      - work-dir: "aggregator"
+        image-name: "aggregator"
+        dockerfile: "reference-dashboard/aggregator/Dockerfile"
