@@ -9,6 +9,7 @@ public class DepartmentEntityConstant {
     public static final String DEPARTMENT_ENTITY_CODE = "DEPARTMENT_ENTITY_CODE";
     public static final String DEPARTMENT_ENTITY_NAME = "DEPARTMENT_ENTITY_NAME";
     public static final String DEPARTMENT_HIERARCHY_ID = "DEPARTMENT_HIERARCHY_ID";
+    public static final String DEPARTMENT_CHILDREN = "DEPARTMENT_CHILDREN";
     public static final String REQUEST_PAYLOAD_MISSING = "REQUEST_PAYLOAD";
     public static final String ERROR_REQUEST_HEADER = "REQUEST_HEADER";
     public static final String INVALID_REQUEST = "INVALID_REQUEST";
@@ -17,6 +18,7 @@ public class DepartmentEntityConstant {
     public static final String INVALID_TENANT_ID = "INVALID_TENANT_ID";
     public static final String INVALID_DEPARTMENT_ID = "INVALID_DEPARTMENT_ID";
     public static final String ERROR_SEARCH_CRITERIA = "SEARCH_CRITERIA";
+    public static final String INVALID_HIERARCHY_LEVEL= "INVALID_HIERARCHY_LEVEL";
 
     //Search key parameters
     public static final String IDS = "Ids";
