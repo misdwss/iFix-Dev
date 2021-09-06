@@ -97,18 +97,19 @@ def controller():
     pushToKafka(finaldataset)
     # print('Running...')    
 
-def printJob():
-    print('I am working!')   
+# def printJob():
+#     print('I am working!')   
      
 if __name__ == '__main__':
     # scheduling()
 
-    print(type(os.environ.get('TIME_STRING')))
-    print(type(os.environ.get('KAFKA_URL')))
+    # print(type(os.environ.get('TIME_STRING')))
+    # print(type(os.environ.get('KAFKA_URL')))
 
-    schedule.every().day.at(os.environ.get('TIME_STRING')).do(controller)
-    schedule.every().minute.do(printJob)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # schedule.every().day.at(os.environ.get('TIME_STRING')).do(controller)
+    # schedule.every().minute.do(printJob)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
+    controller()
      
