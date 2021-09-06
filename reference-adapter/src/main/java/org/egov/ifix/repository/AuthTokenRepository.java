@@ -50,7 +50,7 @@ public class AuthTokenRepository {
 
 			response = restTemplate.exchange(url, HttpMethod.POST, entity, KeyCloackData.class);
 		} catch (RestClientException e) {
-			log.error("Unable to get authtoken from keycloak");
+			log.error(e.getMessage(),e);
 			throw new RuntimeException("Unable to get authtoken from keycloak");
 		}
 		
