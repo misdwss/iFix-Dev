@@ -46,6 +46,7 @@ public class BillEventTypeImpl implements EventMapper {
 
 	@Override
 	public List<FiscalEvent> transformData(JsonObject data) {
+		log.info("Bill event impl executing");
 		JsonArray entities = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
 		for (int i = 0; i < entities.size(); i++) {

@@ -83,6 +83,10 @@ public class EventTypeConsumer {
 		try {
 			jsonObject = JsonParser.parseString(record).getAsJsonObject();
 			EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
+			if(eventMapper!=null)
+			{
+			log.info("got executer for "+eventMapper.getEventType() +" class name" +eventMapper.getClass().getCanonicalName());
+			}
 			List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
 			FiscalEventRequest request = new FiscalEventRequest();
 			RequestHeader header = new RequestHeader();
