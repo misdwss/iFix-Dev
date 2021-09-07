@@ -49,7 +49,7 @@ public class BillEventTypeImpl implements EventMapper {
 		JsonArray entities = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
 		for (int i = 0; i < entities.size(); i++) {
-			JsonArray demands = entities.get(i).getAsJsonObject().getAsJsonArray("Demands");
+			JsonArray demands = entities.get(i).getAsJsonObject().getAsJsonArray(DEMAND);
 
 			for (int j = 0; j < demands.size(); j++) {
 			
@@ -68,7 +68,7 @@ public class BillEventTypeImpl implements EventMapper {
 
 	@Override
 	public String getEventType() {
-		return EventTypeEnum.DEMAND.toString();
+		return EventTypeEnum.BILL.toString();
 	}
 
 	private List<Amount> getAmounts(JsonObject demand) {
