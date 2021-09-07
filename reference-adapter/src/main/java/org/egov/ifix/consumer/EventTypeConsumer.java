@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.mapper.EventMapper;
@@ -16,6 +15,7 @@ import org.egov.ifix.models.FiscalEventResponse;
 import org.egov.ifix.persistance.EventPostingDetail;
 import org.egov.ifix.persistance.EventPostingDetailRepository;
 import org.egov.ifix.service.PostEvent;
+import org.egov.ifix.utils.MasterDataMappingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,6 @@ import org.springframework.web.client.RestClientException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,13 +51,16 @@ public class EventTypeConsumer {
 	private PostEvent postEvent;
 
 	private EventPostingDetailRepository eventPostingDetailRepository;
+	
+	private MasterDataMappingUtil masterDataMappingUtil;
 
 	@Autowired
 	public EventTypeConsumer(List<EventMapper> eventMappers, PostEvent postEvent,
-			EventPostingDetailRepository eventPostingDetailRepository) {
+			EventPostingDetailRepository eventPostingDetailRepository,MasterDataMappingUtil masterDataMappingUtil) {
 		this.eventMappers = Collections.unmodifiableList(eventMappers);
 		this.postEvent = postEvent;
 		this.eventPostingDetailRepository = eventPostingDetailRepository;
+		this.masterDataMappingUtil=masterDataMappingUtil;
 		initializeEventTypeMap();
 
 	}
@@ -90,7 +92,8 @@ public class EventTypeConsumer {
 			loop: for (FiscalEvent event : fiscalEvents) {
 
 				if (jsonObject.getAsJsonObject(EVENT).get("projectId") != null) {
-					event.setProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString());
+					String iFixprojectId = masterDataMappingUtil.getProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString());
+					event.setProjectId(iFixprojectId);
 
 				}
 				request.setFiscalEvent(event);

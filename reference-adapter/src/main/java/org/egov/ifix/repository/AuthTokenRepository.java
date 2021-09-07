@@ -53,7 +53,7 @@ public class AuthTokenRepository {
 			log.error(e.getMessage(),e);
 			throw new RuntimeException("Unable to get authtoken from keycloak");
 		}
-		
+		log.info("authtoken" +response.getBody().getAccess_token());
 		return response.getBody();
 			 
 		}

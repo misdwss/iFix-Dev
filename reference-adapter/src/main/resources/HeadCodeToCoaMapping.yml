@@ -1,16 +1,41 @@
 headCodeToCoaMapping:
-  - taxHeadCode: WS_CHARGE
-    coa: '001'
-    serviceCode: WS
-  - taxHeadCode: WS_WATER_CESS
-    coa: '002'
-    serviceCode: WS
-  - taxHeadCode: PT-Tax
-    coa: '003'
-    serviceCode: PT
-  - taxHeadCode: PT_TAX_Rebate
-    coa: '004'
-    serviceCode: PT
-  - taxHeadCode: GST
-    coa: '005'
-    serviceCode: PT
+  - srcSysTaxHeadCode: WS_CHARGE
+    iFixCoaId: '001'
+    srcSysServiceCode: WS
+  - srcSysTaxHeadCode: WS_WATER_CESS
+    iFixCoaId: '002'
+    srcSysServiceCode: WS
+  - srcSysTaxHeadCode: PT-Tax
+    iFixCoaId: '003'
+    srcSysServiceCode: PT
+  - srcSysTaxHeadCode: PT_TAX_Rebate
+    iFixCoaId: '004'
+    srcSysServiceCode: PT
+  - srcSysTaxHeadCode: GST
+    iFixCoaId: '005'
+    srcSysServiceCode: PT
+
+projectMapping:
+  - srcSysProjectId: 'LODHIPUR-Project'
+    iFixProjectId: '3d9ef18a-361a-40cf-b142-dd6f998e1ac4'
+  - srcSysProjectId: 'Sukhsal-Project'
+    iFixProjectId: '3d9ef18a-361a-40cf-b142-dd6f998e1ac5'
+  - srcSysProjectId: 'kalarbass-Project'
+    iFixProjectId: '07a87547-6824-41c8-9e94-49a1a698b53d'
+  - srcSysProjectId: 'Batarla-Project'
+    iFixProjectId: 'cd46e606-5b41-457b-a29b-719eba18af50'
+  - srcSysProjectId: 'Lalpur-Project'
+    iFixProjectId: '6d45ef32-ed5e-4aac-b734-b9818b4f6e32'
+  - srcSysProjectId: 'Dabour-Project'
+    iFixProjectId: '8866d5a5-78c4-4093-9c89-2343af01deb3'
+  - srcSysProjectId: 'Lalpur-Project'
+    iFixProjectId: '6d45ef32-ed5e-4aac-b734-b9818b4f6e32'
+  - srcSysProjectId: '7374'
+    iFixProjectId: '78582188-0130-4260-9ad1-9095163ef3ae'
+  - srcSysProjectId: '7278'
+    iFixProjectId: '78582188-0130-4260-9ad1-9095163ef3ae'
+  - srcSysProjectId: 'MASSEWAL'
+    iFixProjectId: '3704522a-5e49-45b3-8b97-5b7333a4f431'       
+    
+                
+    
