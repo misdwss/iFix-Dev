@@ -44,17 +44,21 @@ public class DemandEventTypeImpl implements EventMapper {
 
 	@Override
 	public List<FiscalEvent> transformData(JsonObject data) {
-		JsonArray demands = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
+		JsonArray entities = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
-		for (int i = 0; i < demands.size(); i++) {
-			JsonObject demand = demands.get(i).getAsJsonObject().getAsJsonObject(DEMAND);
+		for (int i = 0; i < entities.size(); i++) {
+			JsonArray demands = entities.get(i).getAsJsonObject().getAsJsonArray("Demands");
 
-			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
+			for (int j = 0; j < demands.size(); j++) {
+			
+				JsonObject	demand=demands.get(j).getAsJsonObject();
+			   FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
 					.amountDetails(getAmounts(demand)).build();
-
-			fiscalEvents.add(fiscalEvent);
+			   fiscalEvents.add(fiscalEvent);
+			}
+			
 
 		}
 		return fiscalEvents;

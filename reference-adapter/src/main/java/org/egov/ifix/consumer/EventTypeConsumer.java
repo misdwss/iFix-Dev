@@ -172,7 +172,7 @@ public class EventTypeConsumer {
 				}
 
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			log.info(e.getMessage(), e);
 			String message = null;
 			if (e.getMessage().length() > 4000) {

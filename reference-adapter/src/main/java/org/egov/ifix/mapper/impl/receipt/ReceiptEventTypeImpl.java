@@ -28,7 +28,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 
 	private static final String PAYMENT_DETAILS = "paymentDetails";
 
-	private static final String TAX_AMOUNT = "amount";
+	private static final String PAID_AMOUNT = "amountPaid";
 
 	private static final String TAX_PERIOD_FROM = "fromPeriod";
 
@@ -86,7 +86,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 
 			for (int j = 0; j < billAccDetails.size(); j++) {
 				JsonObject billAccDetail = billAccDetails.get(j).getAsJsonObject();
-				Amount amount = Amount.builder().amount(billAccDetail.get(TAX_AMOUNT).getAsBigDecimal()).coaId(null)
+				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal()).coaId(null)
 						.fromBillingPeriod(taxPeriodFrom).toBillingPeriod(taxPeriodTo).build();
 
 				amounts.add(amount);

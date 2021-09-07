@@ -23,7 +23,83 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BillEventTypeImpl implements EventMapper {
 
-	private static final String BILL = "bill";
+	
+	
+	private static final String DEMAND = "Demands";
+
+	private static final String REFERANCE_ID = "consumerCode";
+
+	private static final String DEMAND_DETAILS = "demandDetails";
+
+	private static final String TAX_AMOUNT = "taxAmount";
+
+	private static final String TAX_PERIOD_FROM = "taxPeriodFrom";
+
+	private static final String TAX_PERIOD_TO = "taxPeriodTo";
+
+	private ApplicationConfiguration applicationConfiguration;
+
+	@Autowired
+	public BillEventTypeImpl(ApplicationConfiguration applicationConfiguration) {
+		this.applicationConfiguration = applicationConfiguration;
+	}
+
+	@Override
+	public List<FiscalEvent> transformData(JsonObject data) {
+		JsonArray entities = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
+		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
+		for (int i = 0; i < entities.size(); i++) {
+			JsonArray demands = entities.get(i).getAsJsonObject().getAsJsonArray("Demands");
+
+			for (int j = 0; j < demands.size(); j++) {
+			
+				JsonObject	demand=demands.get(j).getAsJsonObject();
+			   FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
+					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
+					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
+					.amountDetails(getAmounts(demand)).build();
+			   fiscalEvents.add(fiscalEvent);
+			}
+			
+
+		}
+		return fiscalEvents;
+	}
+
+	@Override
+	public String getEventType() {
+		return EventTypeEnum.DEMAND.toString();
+	}
+
+	private List<Amount> getAmounts(JsonObject demand) {
+		Long taxPeriodFrom = demand.get(TAX_PERIOD_FROM).getAsLong();
+		Long taxPeriodTo = demand.get(TAX_PERIOD_TO).getAsLong();
+
+		JsonArray demandDetails = demand.getAsJsonArray(DEMAND_DETAILS);
+		List<Amount> amounts = new ArrayList<Amount>();
+		for (int i = 0; i < demandDetails.size(); i++) {
+			JsonObject demanddetail = demandDetails.get(i).getAsJsonObject();
+
+			Amount amount = Amount.builder().
+					amount(demanddetail.get(TAX_AMOUNT).getAsBigDecimal()).
+					coaId(null).
+					fromBillingPeriod(taxPeriodFrom).
+					toBillingPeriod(taxPeriodTo).build();
+
+			amounts.add(amount);
+
+		}
+		return amounts;
+
+	}
+	
+
+	
+	
+	
+	/* as of now expense bill is same as demand so it is comented as per ghanshyam decision
+	 * 
+	 * private static final String BILL = "bill";
 
 	private static final String REFERANCE_ID = "consumerCode";
 
@@ -92,6 +168,6 @@ public class BillEventTypeImpl implements EventMapper {
 		}
 		return amounts;
 
-	}
+	}*/
 
 }
