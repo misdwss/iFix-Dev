@@ -93,7 +93,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 			for (int j = 0; j < billAccDetails.size(); j++) {
 				
 				JsonObject billAccDetail = billAccDetails.get(j).getAsJsonObject();
-				String coaCode = billAccDetail.get("taxHeadMasterCode").getAsString();
+				String coaCode = billAccDetail.get("taxHeadCode").getAsString();
 				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal()).
 						coaId(masterDataMappingUtil.getCoaId(coaCode))
 						.fromBillingPeriod(taxPeriodFrom).toBillingPeriod(taxPeriodTo).build();
