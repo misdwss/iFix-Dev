@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class MasterDataMappingUtil {
 	
 	private String headCodeToCoaMappingMasterName = "headCodeToCoaMapping";
@@ -65,6 +68,8 @@ public class MasterDataMappingUtil {
 	public String getProjectId(String projectId) {
 		List<Map<String, String>> projectMappings = masterMappingMap.get("projectMapping");
 		for(Map<String, String> projectMapping : projectMappings) {
+			log.info("projectMapping.get(srcSysProjectId)...."+projectMapping.get(srcSysProjectId));
+			log.info("projectMapping.get(iFixProjectId)...."+projectMapping.get(iFixProjectId));
 			if(projectMapping.get(srcSysProjectId).equals(projectId)) {
 				return projectMapping.get(iFixProjectId);
 			}
