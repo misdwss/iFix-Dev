@@ -36,6 +36,16 @@ projectMapping:
     iFixProjectId: '158b2401-c81e-4e13-b79f-3307cab161d4'
   - srcSysProjectId: 'MASSEWAL'
     iFixProjectId: '6d45ef32-ed5e-4aac-b734-b9818b4f6e32' 
+  - srcSysProjectId: 'Sukhsal-Project'
+    iFixProjectId: '4a4be564-1854-4a65-9835-614cfc922d28'
+  - srcSysProjectId: 'kalarbass-Project'
+    iFixProjectId: 'ee940d2f-007c-4fd1-a85d-87c849d5801b'
+  - srcSysProjectId: 'Batarla-Project'
+    iFixProjectId: '794617aa-b7b9-4612-a80a-6c9e1166704b'
+  - srcSysProjectId: 'Lalpur-Project'
+    iFixProjectId: 'aec5ae08-b394-4ce5-b0ed-b13dde91491d'
+  - srcSysProjectId: 'Dabour-Project'
+    iFixProjectId: '1fc7831a-08d0-4344-9b9e-6a8d581fe8b1'     
           
     
                 

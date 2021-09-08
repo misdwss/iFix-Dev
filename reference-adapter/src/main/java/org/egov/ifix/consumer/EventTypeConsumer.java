@@ -96,6 +96,7 @@ public class EventTypeConsumer {
 			loop: for (FiscalEvent event : fiscalEvents) {
 
 				if (jsonObject.getAsJsonObject(EVENT).get("projectId") != null) {
+					log.info("mgram prooject id "+ jsonObject.getAsJsonObject(EVENT).get("projectId") );
 					String iFixprojectId = masterDataMappingUtil.getProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString());
 					event.setProjectId(iFixprojectId);
 
