@@ -43,6 +43,6 @@ config:
         dockerfile: "build/maven/Dockerfile"
   - name: "builds/iFix/reference-dashboard/aggregator"
     build:
-      - work-dir: "aggregator"
+      - work-dir: "reference-dashboard/aggregator"
         image-name: "aggregator"
         dockerfile: "reference-dashboard/aggregator/Dockerfile"
