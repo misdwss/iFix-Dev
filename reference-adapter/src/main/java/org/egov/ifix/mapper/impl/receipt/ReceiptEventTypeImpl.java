@@ -10,6 +10,7 @@ import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
+import org.egov.ifix.utils.MasterDataMappingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,10 +40,15 @@ public class ReceiptEventTypeImpl implements EventMapper {
 	private static final String BILL_ACCOUNT_DETAILS = "billAccountDetails";
 
 	private ApplicationConfiguration applicationConfiguration;
+	
+
+	private MasterDataMappingUtil masterDataMappingUtil;
 
 	@Autowired
-	public ReceiptEventTypeImpl(ApplicationConfiguration applicationConfiguration) {
+	public ReceiptEventTypeImpl(ApplicationConfiguration applicationConfiguration,
+			 MasterDataMappingUtil masterDataMappingUtil) {
 		this.applicationConfiguration = applicationConfiguration;
+		this.masterDataMappingUtil=masterDataMappingUtil;
 	}
 
 	@Override
@@ -85,8 +91,11 @@ public class ReceiptEventTypeImpl implements EventMapper {
 			JsonArray billAccDetails = billDetail.getAsJsonArray(BILL_ACCOUNT_DETAILS);
 
 			for (int j = 0; j < billAccDetails.size(); j++) {
+				
 				JsonObject billAccDetail = billAccDetails.get(j).getAsJsonObject();
-				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal()).coaId(null)
+				String coaCode = billAccDetail.get("taxHeadMasterCode").getAsString();
+				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal()).
+						coaId(masterDataMappingUtil.getCoaId(coaCode))
 						.fromBillingPeriod(taxPeriodFrom).toBillingPeriod(taxPeriodTo).build();
 
 				amounts.add(amount);

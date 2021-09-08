@@ -11,6 +11,7 @@ import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
+import org.egov.ifix.utils.MasterDataMappingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,10 +39,13 @@ public class BillEventTypeImpl implements EventMapper {
 	private static final String TAX_PERIOD_TO = "taxPeriodTo";
 
 	private ApplicationConfiguration applicationConfiguration;
+	
+	private MasterDataMappingUtil masterDataMappingUtil;
 
 	@Autowired
-	public BillEventTypeImpl(ApplicationConfiguration applicationConfiguration) {
+	public BillEventTypeImpl(ApplicationConfiguration applicationConfiguration,MasterDataMappingUtil masterDataMappingUtil) {
 		this.applicationConfiguration = applicationConfiguration;
+		this.masterDataMappingUtil=masterDataMappingUtil;
 	}
 
 	@Override
@@ -80,10 +84,13 @@ public class BillEventTypeImpl implements EventMapper {
 		List<Amount> amounts = new ArrayList<Amount>();
 		for (int i = 0; i < demandDetails.size(); i++) {
 			JsonObject demanddetail = demandDetails.get(i).getAsJsonObject();
+			
+			String coaCode = demanddetail.get("taxHeadMasterCode").getAsString();
 
 			Amount amount = Amount.builder().
 					amount(demanddetail.get(TAX_AMOUNT).getAsBigDecimal()).
-					coaId(null).
+					
+					coaId(masterDataMappingUtil.getCoaId(coaCode)).
 					fromBillingPeriod(taxPeriodFrom).
 					toBillingPeriod(taxPeriodTo).build();
 

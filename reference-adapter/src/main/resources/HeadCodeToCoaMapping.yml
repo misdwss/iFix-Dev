@@ -1,19 +1,23 @@
 headCodeToCoaMapping:
   - srcSysTaxHeadCode: WS_CHARGE
-    iFixCoaId: '001'
-    srcSysServiceCode: WS
-  - srcSysTaxHeadCode: WS_WATER_CESS
-    iFixCoaId: '002'
-    srcSysServiceCode: WS
-  - srcSysTaxHeadCode: PT-Tax
-    iFixCoaId: '003'
-    srcSysServiceCode: PT
-  - srcSysTaxHeadCode: PT_TAX_Rebate
-    iFixCoaId: '004'
-    srcSysServiceCode: PT
-  - srcSysTaxHeadCode: GST
-    iFixCoaId: '005'
-    srcSysServiceCode: PT
+    iFixCoaId: '6cbcb4a1-2431-4f78-89d7-b4f0565aba37'
+    srcSysServiceCode: '10101'
+  - srcSysTaxHeadCode: 'PENALTY'
+    iFixCoaId: 'c8b3b027-7fdd-4403-a4e9-81f257c16422'
+    srcSysServiceCode: '10201'
+  - srcSysTaxHeadCode: 'EELCTRICITY   '
+    iFixCoaId: 'f19287a7-80a2-411f-91de-f70194c37260'
+    srcSysServiceCode: '20101'
+  - srcSysTaxHeadCode: 'SALARY'
+    iFixCoaId: '71c53395-04d2-4375-a1b7-c24924e97fd9'
+    srcSysServiceCode: '20201'
+  - srcSysTaxHeadCode: 'O&M'
+    iFixCoaId: '36f36709-bf15-407d-8d3e-3185d2b79d87'
+    srcSysServiceCode: '20301'
+  - srcSysTaxHeadCode: 'MISC'
+    iFixCoaId: '9153ef60-5c6e-4ff1-b4a9-46b6fcc84249'
+    srcSysServiceCode: '20401'
+    
 
 projectMapping:
   - srcSysProjectId: 'LODHIPUR-Project'

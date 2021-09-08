@@ -53,11 +53,12 @@ public class MasterDataMappingUtil {
 	}
 
 	
-	public String getCoaId(String servicecode, String headCode) {
+	public String getCoaId(String servicecode) {
 		List<Map<String, String>> headCodeMappings = masterMappingMap.get(headCodeToCoaMappingMasterName);
 		for(Map<String, String> headCodeMapping : headCodeMappings) {
-			if(headCodeMapping.get(srcSysTaxHeadCode).equals(headCode) && 
-					headCodeMapping.get(srcSysServiceCode).equals(servicecode)) {
+			log.info("servicecode" +servicecode );
+			if(headCodeMapping.get(srcSysServiceCode).equals(servicecode)) {
+				log.info("headCodeMapping.get(iFixCoaId)" +headCodeMapping.get(iFixCoaId) );
 				return headCodeMapping.get(iFixCoaId);
 			}
 			
