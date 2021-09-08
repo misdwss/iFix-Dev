@@ -29,7 +29,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 
 	private static final String PAYMENT_DETAILS = "paymentDetails";
 
-	private static final String PAID_AMOUNT = "amount";
+	private static final String PAID_AMOUNT = "adjustedAmount";
 
 	private static final String TAX_PERIOD_FROM = "fromPeriod";
 
