@@ -1,5 +1,5 @@
 headCodeToCoaMapping:
-  - srcSysTaxHeadCode: WS_CHARGE
+  - srcSysTaxHeadCode: 'WS_CHARGE'
     iFixCoaId: '6cbcb4a1-2431-4f78-89d7-b4f0565aba37'
     srcSysServiceCode: '10101'
   - srcSysTaxHeadCode: 'PENALTY'
@@ -35,9 +35,9 @@ projectMapping:
   - srcSysProjectId: 'Lalpur-Project'
     iFixProjectId: '6d45ef32-ed5e-4aac-b734-b9818b4f6e32'
   - srcSysProjectId: '7374'
-    iFixProjectId: '568513ee-d7fb-4b00-ae50-3f7704b22840'
+    iFixProjectId: 'e42db9bb-8427-40a6-9939-4f2189d032bf'
   - srcSysProjectId: '7278'
-    iFixProjectId: '158b2401-c81e-4e13-b79f-3307cab161d4'
+    iFixProjectId: '568513ee-d7fb-4b00-ae50-3f7704b22840'
   - srcSysProjectId: 'MASSEWAL'
     iFixProjectId: '6d45ef32-ed5e-4aac-b734-b9818b4f6e32' 
   - srcSysProjectId: 'Sukhsal-Project'
