@@ -23,6 +23,6 @@ public class FiscalEventRepository {
 
     public List<Object> searchFiscalEvent(Criteria searchCriteria) {
         Query searchQuery = eventQueryBuilder.buildSearchQuery(searchCriteria);
-        return (mongoTemplate.find(searchQuery, Object.class, "fiscalEvent"));
+        return (mongoTemplate.find(searchQuery, Object.class, "fiscal_event"));
     }
 }
