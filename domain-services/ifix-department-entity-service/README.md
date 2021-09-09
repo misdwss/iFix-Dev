@@ -27,5 +27,22 @@ Children list contains department entity id list, which makes current department
 1. First we need to define the hierarchy level top to bottom because it has parent's reference.
 2. Only then we can start adding department entities, bottom-to-top because it has child's reference.
 
-_**Note**: The root department hierarchy will have the label "Department", and the root department entity will be the
+_**Note**: 
+1. The root department hierarchy will have the label "Department", and the root department entity will be the
 department itself._
+2. When we have to update the existing children list of Department Entity then update the existing children list using mongodb command like below:
+
+   **Steps**: 
+             
+             1. Find the department entity parent where the new children need to be added. Do search by name and hierarchy level.
+              
+              db.departmentEntity.find({"name" : "<current_department_entity's_name>","hierarchyLevel": <Current_department_entity_hierarchy_level>});
+              
+              2. Append the department entity id at the end of the current department entity children's list. So first find the length of the current array and then set it as
+                 "children.n": "<Resulted_department_entity_id>" (where n is the length of the array.). 
+             
+             e.g: 
+             db.departmentEntity.update({"_id": "<current_department_entity_id>"},{$set:
+             {"children.n": "<Resulted_department_entity_id_1>",
+             "children.n+1": "<Resulted_department_entity_id_2>"}
+             })
