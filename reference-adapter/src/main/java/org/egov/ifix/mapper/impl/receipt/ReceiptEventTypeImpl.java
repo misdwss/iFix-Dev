@@ -41,18 +41,14 @@ public class ReceiptEventTypeImpl implements EventMapper {
 	private static final String BILL_ACCOUNT_DETAILS = "billAccountDetails";
 
 	private ApplicationConfiguration applicationConfiguration;
-	
 
-	private MasterDataMappingUtil masterDataMappingUtil;
-	
 	private ChartOfAccountService chartOfAccountService;
 
 	@Autowired
 	public ReceiptEventTypeImpl(ApplicationConfiguration applicationConfiguration,
-			 MasterDataMappingUtil masterDataMappingUtil,ChartOfAccountService chartOfAccountService) {
+			  ChartOfAccountService chartOfAccountService) {
 		this.applicationConfiguration = applicationConfiguration;
-		this.masterDataMappingUtil=masterDataMappingUtil;
-		this.chartOfAccountService=chartOfAccountService;
+		this.chartOfAccountService = chartOfAccountService;
 	}
 
 	@Override
@@ -71,7 +67,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(payment.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(payment,data)).build();
+					.amountDetails(getAmounts(payment, data)).build();
 
 			fiscalEvents.add(fiscalEvent);
 
@@ -79,7 +75,7 @@ public class ReceiptEventTypeImpl implements EventMapper {
 		return fiscalEvents;
 	}
 
-	private List<Amount> getAmounts(JsonObject payment,JsonObject data) {
+	private List<Amount> getAmounts(JsonObject payment, JsonObject data) {
 
 		JsonObject paymentDetails = payment.getAsJsonArray(PAYMENT_DETAILS).get(0).getAsJsonObject();
 
@@ -95,12 +91,12 @@ public class ReceiptEventTypeImpl implements EventMapper {
 			JsonArray billAccDetails = billDetail.getAsJsonArray(BILL_ACCOUNT_DETAILS);
 
 			for (int j = 0; j < billAccDetails.size(); j++) {
-				
+
 				JsonObject billAccDetail = billAccDetails.get(j).getAsJsonObject();
 				String coaCode = billAccDetail.get("taxHeadCode").getAsString();
-				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal()).
-						coaId(chartOfAccountService.getChartOfAccount(coaCode,data))
-						.fromBillingPeriod(taxPeriodFrom).toBillingPeriod(taxPeriodTo).build();
+				Amount amount = Amount.builder().amount(billAccDetail.get(PAID_AMOUNT).getAsBigDecimal())
+						.coaId(chartOfAccountService.getChartOfAccount(coaCode, data)).fromBillingPeriod(taxPeriodFrom)
+						.toBillingPeriod(taxPeriodTo).build();
 
 				amounts.add(amount);
 			}

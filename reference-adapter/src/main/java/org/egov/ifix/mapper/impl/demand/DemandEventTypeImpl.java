@@ -9,6 +9,7 @@ import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.Amount;
 import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
+import org.egov.ifix.service.ChartOfAccountService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
 import org.egov.ifix.utils.MasterDataMappingUtil;
@@ -39,11 +40,13 @@ public class DemandEventTypeImpl implements EventMapper {
 	private ApplicationConfiguration applicationConfiguration;
 	
 	private MasterDataMappingUtil masterDataMappingUtil;
+	
+	private ChartOfAccountService chartOfAccountService;
 
 	@Autowired
-	public DemandEventTypeImpl(ApplicationConfiguration applicationConfiguration, MasterDataMappingUtil masterDataMappingUtil) {
+	public DemandEventTypeImpl(ApplicationConfiguration applicationConfiguration, ChartOfAccountService chartOfAccountService) {
 		this.applicationConfiguration = applicationConfiguration;
-		this.masterDataMappingUtil=masterDataMappingUtil;
+		this.chartOfAccountService=chartOfAccountService;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class DemandEventTypeImpl implements EventMapper {
 			   FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(demand)).build();
+					.amountDetails(getAmounts(demand,data)).build();
 			   fiscalEvents.add(fiscalEvent);
 			}
 			
@@ -73,7 +76,7 @@ public class DemandEventTypeImpl implements EventMapper {
 		return EventTypeEnum.DEMAND.toString();
 	}
 
-	private List<Amount> getAmounts(JsonObject demand) {
+	private List<Amount> getAmounts(JsonObject demand,JsonObject data) {
 		Long taxPeriodFrom = demand.get(TAX_PERIOD_FROM).getAsLong();
 		Long taxPeriodTo = demand.get(TAX_PERIOD_TO).getAsLong();
 
@@ -85,7 +88,7 @@ public class DemandEventTypeImpl implements EventMapper {
 			String coaCode = demanddetail.get("taxHeadMasterCode").getAsString();
 			Amount amount = Amount.builder().
 					amount(demanddetail.get(TAX_AMOUNT).getAsBigDecimal()).
-					coaId(masterDataMappingUtil.getCoaId(coaCode)).
+					coaId(chartOfAccountService.getChartOfAccount(coaCode,data)).
 					fromBillingPeriod(taxPeriodFrom).
 					toBillingPeriod(taxPeriodTo).build();
 

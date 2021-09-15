@@ -43,12 +43,13 @@ public class BillEventTypeImpl implements EventMapper {
 	
 	private ChartOfAccountService chartOfAccountService;
 	
-	private MasterDataMappingUtil masterDataMappingUtil;
+	 
 
 	@Autowired
-	public BillEventTypeImpl(ApplicationConfiguration applicationConfiguration,MasterDataMappingUtil masterDataMappingUtil) {
+	public BillEventTypeImpl(ApplicationConfiguration applicationConfiguration,ChartOfAccountService chartOfAccountService ) {
 		this.applicationConfiguration = applicationConfiguration;
-		this.masterDataMappingUtil=masterDataMappingUtil;
+		this.chartOfAccountService= chartOfAccountService;
+		 
 	}
 
 	@Override
