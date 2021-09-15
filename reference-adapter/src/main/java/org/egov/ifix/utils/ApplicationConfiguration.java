@@ -32,13 +32,19 @@ public class ApplicationConfiguration {
 	private String keyCloakHost;
 	
 	@Value("${keycloak.token.url}")
-	private String keyCloakAuthEndPoint;
+	private String keyCloakAuthApi;
 	
 	@Value("${ifix.host}")
 	private String ifixHost;
 	
 	@Value("${ifix.event.url}")
-	private String ifixEventEndPoint;
+	private String ifixEventApi;
+	
+	@Value("${ifix.coa.search.url}")
+	private String coaSearchApi;
+	
+	@Value("${ifix.project.search.url}")
+	private String projectSearchApi;
 
 
 }

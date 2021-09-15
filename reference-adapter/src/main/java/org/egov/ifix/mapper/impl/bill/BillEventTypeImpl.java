@@ -9,6 +9,7 @@ import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.Amount;
 import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
+import org.egov.ifix.service.ChartOfAccountService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
 import org.egov.ifix.utils.MasterDataMappingUtil;
@@ -40,6 +41,8 @@ public class BillEventTypeImpl implements EventMapper {
 
 	private ApplicationConfiguration applicationConfiguration;
 	
+	private ChartOfAccountService chartOfAccountService;
+	
 	private MasterDataMappingUtil masterDataMappingUtil;
 
 	@Autowired
@@ -62,7 +65,7 @@ public class BillEventTypeImpl implements EventMapper {
 			   FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(demand)).build();
+					.amountDetails(getAmounts(demand,data)).build();
 			   fiscalEvents.add(fiscalEvent);
 			}
 			
@@ -76,7 +79,7 @@ public class BillEventTypeImpl implements EventMapper {
 		return EventTypeEnum.BILL.toString();
 	}
 
-	private List<Amount> getAmounts(JsonObject demand) {
+	private List<Amount> getAmounts(JsonObject demand,JsonObject data) {
 		Long taxPeriodFrom = demand.get(TAX_PERIOD_FROM).getAsLong();
 		Long taxPeriodTo = demand.get(TAX_PERIOD_TO).getAsLong();
 
@@ -90,7 +93,7 @@ public class BillEventTypeImpl implements EventMapper {
 			Amount amount = Amount.builder().
 					amount(demanddetail.get(TAX_AMOUNT).getAsBigDecimal()).
 					
-					coaId(masterDataMappingUtil.getCoaId(coaCode)).
+					coaId(chartOfAccountService.getChartOfAccount(coaCode,data)).
 					fromBillingPeriod(taxPeriodFrom).
 					toBillingPeriod(taxPeriodTo).build();
 

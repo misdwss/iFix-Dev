@@ -37,7 +37,7 @@ public class PostEvent {
 
 	public ResponseEntity<FiscalEventResponse> post(FiscalEventRequest event) {
 
-		log.info("Posting to IFix ");
+		log.info("Posting fiscal event  to IFix ");
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -46,7 +46,7 @@ public class PostEvent {
 		
 		HttpEntity<FiscalEventRequest> request = new HttpEntity<>(event, headers);
 		
-		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventEndPoint();
+		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventApi();
 		response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
 	
 		log.info("Posting to IFix status" +response.getStatusCode());

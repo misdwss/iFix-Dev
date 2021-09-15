@@ -33,7 +33,7 @@ public class AuthTokenRepository {
 		log.debug("getting token from ifix .........");
 		
 		String url = applicationConfiguration.getKeyCloakHost()
-				+ applicationConfiguration.getKeyCloakAuthEndPoint();
+				+ applicationConfiguration.getKeyCloakAuthApi();
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

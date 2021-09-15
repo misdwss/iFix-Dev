@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.common.contract.request.RequestHeader;
+import org.egov.common.contract.request.RequestHeader.RequestHeaderBuilder;
 import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.models.FiscalEventRequest;
@@ -15,7 +16,9 @@ import org.egov.ifix.models.FiscalEventResponse;
 import org.egov.ifix.persistance.EventPostingDetail;
 import org.egov.ifix.persistance.EventPostingDetailRepository;
 import org.egov.ifix.service.PostEvent;
+import org.egov.ifix.service.ProjectService;
 import org.egov.ifix.utils.MasterDataMappingUtil;
+import org.egov.ifix.utils.RequestHeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EventTypeConsumer {
 
-	private static final String MSG_ID = "msgId";
-
-	private static final String VERSION = "version";
-
-	private static final String REQUEST_HEADER = "requestHeader";
-
 	private static final String EVENT_TYPE = "eventType";
 
 	private static final String EVENT = "event";
@@ -51,16 +48,20 @@ public class EventTypeConsumer {
 	private PostEvent postEvent;
 
 	private EventPostingDetailRepository eventPostingDetailRepository;
-	
-	private MasterDataMappingUtil masterDataMappingUtil;
+
+	private RequestHeaderUtil requestHeaderUtil;
+
+	private ProjectService projectService;
 
 	@Autowired
 	public EventTypeConsumer(List<EventMapper> eventMappers, PostEvent postEvent,
-			EventPostingDetailRepository eventPostingDetailRepository,MasterDataMappingUtil masterDataMappingUtil) {
+			EventPostingDetailRepository eventPostingDetailRepository, RequestHeaderUtil requestHeaderUtil,
+			ProjectService projectService) {
 		this.eventMappers = Collections.unmodifiableList(eventMappers);
 		this.postEvent = postEvent;
 		this.eventPostingDetailRepository = eventPostingDetailRepository;
-		this.masterDataMappingUtil=masterDataMappingUtil;
+		this.requestHeaderUtil = requestHeaderUtil;
+		this.projectService = projectService;
 		initializeEventTypeMap();
 
 	}
@@ -72,37 +73,38 @@ public class EventTypeConsumer {
 
 	@KafkaListener(topics = "${kafka.topics.ifix.adaptor.mapper}")
 	public void listen(final String record) {
-		
+
 		process(record, null);
 	}
 
 	public void process(final String record, EventPostingDetail detail) {
 		log.info("Received Message from topic: " + record);
-		JsonObject jsonObject =null;
+		JsonObject jsonObject = null;
 		log.info("\n\n");
 		try {
 			jsonObject = JsonParser.parseString(record).getAsJsonObject();
 			EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
-			if(eventMapper!=null)
-			{
-			log.info("got executer for "+eventMapper.getEventType() +" class name" +eventMapper.getClass().getCanonicalName());
+			if (eventMapper != null) {
+				log.info("got executer for " + eventMapper.getEventType() + " class name"
+						+ eventMapper.getClass().getCanonicalName());
 			}
 			List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
 			FiscalEventRequest request = new FiscalEventRequest();
 			RequestHeader header = new RequestHeader();
-			polulateRequestHeader(jsonObject, header);
+			header = requestHeaderUtil.polulateRequestHeader(jsonObject, header);
 			request.setRequestHeader(header);
 
 			loop: for (FiscalEvent event : fiscalEvents) {
 
 				if (jsonObject.getAsJsonObject(EVENT).get("projectId") != null) {
-					log.info("mgram prooject id "+ jsonObject.getAsJsonObject(EVENT).get("projectId") );
-					String iFixprojectId = masterDataMappingUtil.getProjectId(jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString());
+					log.info("mgram prooject id " + jsonObject.getAsJsonObject(EVENT).get("projectId"));
+					String clientCode = jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString();
+					String iFixprojectId = projectService.getProjectId(clientCode, jsonObject);
 					event.setProjectId(iFixprojectId);
 
 				}
 				request.setFiscalEvent(event);
-				log.info("Project Id" +event.getProjectId());
+				log.info("Project Id" + event.getProjectId());
 
 				if (detail == null) {
 					detail = new EventPostingDetail();
@@ -127,18 +129,17 @@ public class EventTypeConsumer {
 						detail.setRecord(record);
 						eventPostingDetailRepository.save(detail);
 
-					}else if(response.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
+					} else if (response.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
 						detail.setStatus(String.valueOf(response.getStatusCode().value()));
 						detail.setRecord(record);
 						eventPostingDetailRepository.save(detail);
 
-					}
-					else if(response.getStatusCode().series().equals(HttpStatus.Series.SUCCESSFUL)) {
+					} else if (response.getStatusCode().series().equals(HttpStatus.Series.SUCCESSFUL)) {
 						detail.setStatus(String.valueOf(response.getStatusCode().value()));
 						detail.setRecord(null);
 						eventPostingDetailRepository.save(detail);
 
-					} else  {
+					} else {
 						detail.setStatus(String.valueOf(response.getStatusCode().value()));
 						detail.setRecord(null);
 						eventPostingDetailRepository.save(detail);
@@ -161,8 +162,8 @@ public class EventTypeConsumer {
 				}
 
 				catch (RestClientException e) {
-					log.info(e.getMessage(), e);
 					String message = null;
+					log.info(e.getMessage(), e);
 					if (e.getMessage().length() > 4000) {
 						message = e.getMessage().substring(0, 3999);
 					} else {
@@ -186,7 +187,7 @@ public class EventTypeConsumer {
 				message = e.getMessage();
 			}
 			log.info(e.getMessage(), e);
-			EventPostingDetail	errorDetail = new EventPostingDetail();	
+			EventPostingDetail errorDetail = new EventPostingDetail();
 			errorDetail.setEventId(jsonObject.getAsJsonObject(EVENT).get("id").getAsString());
 			errorDetail.setTenantId(jsonObject.getAsJsonObject(EVENT).get("tenantId").getAsString());
 			errorDetail.setReferenceId("Not extracted");
@@ -201,17 +202,4 @@ public class EventTypeConsumer {
 
 	}
 
-	private void polulateRequestHeader(JsonObject jsonObject, RequestHeader header) {
-		if (jsonObject.get(REQUEST_HEADER) != null) {
-			JsonElement requestHeader = jsonObject.get(REQUEST_HEADER);
-			JsonObject requestJsonObject = requestHeader.getAsJsonObject();
-			if (requestJsonObject.get(VERSION) != null) {
-				header.setVersion(requestJsonObject.get(VERSION).getAsString());
-			}
-			if (requestJsonObject.get(MSG_ID) != null) {
-				header.setMsgId(requestJsonObject.get(MSG_ID).getAsString());
-			}
-			header.setTs(Instant.now().toEpochMilli());
-		}
-	}
 }
