@@ -137,6 +137,7 @@ public class EventTypeConsumer {
 					} else if (response.getStatusCode().series().equals(HttpStatus.Series.SUCCESSFUL)) {
 						detail.setStatus(String.valueOf(response.getStatusCode().value()));
 						detail.setRecord(null);
+						detail.setIfixEventId(response.getBody().getFiscalEvent().get(0).getId());
 						eventPostingDetailRepository.save(detail);
 
 					} else {

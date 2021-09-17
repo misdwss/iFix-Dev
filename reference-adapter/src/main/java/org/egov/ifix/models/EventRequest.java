@@ -1,5 +1,7 @@
 package org.egov.ifix.models;
 
+import javax.validation.Valid;
+
 import org.egov.common.contract.request.RequestHeader;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,9 +25,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventRequest   {
+  @Valid
   @JsonProperty("requestHeader")
   private RequestHeader requestHeader = null;
 
+  @Valid
   @JsonProperty("event")
   private Event event = null;
 

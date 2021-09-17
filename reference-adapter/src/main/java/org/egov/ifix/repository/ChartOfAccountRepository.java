@@ -117,10 +117,13 @@ public class ChartOfAccountRepository {
 			
 			log.error("Duplicate COAs found in IFIX  for the mapped clientcode "+clientCode);
 			 
-		 }else
+		 }else if(coaList.size()==1)
 		 {
 			 return coaList.get(0);
 			 
+		 }else
+		 {
+			 log.error("COAs not  found in IFIX  for the mapped clientcode "+clientCode); 
 		 }
 		 
 

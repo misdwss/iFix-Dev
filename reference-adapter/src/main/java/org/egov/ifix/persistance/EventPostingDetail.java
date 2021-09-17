@@ -40,6 +40,9 @@ public class EventPostingDetail {
 	private String eventId;
 	
 	@Size(max=64)
+	private String ifixEventId;
+	
+	@Size(max=64)
 	private String referenceId;
 	
 	@Size(max=16)

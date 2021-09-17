@@ -3,6 +3,8 @@ package org.egov.ifix.models;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.egov.common.contract.AuditDetails;
 import org.springframework.validation.annotation.Validated;
@@ -32,17 +34,22 @@ public class Event   {
   @JsonProperty("id")
   private String id;
 
+  @NotEmpty
   @JsonProperty("tenantId")
   private String tenantId;
   
+  @NotEmpty
   @JsonProperty("projectId")
   private String projectId;
 
+  @NotNull
   @JsonProperty("eventType")
   private EventTypeEnum eventType;
 
+  @NotNull
   @JsonProperty("entity")
   @Valid
+  @NotEmpty
   private List<Object> entity;
 
   @JsonProperty("auditDetails")
