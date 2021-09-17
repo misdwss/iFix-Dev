@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MongodbKafkaSourceConnectorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MongodbKafkaSourceConnectorApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MongodbKafkaSourceConnectorApplication.class, args);
+    }
 }

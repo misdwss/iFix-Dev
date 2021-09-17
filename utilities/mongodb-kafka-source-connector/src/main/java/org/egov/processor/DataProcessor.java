@@ -9,8 +9,6 @@ import org.egov.util.GlobalProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
-
 @Component
 @Slf4j
 public class DataProcessor {
@@ -34,7 +32,7 @@ public class DataProcessor {
             if (iterableDocument != null && iterableDocument.iterator() != null) {
                 for (Document document : iterableDocument) {
                     customKafkaProducer.push(globalProperties.getKafkaTopic(), document);
-                    count +=1;
+                    count += 1;
                 }
 
                 log.info("Total document published: " + count);
