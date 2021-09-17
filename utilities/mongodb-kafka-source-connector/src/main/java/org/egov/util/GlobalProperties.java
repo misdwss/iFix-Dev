@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class GlobalProperties {
 
-    @Value("${mongo.dereference.collection.name}")
-    private String mongoDereferenceCollectionName;
+    @Value("${mongodb.collection.name}")
+    private String mongoDBCollectionName;
 
-    @Value("${fiscal.event.dereference.topic}")
-    private String fiscalEventDereferenceTopic;
+    @Value("${kafka.topic}")
+    private String kafkaTopic;
 }

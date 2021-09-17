@@ -21,7 +21,7 @@ public class DereferenceRepository {
      */
     public FindIterable<Document> findAllFiscalEvent() {
         return mongoTemplate.getDb()
-                .getCollection(globalProperties.getMongoDereferenceCollectionName())
+                .getCollection(globalProperties.getMongoDBCollectionName())
                 .find();
     }
 

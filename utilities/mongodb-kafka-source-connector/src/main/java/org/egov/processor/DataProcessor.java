@@ -33,7 +33,7 @@ public class DataProcessor {
                 for (Document document : iterableDocument) {
                     String jsonDocument = document.toJson();
 
-                    customKafkaProducer.push(globalProperties.getFiscalEventDereferenceTopic(), document);
+                    customKafkaProducer.push(globalProperties.getKafkaTopic(), document);
                 }
 
                 return true;
