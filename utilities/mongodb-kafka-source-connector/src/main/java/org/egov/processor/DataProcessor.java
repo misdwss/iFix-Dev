@@ -9,6 +9,8 @@ import org.egov.util.GlobalProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+
 @Component
 @Slf4j
 public class DataProcessor {
@@ -28,14 +30,14 @@ public class DataProcessor {
     public boolean processAndPublishDereferenceFiscalEvent() {
         try {
             FindIterable<Document> iterableDocument = dereferenceRepository.findAllFiscalEvent();
-
+            int count = 0;
             if (iterableDocument != null && iterableDocument.iterator() != null) {
                 for (Document document : iterableDocument) {
-                    String jsonDocument = document.toJson();
-
                     customKafkaProducer.push(globalProperties.getKafkaTopic(), document);
+                    count +=1;
                 }
 
+                log.info("Total document published: " + count);
                 return true;
             }
         } catch (Exception e) {
