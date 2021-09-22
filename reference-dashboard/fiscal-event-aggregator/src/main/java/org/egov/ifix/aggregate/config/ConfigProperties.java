@@ -17,18 +17,6 @@ public class ConfigProperties {
     @Value("${druid.endPoint}")
     private String druidEndPoint;
 
-    @Value("${spring.datasource.driver-class-name}")
-    private String postgresDatasourceDriverClassName;
-
-    @Value("${spring.datasource.url}")
-    private String postgresDatasourceUrl;
-
-    @Value("${spring.datasource.username}")
-    private String postgresDatasourceUsername;
-
-    @Value("${spring.datasource.password}")
-    private String postgresDatasourcePassword;
-
     @Value("${fiscal.event.datasource}")
     private String fiscalEventDataSource;
 

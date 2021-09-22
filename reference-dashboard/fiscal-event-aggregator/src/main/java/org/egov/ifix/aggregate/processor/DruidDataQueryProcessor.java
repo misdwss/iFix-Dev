@@ -29,7 +29,10 @@ import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -61,8 +64,11 @@ public class DruidDataQueryProcessor {
         List<Object> distinctCoaIdResponses = null;
         try {
             groupByResponses = druidClient.query(groupByQuery, Object.class);
+            log.info("Size of record returned from Group by query : {}",groupByResponses.size());
             distinctProjectResponses = druidClient.query(distinctProjectQuery, Object.class);
+            log.info("Size of record returned from distinct project id query : {}",distinctProjectResponses.size());
             distinctCoaIdResponses = druidClient.query(distinctCoaIdQuery, Object.class);
+            log.info("Size of record returned from distinct coa id query : {}",distinctCoaIdResponses.size());
         } catch (QueryException e) {
             log.error("Exception occurred while quering the data from druid data store : {}", e.getDruidError());
         }
@@ -84,7 +90,7 @@ public class DruidDataQueryProcessor {
         //pass the list for upsert
         if (fiscalEventAggregateList != null && !fiscalEventAggregateList.isEmpty()) {
             int[] upsertedRecord = aggregateRepository.upsert(fiscalEventAggregateList);
-            log.debug("Record -> {} upserted successfully", upsertedRecord);
+            log.info("Record -> {} upserted successfully!", upsertedRecord != null ? upsertedRecord.length : 0);
         }
     }
 

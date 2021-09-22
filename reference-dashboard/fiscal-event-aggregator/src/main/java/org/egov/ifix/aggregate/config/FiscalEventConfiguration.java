@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import javax.sql.DataSource;
 import java.util.TimeZone;
 
 
@@ -49,20 +46,5 @@ public class FiscalEventConfiguration {
             log.error("Exception occurred while getting the druid client -{}", e.getStackTrace());
         }
         return client;
-    }
-
-    public DataSource getDS() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(configProperties.getPostgresDatasourceDriverClassName());
-        dataSource.setUrl(configProperties.getPostgresDatasourceUrl());
-        dataSource.setUsername(configProperties.getPostgresDatasourceUsername());
-        dataSource.setPassword(configProperties.getPostgresDatasourcePassword());
-        return dataSource;
-    }
-
-
-    @Bean
-    public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDS());
     }
 }
