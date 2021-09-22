@@ -3,16 +3,25 @@ DROP TABLE IF EXISTS fiscal_event_aggregated;
 CREATE TABLE fiscal_event_aggregated(
   ver TEXT,
   id SERIAL,
+
+  sumAmount DECIMAL,
+  count bigint,
+  fiscalPeriod TEXT,
+
+  type TEXT,
+
+  project_id TEXT,
+
   tenantId TEXT,
   government_id TEXT,
   government_name TEXT,
-  eventType TEXT,
-  sumAmount DECIMAL,
-  fiscalPeriod TEXT,
-  count bigint,
   department_id  TEXT,
   department_code TEXT,
   department_name TEXT,
+  departmentEntity_code TEXT,
+  departmentEntity_hierarchyLevel integer,
+  departmentEntity_id TEXT,
+  departmentEntity_name TEXT,
   departmentEntity_ancestry_0_id TEXT,
   departmentEntity_ancestry_0_code TEXT,
   departmentEntity_ancestry_0_name TEXT,
@@ -61,9 +70,9 @@ CREATE TABLE fiscal_event_aggregated(
   expenditure_code TEXT,
   expenditure_name TEXT,
   expenditure_type TEXT,
-  project_id TEXT,
   project_code TEXT,
   project_name TEXT,
+
   coa_id TEXT,
   coa_coaCode TEXT,
   coa_majorHead TEXT,
@@ -79,5 +88,7 @@ CREATE TABLE fiscal_event_aggregated(
   coa_groupHeadName TEXT,
   coa_objectHead TEXT,
   coa_objectHeadName TEXT,
+
+  unique(project_id,coa_id,fiscalPeriod,type),
   PRIMARY KEY (id)
 );

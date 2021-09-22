@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @Data
 public class ConfigProperties {
 
+    @Value("${app.timezone}")
+    private String timeZone;
+
     @Value("${druid.host}")
     private String druidHost;
 
@@ -25,4 +28,19 @@ public class ConfigProperties {
 
     @Value("${spring.datasource.password}")
     private String postgresDatasourcePassword;
+
+    @Value("${fiscal.event.datasource}")
+    private String fiscalEventDataSource;
+
+    @Value("${druid.connect.protocol}")
+    private String druidConnectProtocol;
+
+    @Value("${druid.connect.port}")
+    private String druidConnectPort;
+
+    @Value("${fiscal.period}")
+    private String fiscalPeriod;
+
+    @Value("${department.hierarchy.level}")
+    private String departmentHierarchyLevel;
 }
