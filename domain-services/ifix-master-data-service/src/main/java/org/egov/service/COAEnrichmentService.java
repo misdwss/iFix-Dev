@@ -4,6 +4,7 @@ package org.egov.service;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
+import org.egov.repository.ChartOfAccountRepository;
 import org.egov.util.MasterDataServiceUtil;
 import org.egov.validator.ChartOfAccountValidator;
 import org.egov.web.models.COARequest;
@@ -13,6 +14,7 @@ import org.egov.web.models.ChartOfAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,7 +26,6 @@ public class COAEnrichmentService {
 
     @Autowired
     private ChartOfAccountValidator chartOfAccountValidator;
-
     /**
      * Enrich the COA create request with COA code, id and audit details.
      *
@@ -44,9 +45,9 @@ public class COAEnrichmentService {
          *  else insert as fresh record
          */
 
-        if (chartOfAccount.getAuditDetails() == null) {
+        if(chartOfAccount.getAuditDetails() == null){
             auditDetails = mdsUtil.enrichAuditDetails(requestHeader.getUserInfo().getUuid(), chartOfAccount.getAuditDetails(), true);
-        } else {
+        }else{
             auditDetails = mdsUtil.enrichAuditDetails(requestHeader.getUserInfo().getUuid(), chartOfAccount.getAuditDetails(), false);
         }
 
@@ -56,7 +57,7 @@ public class COAEnrichmentService {
     }
 
     private COASearchCriteria createCOASearchCriteria(ChartOfAccount chartOfAccount) {
-        COASearchCriteria searchCriteria = new COASearchCriteria();
+        COASearchCriteria searchCriteria =  new COASearchCriteria();
         searchCriteria.setTenantId(chartOfAccount.getTenantId());
         searchCriteria.setCoaCode(chartOfAccount.getCoaCode());
         return searchCriteria;

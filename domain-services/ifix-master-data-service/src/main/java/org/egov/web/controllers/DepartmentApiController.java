@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiParam;
 import org.egov.common.contract.response.ResponseHeader;
 import org.egov.service.DepartmentService;
 import org.egov.util.ResponseHeaderCreator;
-import org.egov.web.models.Department;
-import org.egov.web.models.DepartmentRequest;
-import org.egov.web.models.DepartmentResponse;
-import org.egov.web.models.DepartmentSearchRequest;
+import org.egov.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 
 @javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2021-08-02T16:24:12.742+05:30")
@@ -45,22 +42,10 @@ public class DepartmentApiController {
         this.request = request;
     }
 
-    /**
-     * @param body
-     * @return
-     */
     @RequestMapping(value = "/_create", method = RequestMethod.POST)
-    public ResponseEntity<DepartmentResponse> departmentV1CreatePost(@ApiParam(value = "Details for the new department" +
-            " RequestHeader (meta data of the API).", required = true) @Valid @RequestBody DepartmentRequest body) {
+    public ResponseEntity<DepartmentResponse> departmentV1CreatePost(@ApiParam(value = "Details for the new department + RequestHeader (meta data of the API).", required = true) @Valid @RequestBody DepartmentRequest body) {
 
-        DepartmentRequest departmentRequest = departmentService.createDepartment(body);
-
-        ResponseHeader responseHeader = responseHeaderCreator.createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
-
-        DepartmentResponse departmentResponse = DepartmentResponse.builder().responseHeader(responseHeader)
-                .department(Collections.singletonList(departmentRequest.getDepartment())).build();
-
-        return new ResponseEntity<DepartmentResponse>(departmentResponse, HttpStatus.ACCEPTED);
+        return new ResponseEntity<DepartmentResponse>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @RequestMapping(value = "/_search", method = RequestMethod.POST)
@@ -69,7 +54,7 @@ public class DepartmentApiController {
         ResponseHeader responseHeader = responseHeaderCreator.createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
         DepartmentResponse departmentResponse = DepartmentResponse.builder().responseHeader(responseHeader)
                 .department(departments).build();
-        return new ResponseEntity<DepartmentResponse>(departmentResponse, HttpStatus.OK);
+        return new ResponseEntity<DepartmentResponse>(departmentResponse,HttpStatus.OK);
     }
 
 }

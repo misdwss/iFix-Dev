@@ -18,18 +18,7 @@ public class ProjectRepository {
     @Autowired
     ProjectQueryBuilder projectQueryBuilder;
 
-    /**
-     * @param projectSearchCriteria
-     * @return
-     */
     public List<Project> findAllByCriteria(ProjectSearchCriteria projectSearchCriteria) {
         return mongoTemplate.find(projectQueryBuilder.buildQuerySearch(projectSearchCriteria), Project.class);
-    }
-
-    /**
-     * @param project
-     */
-    public void save(Project project) {
-        mongoTemplate.save(project);
     }
 }
