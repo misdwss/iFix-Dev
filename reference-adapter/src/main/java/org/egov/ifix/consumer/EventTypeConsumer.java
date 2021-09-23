@@ -84,10 +84,6 @@ public class EventTypeConsumer {
 		try {
 			jsonObject = JsonParser.parseString(record).getAsJsonObject();
 			EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
-			if (eventMapper != null) {
-				log.info("got executer for " + eventMapper.getEventType() + " class name"
-						+ eventMapper.getClass().getCanonicalName());
-			}
 			List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
 			FiscalEventRequest request = new FiscalEventRequest();
 			RequestHeader header = new RequestHeader();
@@ -123,56 +119,30 @@ public class EventTypeConsumer {
 
 					ResponseEntity<FiscalEventResponse> response = postEvent.post(request);
 
-					if (response.getStatusCode().series().equals(HttpStatus.Series.SERVER_ERROR)) {
-
-						detail.setStatus(String.valueOf(response.getStatusCode().value()));
+					if (response.getStatusCode().series().equals(HttpStatus.Series.SERVER_ERROR)
+							|| response.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
 						detail.setRecord(record);
-						eventPostingDetailRepository.save(detail);
-
-					} else if (response.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
-						detail.setStatus(String.valueOf(response.getStatusCode().value()));
-						detail.setRecord(record);
-						eventPostingDetailRepository.save(detail);
-
 					} else if (response.getStatusCode().series().equals(HttpStatus.Series.SUCCESSFUL)) {
-						detail.setStatus(String.valueOf(response.getStatusCode().value()));
-						detail.setRecord(null);
+
 						detail.setIfixEventId(response.getBody().getFiscalEvent().get(0).getId());
-						eventPostingDetailRepository.save(detail);
-
-					} else {
-						detail.setStatus(String.valueOf(response.getStatusCode().value()));
-						detail.setRecord(null);
-						eventPostingDetailRepository.save(detail);
-
 					}
+					detail.setStatus(String.valueOf(response.getStatusCode().value()));
+					detail.setRecord(record);
+					eventPostingDetailRepository.save(detail);
 
 				} catch (ResourceAccessException e) {
-					String message = null;
-					if (e.getMessage().length() > 4000) {
-						message = e.getMessage().substring(0, 3999);
-					} else {
-						message = e.getMessage();
-					}
 					log.info(e.getMessage(), e);
 					detail.setStatus("500");
-					detail.setError(message);
+					detail.setError(extractedMessage(e));
 					detail.setRecord(record);
 					eventPostingDetailRepository.save(detail);
 					break loop;
 				}
 
 				catch (RestClientException e) {
-					String message = null;
-					log.info(e.getMessage(), e);
-					if (e.getMessage().length() > 4000) {
-						message = e.getMessage().substring(0, 3999);
-					} else {
-						message = e.getMessage();
-					}
 					log.info(e.getMessage(), e);
 					detail.setStatus("400");
-					detail.setError(message);
+					detail.setError(extractedMessage(e));
 					detail.setRecord(record);
 					eventPostingDetailRepository.save(detail);
 
@@ -181,12 +151,7 @@ public class EventTypeConsumer {
 			}
 		} catch (RuntimeException e) {
 			log.info(e.getMessage(), e);
-			String message = null;
-			if (e.getMessage().length() > 4000) {
-				message = e.getMessage().substring(0, 3999);
-			} else {
-				message = e.getMessage();
-			}
+
 			log.info(e.getMessage(), e);
 			EventPostingDetail errorDetail = new EventPostingDetail();
 			errorDetail.setEventId(jsonObject.getAsJsonObject(EVENT).get("id").getAsString());
@@ -196,11 +161,21 @@ public class EventTypeConsumer {
 			errorDetail.setCreatedDate(new Date());
 			errorDetail.setLastModifiedDate(new Date());
 			errorDetail.setStatus("400");
-			errorDetail.setError(message);
+			errorDetail.setError(extractedMessage(e));
 			errorDetail.setRecord(record);
 			eventPostingDetailRepository.save(errorDetail);
 		}
 
+	}
+
+	private String extractedMessage(Exception e) {
+		String message = null;
+		if (e.getMessage().length() > 4000) {
+			message = e.getMessage().substring(0, 3999);
+		} else {
+			message = e.getMessage();
+		}
+		return message;
 	}
 
 }

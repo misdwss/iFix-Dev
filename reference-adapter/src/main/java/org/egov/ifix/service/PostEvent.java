@@ -54,11 +54,7 @@ public class PostEvent {
 		return response;
 	}
 
-	/**
-	 * 
-	 * @return token Get the keyCloak Bearer token from redis if expired refresh
-	 *         the token
-	 */
+	 
 	
 
 }
