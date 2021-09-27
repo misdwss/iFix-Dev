@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:application_test.properties")
 public class TestProperties {
 
-    @Value("${test.data.base.package}")
-    private String testDataBasePackage;
+    @Value("${test.data.package}")
+    private String testDataPackage;
 
     @Value("${gov.create.request.data}")
     private String govCreateRequestData;
