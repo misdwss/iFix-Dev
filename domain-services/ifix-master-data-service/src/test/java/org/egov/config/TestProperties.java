@@ -1,4 +1,4 @@
-package org.egov.util;
+package org.egov.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package org.egov.util;
+package org.egov.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.web.models.GovernmentRequest;

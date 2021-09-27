@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.egov.common.contract.response.ResponseHeader;
 import org.egov.service.GovernmentService;
 import org.egov.util.ResponseHeaderCreator;
-import org.egov.util.TestDataFormatter;
+import org.egov.config.TestDataFormatter;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
 import org.junit.jupiter.api.BeforeAll;
