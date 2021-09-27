@@ -4,6 +4,7 @@ import org.egov.ifix.aggregate.model.FiscalEventAggregate;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,7 +29,7 @@ public class FiscalEventAggregatedDataMapper implements BatchPreparedStatementSe
         ps.setString(5, fiscalEventAggregate.getType());
         ps.setBigDecimal(6, fiscalEventAggregate.getSumAmount());
         ps.setString(7, fiscalEventAggregate.getFiscalPeriod());
-        ps.setLong(8, Long.parseLong(fiscalEventAggregate.getCount().toString()));//
+        ps.setLong(8, Long.parseLong(fiscalEventAggregate.getCount()!=null ? fiscalEventAggregate.getCount().toString() : "0"));
         ps.setString(9, fiscalEventAggregate.getDepartment_id());
         ps.setString(10, fiscalEventAggregate.getDepartment_code());
         ps.setString(11, fiscalEventAggregate.getDepartment_name());
@@ -136,7 +137,7 @@ public class FiscalEventAggregatedDataMapper implements BatchPreparedStatementSe
         //ps.setString(5, fiscalEventAggregate.getEventType());
         ps.setBigDecimal(86, fiscalEventAggregate.getSumAmount());
         //ps.setString(7, fiscalEventAggregate.getFiscalPeriod());
-        ps.setLong(87, Long.parseLong(fiscalEventAggregate.getCount().toString()));//
+        ps.setLong(87, Long.parseLong(fiscalEventAggregate.getCount()!=null ? fiscalEventAggregate.getCount().toString() : "0"));//
         ps.setString(88, fiscalEventAggregate.getDepartment_id());
         ps.setString(89, fiscalEventAggregate.getDepartment_code());
         ps.setString(90, fiscalEventAggregate.getDepartment_name());

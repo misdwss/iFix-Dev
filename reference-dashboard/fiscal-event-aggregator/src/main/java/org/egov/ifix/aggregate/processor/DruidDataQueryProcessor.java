@@ -11,6 +11,7 @@ import in.zapr.druid.druidry.dataSource.TableDataSource;
 import in.zapr.druid.druidry.dimension.DefaultDimension;
 import in.zapr.druid.druidry.dimension.DruidDimension;
 import in.zapr.druid.druidry.dimension.enums.OutputType;
+import in.zapr.druid.druidry.filter.SelectorFilter;
 import in.zapr.druid.druidry.granularity.Granularity;
 import in.zapr.druid.druidry.granularity.PredefinedGranularity;
 import in.zapr.druid.druidry.granularity.SimpleGranularity;
@@ -21,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.ifix.aggregate.config.ConfigProperties;
 import org.egov.ifix.aggregate.model.FiscalEventAggregate;
-import org.egov.ifix.aggregate.repository.FiscalEventAggregateRepository;
 import org.egov.ifix.aggregate.util.FiscalEventAggregateConstants;
 import org.egov.ifix.aggregate.util.FiscalEventAggregateUtil;
 import org.joda.time.DateTime;
@@ -47,51 +47,110 @@ public class DruidDataQueryProcessor {
     @Autowired
     private FiscalEventAggregateUtil aggregateUtil;
 
-    @Autowired
-    private FiscalEventAggregateRepository aggregateRepository;
-
     /**
      * Fetch the fiscal event data with total sum amount , count from druid date store
      * based on the group of project id, coa id, event type
+     * @return
      */
-    public void fetchFiscalEventFromDruid() {
+    public List<FiscalEventAggregate> fetchFiscalEventFromDruid() {
         DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType();
         DruidQuery distinctProjectQuery = getDruidQueryForProjectDetails();
         DruidQuery distinctCoaIdQuery = getDruidQueryForCoaDetails();
+        DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND);
+        DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT);
+        DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL);
+        DruidQuery paymentEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_PAYMENT);
 
         List<Object> groupByResponses = null;
         List<Object> distinctProjectResponses = null;
         List<Object> distinctCoaIdResponses = null;
+        List<Object> demandEventTypeResponses = null;
+        List<Object> receiptEventTypeResponses = null;
+        List<Object> billEventTypeResponses = null;
+        List<Object> paymentEventTypeResponses = null;
         try {
             groupByResponses = druidClient.query(groupByQuery, Object.class);
-            log.info("Size of record returned from Group by query : {}",groupByResponses.size());
+            log.info("Size of record returned from Group by query : {}", groupByResponses.size());
             distinctProjectResponses = druidClient.query(distinctProjectQuery, Object.class);
-            log.info("Size of record returned from distinct project id query : {}",distinctProjectResponses.size());
+            log.info("Size of record returned from distinct project id query : {}", distinctProjectResponses.size());
             distinctCoaIdResponses = druidClient.query(distinctCoaIdQuery, Object.class);
-            log.info("Size of record returned from distinct coa id query : {}",distinctCoaIdResponses.size());
+            log.info("Size of record returned from distinct coa id query : {}", distinctCoaIdResponses.size());
+
+            demandEventTypeResponses = druidClient.query(demandEventTypeQuery, Object.class);
+            log.info("Size of record returned from demand event type query : {}", demandEventTypeResponses.size());
+            receiptEventTypeResponses = druidClient.query(receiptEventTypeQuery, Object.class);
+            log.info("Size of record returned from receipt event type query : {}", receiptEventTypeResponses.size());
+
+            billEventTypeResponses = druidClient.query(billEventTypeQuery, Object.class);
+            log.info("Size of record returned from bill event type query : {}", billEventTypeResponses.size());
+            paymentEventTypeResponses = druidClient.query(paymentEventTypeQuery, Object.class);
+            log.info("Size of record returned from payment event type query : {}", paymentEventTypeResponses.size());
         } catch (QueryException e) {
             log.error("Exception occurred while quering the data from druid data store : {}", e.getDruidError());
         }
         log.debug("Group by Response : {}", groupByResponses);
         if (groupByResponses == null || groupByResponses.isEmpty()) {
             log.info("There are no fiscal event data with group by of project id, event type and coa id");
-            return;
+            return null;
         }
 
         //Create a map of key as project id and event node details as value
         Map<String, JsonNode> projectNodeMap = aggregateUtil.getProjectDetailsMap(distinctProjectResponses);
         //Create a map of key as coa id and event node details as value
         Map<String, JsonNode> coaNodeMap = aggregateUtil.getCOADetailsMap(distinctCoaIdResponses);
-        //Get the details by project id and coa id map key and create a final List<FiscalEventAggregate>
-        List<FiscalEventAggregate> fiscalEventAggregateList = aggregateUtil.getFiscalEventAggregateData(groupByResponses
-                , projectNodeMap, coaNodeMap
-                , configProperties.getFiscalPeriod() != null ? configProperties.getFiscalPeriod() : FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD);
 
-        //pass the list for upsert
-        if (fiscalEventAggregateList != null && !fiscalEventAggregateList.isEmpty()) {
-            int[] upsertedRecord = aggregateRepository.upsert(fiscalEventAggregateList);
-            log.info("Record -> {} upserted successfully!", upsertedRecord != null ? upsertedRecord.length : 0);
-        }
+        //Create a map of key as project id and demand event node details as value
+        Map<String, JsonNode> demandEventTypeNodeMap = aggregateUtil.getEventTypeMap(demandEventTypeResponses);
+        //Create a map of key as project id and receipt event node details as value
+        Map<String, JsonNode> receiptEventTypeNodeMap = aggregateUtil.getEventTypeMap(receiptEventTypeResponses);
+
+        //Create a map of key as project id and bill event node details as value
+        Map<String, JsonNode> billEventTypeNodeMap = aggregateUtil.getEventTypeMap(billEventTypeResponses);
+        //Create a map of key as project id and payment event node details as value
+        Map<String, JsonNode> paymentEventTypeNodeMap = aggregateUtil.getEventTypeMap(paymentEventTypeResponses);
+
+        //Get the PENDING_COLLECTION aggregated fiscal event data
+        List<FiscalEventAggregate> pendingCollectionAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(demandEventTypeNodeMap, receiptEventTypeNodeMap, projectNodeMap,
+                FiscalEventAggregateConstants.EVENT_TYPE_PENDING_COLLECTION);
+        //Get the PENDING PAYMENT aggregated fiscal event data
+        List<FiscalEventAggregate> pendingPaymentAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(billEventTypeNodeMap, paymentEventTypeNodeMap, projectNodeMap,
+                FiscalEventAggregateConstants.EVENT_TYPE_PENDING_PAYMENT);
+        //Get the details by project id and coa id map key and create a List<FiscalEventAggregate>
+        List<FiscalEventAggregate> fiscalEventAggregates = aggregateUtil.getFiscalEventAggregateData(groupByResponses
+                , projectNodeMap, coaNodeMap);
+
+        fiscalEventAggregates.addAll(pendingCollectionAggregatedList);
+        fiscalEventAggregates.addAll(pendingPaymentAggregatedList);
+
+        return fiscalEventAggregates;
+    }
+
+    private DruidQuery getDruidQueryForProjectIdAndSumAmountBy(String eventType) {
+        TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
+
+        Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
+
+        DateTime startTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.START_YEAR), 04, 1, 0, 0, 0, DateTimeZone.UTC);
+        DateTime endTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.END_YEAR), 03, 31, 0, 0, 0, DateTimeZone.UTC);
+        Interval interval = new Interval(startTime, endTime);
+
+        Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
+
+        DruidDimension druidDimension = new DefaultDimension("project.id", "project.id", OutputType.STRING);
+
+        SelectorFilter filter = new SelectorFilter("eventType", eventType);
+
+        List<DruidAggregator> aggregators = new ArrayList<>();
+        aggregators.add(new DoubleSumAggregator("amount", "amount"));
+
+        return (DruidGroupByQuery.builder()
+                .dataSource(dataSource)
+                .dimensions(Collections.singletonList(druidDimension))
+                .granularity(granularity)
+                .filter(filter)
+                .aggregators(aggregators)
+                .intervals(Collections.singletonList(interval))
+                .build());
     }
 
 
@@ -136,6 +195,7 @@ public class DruidDataQueryProcessor {
                 .build());
     }
 
+
     private DruidQuery getDruidQueryForProjectDetails() {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
         Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
@@ -169,19 +229,6 @@ public class DruidDataQueryProcessor {
 
         druidDimensions.add(new DefaultDimension("project.code", "project.code", OutputType.STRING));
         druidDimensions.add(new DefaultDimension("project.name", "project.name", OutputType.STRING));
-
-//        druidDimensions.add(new DefaultDimension("id", "id", OutputType.STRING));
-//        druidDimensions.add(new DefaultDimension("ingestionTime", "ingestionTime", OutputType.LONG));
-//        druidDimensions.add(new DefaultDimension("payment", "payment", OutputType.DOUBLE));
-//        druidDimensions.add(new DefaultDimension("referenceId", "referenceId", OutputType.STRING));
-//        druidDimensions.add(new DefaultDimension("receipt", "receipt", OutputType.DOUBLE));
-//        druidDimensions.add(new DefaultDimension("eventId", "eventId", OutputType.STRING));
-//        druidDimensions.add(new DefaultDimension("eventType", "eventType", OutputType.STRING));
-//        druidDimensions.add(new DefaultDimension("fromBillingPeriod", "fromBillingPeriod", OutputType.LONG));
-//        druidDimensions.add(new DefaultDimension("toBillingPeriod", "toBillingPeriod", OutputType.LONG));
-//        druidDimensions.add(new DefaultDimension("bill", "bill", OutputType.DOUBLE));
-//        druidDimensions.add(new DefaultDimension("demand", "demand", OutputType.DOUBLE));
-//        druidDimensions.add(new DefaultDimension("version", "version", OutputType.STRING));
 
         int hierarchyLevel = FiscalEventAggregateConstants.DEFAULT_HIERARCHY_LEVEL;
         if (StringUtils.isNotBlank(configProperties.getDepartmentHierarchyLevel())) {

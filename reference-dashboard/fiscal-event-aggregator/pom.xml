@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.egov</groupId>
     <artifactId>fiscal-event-aggregator</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>fiscal-event-aggregator</name>
     <description>Aggregate the fiscal event post processed data</description>
     <properties>

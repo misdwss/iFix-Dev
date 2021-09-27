@@ -85,10 +85,9 @@ public class FiscalEventAggregateUtil {
      * @param groupByResponses
      * @param projectNodeMap
      * @param coaNodeMap
-     * @param fiscalPeriod
      * @return
      */
-    public List<FiscalEventAggregate> getFiscalEventAggregateData(List<Object> groupByResponses, Map<String, JsonNode> projectNodeMap, Map<String, JsonNode> coaNodeMap, String fiscalPeriod) {
+    public List<FiscalEventAggregate> getFiscalEventAggregateData(List<Object> groupByResponses, Map<String, JsonNode> projectNodeMap, Map<String, JsonNode> coaNodeMap) {
         List<FiscalEventAggregate> fiscalEventAggregateList = new ArrayList<>();
         JsonNode responseJsonNode = objectMapper.convertValue(groupByResponses, JsonNode.class);
         Iterator<JsonNode> nodeIterator = responseJsonNode.iterator();
@@ -111,6 +110,7 @@ public class FiscalEventAggregateUtil {
                 eventAggregate.setType(eventType);
 
                 eventAggregate.setVer(FiscalEventAggregateConstants.VER);
+                String fiscalPeriod = configProperties.getFiscalPeriod() != null ? configProperties.getFiscalPeriod() : FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD;
                 eventAggregate.setFiscalPeriod(fiscalPeriod);
                 //set the project details to fiscal event aggregate
                 setProjectDetailsToFiscalEventAggregate(projectNodeMap, eventAggregate, projectId);
@@ -309,4 +309,87 @@ public class FiscalEventAggregateUtil {
         }
     }
 
+    public Map<String, JsonNode> getEventTypeMap(List<Object> eventTypeResponses) {
+        if (eventTypeResponses == null || eventTypeResponses.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        JsonNode responseJsonNode = objectMapper.convertValue(eventTypeResponses, JsonNode.class);
+        Iterator<JsonNode> nodeIterator = responseJsonNode.iterator();
+        Map<String, JsonNode> projectNodeMap = new HashMap<>();
+        while (nodeIterator.hasNext()) {
+            JsonNode node = nodeIterator.next();
+            if (node != null && !node.isEmpty() && node.get("event") != null) {
+                JsonNode eventNode = node.get("event");
+                if (eventNode.get("project.id") != null) {
+                    projectNodeMap.put(eventNode.get("project.id").asText(), eventNode);
+                }
+            }
+        }
+        return projectNodeMap;
+    }
+
+    /**
+     *
+     * @param firstEventTypeNodeMap - will be demand or bill
+     * @param secondEventTypeNodeMap - will be receipt or payment
+     * @param projectNodeMap
+     * @param pendingEventType
+     * @return
+     */
+    public List<FiscalEventAggregate> getPendingCollectionFiscalEventAggregatedData(Map<String, JsonNode> firstEventTypeNodeMap, Map<String, JsonNode> secondEventTypeNodeMap, Map<String, JsonNode> projectNodeMap, String pendingEventType) {
+        List<FiscalEventAggregate> fiscalEventAggregateList = new ArrayList<>();
+
+        Map<String, BigDecimal> pendingAmountMap = new HashMap<>();
+        //pending collection Amount
+        if (firstEventTypeNodeMap != null && !firstEventTypeNodeMap.isEmpty()) {
+            for (String dPid : firstEventTypeNodeMap.keySet()) {
+                boolean isAvail = false;
+                JsonNode demandJsonNode = firstEventTypeNodeMap.get(dPid);
+                BigDecimal dAmt = demandJsonNode.get("amount") != null ? demandJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                for (String rPid : secondEventTypeNodeMap.keySet()) {
+                    if (dPid.equalsIgnoreCase(rPid)) {
+                        isAvail = true;
+                        JsonNode receiptJsonNode = secondEventTypeNodeMap.get(rPid);
+                        BigDecimal rAmt = receiptJsonNode.get("amount") != null ? receiptJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                        pendingAmountMap.put(dPid, (dAmt.subtract(rAmt)));
+                    }
+                }
+                if (!isAvail) {
+                    pendingAmountMap.put(dPid, dAmt);
+                }
+            }
+        }
+        //In case any receipt project id that has no demand type
+        if (!pendingAmountMap.isEmpty() && !secondEventTypeNodeMap.isEmpty()) {
+            for (String rPid : secondEventTypeNodeMap.keySet()) {
+                if (!pendingAmountMap.containsKey(rPid)) {
+                    JsonNode receiptJsonNode = secondEventTypeNodeMap.get(rPid);
+                    BigDecimal rAmt = receiptJsonNode.get("amount") != null ? receiptJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                    pendingAmountMap.put(rPid, BigDecimal.ZERO.subtract(rAmt));
+                }
+            }
+        }
+
+        //Create a fiscal event aggregated data for pending collections
+        if(!pendingAmountMap.isEmpty()){
+            for(String pid : pendingAmountMap.keySet()){
+                FiscalEventAggregate pendingEventAggregate = new FiscalEventAggregate();
+
+                pendingEventAggregate.setVer(FiscalEventAggregateConstants.VER);
+                String fiscalPeriod = configProperties.getFiscalPeriod() != null ? configProperties.getFiscalPeriod() : FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD;
+                pendingEventAggregate.setFiscalPeriod(fiscalPeriod);
+                pendingEventAggregate.setProject_id(pid);
+                pendingEventAggregate.setCount(null);
+                pendingEventAggregate.setSumAmount(pendingAmountMap.get(pid));
+                pendingEventAggregate.setType(pendingEventType);
+
+                //set the project details to fiscal event aggregate
+                setProjectDetailsToFiscalEventAggregate(projectNodeMap, pendingEventAggregate, pid);
+
+                fiscalEventAggregateList.add(pendingEventAggregate);
+            }
+        }
+
+        return fiscalEventAggregateList;
+    }
 }
