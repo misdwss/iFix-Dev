@@ -5,8 +5,10 @@ import org.egov.common.contract.response.ResponseHeader;
 import org.egov.service.GovernmentService;
 import org.egov.util.ResponseHeaderCreator;
 import org.egov.config.TestDataFormatter;
+import org.egov.web.models.Government;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
+import org.egov.web.models.GovernmentSearchRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,15 +51,20 @@ public class GovernmentApiControllerTest {
 
     private String govCreateData;
     private GovernmentRequest governmentRequest;
-    private GovernmentResponse governmentResponse;
+    private GovernmentResponse governmentCreateRequest;
+    private GovernmentSearchRequest governmentSearchRequest;
+    private GovernmentResponse governmentSearchResponse;
 
 
     @BeforeAll
     void init() throws IOException {
         governmentRequest = testDataFormatter.getGovernmentRequestData();
-        governmentResponse = testDataFormatter.getGovernmentResponseData();
+        governmentCreateRequest = testDataFormatter.getGovernmentCreateResponseData();
 
         govCreateData = new Gson().toJson(governmentRequest);
+
+        governmentSearchRequest = testDataFormatter.getGovernmentSearchRequestData();
+        governmentSearchResponse = testDataFormatter.getGovernmentSearchResponseData();
 
     }
 
@@ -81,21 +89,29 @@ public class GovernmentApiControllerTest {
 
     @Test
     public void governmentV1CreatePostFailure() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/government/v1/_create").contentType(MediaType
-                .APPLICATION_JSON_UTF8))
+        mockMvc.perform(post("/government/v1/_create").contentType(MediaType
+                .APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void governmentV1SearchPostSuccess() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/government/v1/_search").contentType(MediaType
-                .APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+        doReturn(governmentSearchResponse.getGovernment()).when(governmentService)
+                .searchAllGovernmentByIdList(governmentSearchRequest);
+
+        doReturn(new ResponseHeader()).when(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(governmentSearchRequest.getRequestHeader(), true);
+
+        mockMvc.perform(post("/government/v1/_search")
+                        .accept(MediaType.APPLICATION_JSON).content(govCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted());
+
     }
 
     @Test
     public void governmentV1SearchPostFailure() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/government/v1/_search").contentType(MediaType
+        mockMvc.perform(post("/government/v1/_search").contentType(MediaType
                 .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }

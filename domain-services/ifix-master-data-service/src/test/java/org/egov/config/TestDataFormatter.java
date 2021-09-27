@@ -3,6 +3,7 @@ package org.egov.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
+import org.egov.web.models.GovernmentSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class TestDataFormatter {
      * @return
      */
     private File getFileFromClassLoaderResource(String fileName) {
-        String basePackage = testProperties.getTestDataBasePackage();
+        String basePackage = testProperties.getTestDataPackage();
         ClassLoader classLoader = this.getClass().getClassLoader();
 
         if (basePackage != null && !basePackage.isEmpty()) {
@@ -48,11 +49,36 @@ public class TestDataFormatter {
      * @return
      * @throws IOException
      */
-    public GovernmentResponse getGovernmentResponseData() throws IOException {
+    public GovernmentResponse getGovernmentCreateResponseData() throws IOException {
         GovernmentResponse governmentResponse = new ObjectMapper()
-                .readValue(getFileFromClassLoaderResource(testProperties.getGovResponseData()),
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovCreateResponseData()),
                         GovernmentResponse.class);
 
         return governmentResponse;
     }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public GovernmentSearchRequest getGovernmentSearchRequestData() throws IOException {
+        GovernmentSearchRequest governmentSearchRequest = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovSearchRequestData()),
+                        GovernmentSearchRequest.class);
+
+        return governmentSearchRequest;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public GovernmentResponse getGovernmentSearchResponseData() throws IOException {
+        GovernmentResponse governmentResponse = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovSearchResponseData()),
+                        GovernmentResponse.class);
+
+        return governmentResponse;
+    }
+
 }
