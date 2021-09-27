@@ -16,7 +16,7 @@ public class TestProperties {
     @Value("${gov.create.request.data}")
     private String govCreateRequestData;
 
-    @Value("${gov.create.response.data}")
-    private String govCreateResponseData;
+    @Value("${gov.response.data}")
+    private String govResponseData;
 
 }

@@ -1,7 +1,6 @@
 package org.egov.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class TestDataFormatter {
      */
     public GovernmentResponse getGovernmentResponseData() throws IOException {
         GovernmentResponse governmentResponse = new ObjectMapper()
-                .readValue(getFileFromClassLoaderResource(testProperties.getGovCreateResponseData()),
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovResponseData()),
                         GovernmentResponse.class);
 
         return governmentResponse;
