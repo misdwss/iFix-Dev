@@ -1,36 +1,82 @@
 package org.egov.web.controllers;
 
-import org.egov.TestConfiguration;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.google.gson.Gson;
+import org.egov.common.contract.response.ResponseHeader;
+import org.egov.service.GovernmentService;
+import org.egov.util.ResponseHeaderCreator;
+import org.egov.util.TestDataFormatter;
+import org.egov.web.models.GovernmentRequest;
+import org.egov.web.models.GovernmentResponse;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
+
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * API tests for GovernmentApiController
  */
-@Ignore
-@RunWith(SpringRunner.class)
+@AutoConfigureDataMongo
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(GovernmentApiController.class)
-@Import(TestConfiguration.class)
 public class GovernmentApiControllerTest {
+
+    @Autowired
+    private TestDataFormatter testDataFormatter;
 
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    GovernmentService governmentService;
+
+    @MockBean
+    private ResponseHeaderCreator responseHeaderCreator;
+
+    private String govCreateData;
+    private GovernmentRequest governmentRequest;
+    private GovernmentResponse governmentResponse;
+
+
+    @BeforeAll
+    void init() throws IOException {
+        governmentRequest = testDataFormatter.getGovernmentRequestData();
+        governmentResponse = testDataFormatter.getGovernmentResponseData();
+
+        govCreateData = new Gson().toJson(governmentRequest);
+
+    }
+
+
     @Test
     public void governmentV1CreatePostSuccess() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/government/v1/_create").contentType(MediaType
-                .APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+        doReturn(governmentRequest).when(governmentService).addGovernment(governmentRequest);
+
+        doReturn(new ResponseHeader()).when(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(governmentRequest.getRequestHeader(), true);
+
+        mockMvc.perform(post("/government/v1/_create")
+                        .accept(MediaType.APPLICATION_JSON).content(govCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted());
+
+        verify(governmentService, times(1)).addGovernment(governmentRequest);
+
+        verify(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(governmentRequest.getRequestHeader(), true);
     }
 
     @Test
