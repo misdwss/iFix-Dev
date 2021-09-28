@@ -386,6 +386,8 @@ public class FiscalEventAggregateUtil {
                 //set the project details to fiscal event aggregate
                 setProjectDetailsToFiscalEventAggregate(projectNodeMap, pendingEventAggregate, pid);
 
+                //Handle the unique update on conflict
+                pendingEventAggregate.setCoa_id("");
                 fiscalEventAggregateList.add(pendingEventAggregate);
             }
         }
