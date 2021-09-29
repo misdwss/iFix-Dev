@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * API tests for GovernmentApiController
  */
-@AutoConfigureDataMongo
+//@AutoConfigureDataMongo
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(GovernmentApiController.class)
