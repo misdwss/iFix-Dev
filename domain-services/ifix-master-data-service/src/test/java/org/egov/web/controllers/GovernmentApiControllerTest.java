@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,6 +72,7 @@ public class GovernmentApiControllerTest {
 
     @Test
     public void governmentV1CreatePostSuccess() throws Exception {
+        fail("Fail check on jenkins");
         doReturn(governmentRequest).when(governmentService).addGovernment(governmentRequest);
 
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
