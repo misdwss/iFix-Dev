@@ -2,10 +2,9 @@ package org.egov.web.controllers;
 
 import com.google.gson.Gson;
 import org.egov.common.contract.response.ResponseHeader;
+import org.egov.config.TestDataFormatter;
 import org.egov.service.GovernmentService;
 import org.egov.util.ResponseHeaderCreator;
-import org.egov.config.TestDataFormatter;
-import org.egov.web.models.Government;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
 import org.egov.web.models.GovernmentSearchRequest;
@@ -22,9 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
-import java.util.List;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -72,7 +69,6 @@ public class GovernmentApiControllerTest {
 
     @Test
     public void governmentV1CreatePostSuccess() throws Exception {
-        fail("Fail check on jenkins");
         doReturn(governmentRequest).when(governmentService).addGovernment(governmentRequest);
 
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
@@ -115,7 +111,7 @@ public class GovernmentApiControllerTest {
     @Test
     public void governmentV1SearchPostFailure() throws Exception {
         mockMvc.perform(post("/government/v1/_search").contentType(MediaType
-                .APPLICATION_JSON_UTF8))
+                        .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 
