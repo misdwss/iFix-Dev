@@ -2,6 +2,7 @@ package org.egov.service;
 
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.GovernmentRepository;
+import org.egov.tracer.model.CustomException;
 import org.egov.validator.GovernmentValidator;
 import org.egov.web.models.Government;
 import org.egov.web.models.GovernmentRequest;
@@ -18,8 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest()
@@ -40,6 +40,7 @@ class GovernmentServiceTest {
     private GovernmentRequest governmentRequest;
     private GovernmentSearchRequest governmentSearchRequest;
     private GovernmentResponse governmentSearchResponse;
+    private GovernmentRequest headlessGovernmentRequest;
 
     @InjectMocks
     private  GovernmentService governmentService;
@@ -47,6 +48,7 @@ class GovernmentServiceTest {
     @BeforeAll
     public void init() throws IOException {
         governmentRequest = testDataFormatter.getGovernmentRequestData();
+        headlessGovernmentRequest = testDataFormatter.getHeadlessGovernmentRequestData();
         governmentSearchRequest = testDataFormatter.getGovernmentSearchRequestData();
 
         governmentSearchResponse = testDataFormatter.getGovernmentSearchResponseData();
@@ -67,6 +69,16 @@ class GovernmentServiceTest {
         GovernmentRequest savedGovernmentRequest = governmentService.addGovernment(governmentRequest);
 
         assertEquals(savedGovernmentRequest, governmentRequest);
+    }
+
+    @Test
+    void addGovernmentValidationException() {
+        doThrow(new CustomException()).when(governmentValidator).validateGovernmentRequestData(headlessGovernmentRequest);
+
+        assertThrows(CustomException.class,
+                () -> governmentValidator.validateGovernmentRequestData(headlessGovernmentRequest),
+                () -> "Without header information, It should be throwing exception");
+
     }
 
     @Test

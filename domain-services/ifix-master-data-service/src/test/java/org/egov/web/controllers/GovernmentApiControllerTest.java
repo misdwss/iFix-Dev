@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * API tests for GovernmentApiController
  */
-//@AutoConfigureDataMongo
+@AutoConfigureDataMongo
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(GovernmentApiController.class)
@@ -89,8 +89,9 @@ public class GovernmentApiControllerTest {
 
     @Test
     public void governmentV1CreatePostFailure() throws Exception {
-        mockMvc.perform(post("/government/v1/_create").contentType(MediaType
-                .APPLICATION_JSON))
+        mockMvc.perform(post("/government/v1/_create")
+                        .accept(MediaType.APPLICATION_JSON).content("")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

@@ -49,6 +49,18 @@ public class TestDataFormatter {
      * @return
      * @throws IOException
      */
+    public GovernmentRequest getHeadlessGovernmentRequestData() throws IOException {
+        GovernmentRequest governmentRequest = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovCreateRequestDataHeadless()),
+                        GovernmentRequest.class);
+
+        return governmentRequest;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
     public GovernmentResponse getGovernmentCreateResponseData() throws IOException {
         GovernmentResponse governmentResponse = new ObjectMapper()
                 .readValue(getFileFromClassLoaderResource(testProperties.getGovCreateResponseData()),

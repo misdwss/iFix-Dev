@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@Import(TestConfiguration.class)
 public class FundApiControllerTest {
 
-    @Autowired
+   /* @Autowired
     private MockMvc mockMvc;
 
     @Test
@@ -46,6 +46,6 @@ public class FundApiControllerTest {
         mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/fund/v1/_search").contentType(MediaType
                         .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
-    }
+    }*/
 
 }

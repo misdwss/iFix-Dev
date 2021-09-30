@@ -25,4 +25,9 @@ public class TestProperties {
     @Value("${gov.search.response.data}")
     private String govSearchResponseData;
 
+    @Value("${gov.create.request.data.headless}")
+    private String govCreateRequestDataHeadless;
+
+
+
 }
