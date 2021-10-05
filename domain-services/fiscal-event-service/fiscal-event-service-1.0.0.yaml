@@ -94,7 +94,7 @@ components:
           maxLength: 64
           minLength: 1
           type: string
-          description: Captures the event type (eg- SANCTION(B), APPROPRIATION(B), ALLOCATION(FIN-AD-BCO-DDO)(B), INTRA_TRANSFER (C), INTER_TRANSFER (C), DEMAND(A), RECEIPT (C), BILL(A),PAYMENT (C)
+          description: Captures the event type (eg- Sanction(B), Appropriation(B), Allocation(FIN-AD-BCO-DDO)(B), Intra_Transfer (C), Inter_Transfer (C), Demand(A), Receipt (C), Bill(A),Payment (C)
           nullable: false
           example: Appropriation
         eventTime:
