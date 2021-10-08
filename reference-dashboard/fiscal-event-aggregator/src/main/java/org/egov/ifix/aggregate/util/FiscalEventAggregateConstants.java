@@ -10,11 +10,11 @@ public class FiscalEventAggregateConstants {
     public static final int DEFAULT_HIERARCHY_LEVEL = 6;
     public static final String VER = "1.0.0";
 
-    public static final String EVENT_TYPE_DEMAND= "DEMAND";
-    public static final String EVENT_TYPE_RECEIPT= "RECEIPT";
-    public static final String EVENT_TYPE_PAYMENT = "PAYMENT";
-    public static final String EVENT_TYPE_BILL= "BILL";
+    public static final String EVENT_TYPE_DEMAND= "Demand";
+    public static final String EVENT_TYPE_RECEIPT= "Receipt";
+    public static final String EVENT_TYPE_PAYMENT = "Payment";
+    public static final String EVENT_TYPE_BILL= "Bill";
 
-    public static final String EVENT_TYPE_PENDING_COLLECTION = "PENDING_COLLECTION";
-    public static final String EVENT_TYPE_PENDING_PAYMENT = "PENDING_PAYMENT";
+    public static final String EVENT_TYPE_PENDING_COLLECTION = "Pending_Collection";
+    public static final String EVENT_TYPE_PENDING_PAYMENT = "Pending_Payment";
 }
