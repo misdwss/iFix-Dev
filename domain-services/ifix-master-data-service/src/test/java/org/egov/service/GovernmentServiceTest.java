@@ -25,19 +25,14 @@ import static org.mockito.Mockito.doReturn;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest()
 class GovernmentServiceTest {
-    @Autowired
-    private TestDataFormatter testDataFormatter;
-
     @Mock
     GovernmentValidator governmentValidator;
-
     @Mock
     GovernmentRepository governmentRepository;
-
     @Mock
     GovernmentEnrichmentService governmentEnrichmentService;
-
-
+    @Autowired
+    private TestDataFormatter testDataFormatter;
     private GovernmentRequest governmentRequest;
     private GovernmentSearchRequest governmentSearchRequest;
     private GovernmentResponse governmentSearchResponse;

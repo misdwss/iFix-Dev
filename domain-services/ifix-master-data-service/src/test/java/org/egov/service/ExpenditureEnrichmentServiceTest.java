@@ -2,27 +2,22 @@ package org.egov.service;
 
 import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
-import org.egov.common.contract.request.UserInfo;
 import org.egov.config.TestDataFormatter;
 import org.egov.util.MasterDataServiceUtil;
-import org.egov.web.models.Department;
 import org.egov.web.models.Expenditure;
 import org.egov.web.models.ExpenditureRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 class ExpenditureEnrichmentServiceTest {

@@ -1,7 +1,6 @@
 package org.egov.util;
 
 import org.egov.common.contract.request.RequestHeader;
-import org.egov.common.contract.request.UserInfo;
 import org.egov.config.MasterDataServiceConfiguration;
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.ServiceRequestRepository;
@@ -15,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest

@@ -1,12 +1,13 @@
 package org.egov.web.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.egov.common.contract.response.ResponseHeader;
 import org.egov.config.TestDataFormatter;
 import org.egov.service.ProjectService;
 import org.egov.util.ResponseHeaderCreator;
 import org.egov.web.models.ProjectRequest;
+import org.egov.web.models.ProjectResponse;
+import org.egov.web.models.ProjectSearchRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,11 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,33 +35,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProjectApiController.class)
 public class ProjectApiControllerTest {
 
-    @Autowired
-    private TestDataFormatter testDataFormatter;
-
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     ProjectService projectService;
-
     @MockBean
     ResponseHeaderCreator responseHeaderCreator;
-
+    @Autowired
+    private TestDataFormatter testDataFormatter;
+    @Autowired
+    private MockMvc mockMvc;
     private String projectCreateData;
     private ProjectRequest projectRequest;
-
+    private ProjectResponse projectSearchResponse;
+    private ProjectSearchRequest projectSearchRequest;
 
 
     @BeforeAll
     void init() throws IOException {
         projectRequest = testDataFormatter.getProjectCreateRequestData();
         projectCreateData = new Gson().toJson(projectRequest);
-
+        projectSearchResponse = testDataFormatter.getProjectSearchReponseData();
+        projectSearchRequest = testDataFormatter.getProjectSearchRequestData();
     }
 
     @Test
     public void projectV1CreatePostSuccess() throws Exception {
-        doReturn(projectRequest).when(projectService).createProject(projectRequest);
+        doReturn(projectRequest).when(projectService).createProject((ProjectRequest) any());
 
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
                 .createResponseHeaderFromRequestHeader(projectRequest.getRequestHeader(), true);
@@ -70,31 +67,38 @@ public class ProjectApiControllerTest {
         mockMvc.perform(post("/project/v1/_create")
                         .accept(MediaType.APPLICATION_JSON).content(projectCreateData)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
 
-        verify(projectService, times(1)).createProject(projectRequest);
+        verify(projectService, times(1)).createProject((ProjectRequest) any());
         verify(responseHeaderCreator)
                 .createResponseHeaderFromRequestHeader(projectRequest.getRequestHeader(), true);
     }
 
     @Test
     public void projectV1CreatePostFailure() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/project/v1/_create").contentType(MediaType
-                        .APPLICATION_JSON_UTF8))
+        mockMvc.perform(post("/project/v1/_create")
+                        .accept(MediaType.APPLICATION_JSON).content("")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void projectV1SearchPostSuccess() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/project/v1/_search").contentType(MediaType
-                        .APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+        doReturn(projectSearchResponse.getProject()).when(projectService).findAllByCriteria(projectSearchRequest);
+
+        doReturn(new ResponseHeader()).when(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(projectSearchRequest.getRequestHeader(), true);
+
+        mockMvc.perform(post("/project/v1/_search")
+                        .accept(MediaType.APPLICATION_JSON).content(projectCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted());
     }
 
     @Test
     public void projectV1SearchPostFailure() throws Exception {
-        mockMvc.perform(post("/eGovTrial/iFIX-Master-Data/1.0.0/project/v1/_search").contentType(MediaType
-                        .APPLICATION_JSON_UTF8))
+        mockMvc.perform(post("/project/v1/_search").contentType(MediaType
+                        .APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

@@ -5,7 +5,6 @@ import org.egov.common.contract.response.ResponseHeader;
 import org.egov.config.TestDataFormatter;
 import org.egov.service.ChartOfAccountService;
 import org.egov.util.ResponseHeaderCreator;
-import org.egov.web.controllers.ChartOfAccountApiController;
 import org.egov.web.models.COARequest;
 import org.egov.web.models.COAResponse;
 import org.egov.web.models.COASearchRequest;
@@ -77,8 +76,8 @@ public class ChartOfAccountApiControllerTest {
                 .createResponseHeaderFromRequestHeader(coaRequest.getRequestHeader(), true);
 
         mockMvc.perform(post("/chartOfAccount/v1/_create")
-                .accept(MediaType.APPLICATION_JSON).content(coaCreateData)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON).content(coaCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted());
 
         verify(chartOfAccountService, times(1)).chartOfAccountV1CreatePost(coaRequest);
@@ -90,8 +89,8 @@ public class ChartOfAccountApiControllerTest {
     @Test
     public void chartOfAccountV1CreatePostFailure() throws Exception {
         mockMvc.perform(post("/chartOfAccount/v1/_create")
-                .accept(MediaType.APPLICATION_JSON).content("")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON).content("")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -104,15 +103,15 @@ public class ChartOfAccountApiControllerTest {
                 .createResponseHeaderFromRequestHeader(coaSearchRequest.getRequestHeader(), true);
 
         mockMvc.perform(post("/chartOfAccount/v1/_search")
-                .accept(MediaType.APPLICATION_JSON).content(coaSearchData)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON).content(coaSearchData)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void chartOfAccountV1SearchPostFailure() throws Exception {
         mockMvc.perform(post("/chartOfAccount/v1/_search").contentType(MediaType
-                .APPLICATION_JSON_UTF8))
+                        .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 
