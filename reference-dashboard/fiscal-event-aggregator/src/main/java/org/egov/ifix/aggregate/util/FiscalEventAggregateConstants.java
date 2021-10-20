@@ -4,9 +4,8 @@ public class FiscalEventAggregateConstants {
 
     private FiscalEventAggregateConstants(){}
 
-    public static final String DEFAULT_FISCAL_PERIOD = "2021-22";
-    public static final String START_YEAR = "START_YEAR";
-    public static final String END_YEAR = "END_YEAR";
+    public static final String CURRENT_FISCAL_YEAR = "CURRENT_FISCAL_YEAR";
+    public static final String PREVIOUS_FISCAL_YEAR = "PREVIOUS_FISCAL_YEAR";
     public static final int DEFAULT_HIERARCHY_LEVEL = 6;
     public static final String VER = "1.0.0";
 

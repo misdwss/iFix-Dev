@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Year;
 import java.util.*;
 
 @Slf4j
@@ -63,31 +64,14 @@ public class FiscalEventAggregateUtil {
         return coaNodeMap;
     }
 
-    public Map<String, Integer> getIntervalYearMap() {
-        Map<String, Integer> intervalYearMap = new HashMap<>();
-
-        String[] defaultFiscalPeriodArr = (FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD).split("-");
-        String prefixYear = defaultFiscalPeriodArr[0].substring(0, 2);
-        int startYear = Integer.parseInt(defaultFiscalPeriodArr[0]);
-        int endYear = Integer.parseInt(prefixYear.concat(defaultFiscalPeriodArr[1]));
-        if (StringUtils.isNotBlank(configProperties.getFiscalPeriod())) {
-            String[] strArr = configProperties.getFiscalPeriod().split("-");
-            prefixYear = strArr[0].substring(0, 2);
-            startYear = Integer.parseInt(strArr[0]);
-            endYear = Integer.parseInt(strArr[1] != null && strArr[1].length() == 4 ? strArr[1] : prefixYear.concat(strArr[1]));
-        }
-        intervalYearMap.put(FiscalEventAggregateConstants.START_YEAR, startYear);
-        intervalYearMap.put(FiscalEventAggregateConstants.END_YEAR, endYear);
-        return intervalYearMap;
-    }
-
     /**
      * @param groupByResponses
      * @param projectNodeMap
      * @param coaNodeMap
+     * @param fiscalYear
      * @return
      */
-    public List<FiscalEventAggregate> getFiscalEventAggregateData(List<Object> groupByResponses, Map<String, JsonNode> projectNodeMap, Map<String, JsonNode> coaNodeMap) {
+    public List<FiscalEventAggregate> getFiscalEventAggregateData(List<Object> groupByResponses, Map<String, JsonNode> projectNodeMap, Map<String, JsonNode> coaNodeMap, int fiscalYear) {
         List<FiscalEventAggregate> fiscalEventAggregateList = new ArrayList<>();
         JsonNode responseJsonNode = objectMapper.convertValue(groupByResponses, JsonNode.class);
         Iterator<JsonNode> nodeIterator = responseJsonNode.iterator();
@@ -110,7 +94,7 @@ public class FiscalEventAggregateUtil {
                 eventAggregate.setType(eventType);
 
                 eventAggregate.setVer(FiscalEventAggregateConstants.VER);
-                String fiscalPeriod = configProperties.getFiscalPeriod() != null ? configProperties.getFiscalPeriod() : FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD;
+                String fiscalPeriod = createFiscalPeriodFrom(fiscalYear);
                 eventAggregate.setFiscalPeriod(fiscalPeriod);
                 //set the project details to fiscal event aggregate
                 setProjectDetailsToFiscalEventAggregate(projectNodeMap, eventAggregate, projectId);
@@ -118,7 +102,6 @@ public class FiscalEventAggregateUtil {
                 //set the coa details to fiscal event aggregate
                 setCoaDetailsToFiscalEventAggregate(coaNodeMap, eventAggregate, coaId);
 
-                //TODO : push to kafka
                 fiscalEventAggregateList.add(eventAggregate);
             }
         }
@@ -334,9 +317,10 @@ public class FiscalEventAggregateUtil {
      * @param secondEventTypeNodeMap - will be receipt or payment
      * @param projectNodeMap
      * @param pendingEventType
+     * @param fiscalYear
      * @return
      */
-    public List<FiscalEventAggregate> getPendingCollectionFiscalEventAggregatedData(Map<String, JsonNode> firstEventTypeNodeMap, Map<String, JsonNode> secondEventTypeNodeMap, Map<String, JsonNode> projectNodeMap, String pendingEventType) {
+    public List<FiscalEventAggregate> getPendingCollectionFiscalEventAggregatedData(Map<String, JsonNode> firstEventTypeNodeMap, Map<String, JsonNode> secondEventTypeNodeMap, Map<String, JsonNode> projectNodeMap, String pendingEventType, int fiscalYear) {
         List<FiscalEventAggregate> fiscalEventAggregateList = new ArrayList<>();
 
         Map<String, BigDecimal> pendingAmountMap = new HashMap<>();
@@ -376,7 +360,7 @@ public class FiscalEventAggregateUtil {
                 FiscalEventAggregate pendingEventAggregate = new FiscalEventAggregate();
 
                 pendingEventAggregate.setVer(FiscalEventAggregateConstants.VER);
-                String fiscalPeriod = configProperties.getFiscalPeriod() != null ? configProperties.getFiscalPeriod() : FiscalEventAggregateConstants.DEFAULT_FISCAL_PERIOD;
+                String fiscalPeriod = createFiscalPeriodFrom(fiscalYear);
                 pendingEventAggregate.setFiscalPeriod(fiscalPeriod);
                 pendingEventAggregate.setProject_id(pid);
                 pendingEventAggregate.setCount(null);
@@ -393,5 +377,23 @@ public class FiscalEventAggregateUtil {
         }
 
         return fiscalEventAggregateList;
+    }
+
+    private String createFiscalPeriodFrom(int fiscalYear) {
+        String fiscalPeriodBuilder = String.valueOf(fiscalYear);
+        String endFiscalPeriodBuilder = String.valueOf(fiscalYear + 1);
+        return (fiscalPeriodBuilder.concat("-").concat(endFiscalPeriodBuilder.substring(2)));
+    }
+
+    /**
+     * Calculate the fiscal year(s) based on system time.
+     * @return
+     */
+    public Map<String, Integer> getFiscalYear() {
+        Map<String, Integer> fiscalYearMap = new HashMap<>();
+        int currentYear = Year.now().getValue();
+        fiscalYearMap.put(FiscalEventAggregateConstants.CURRENT_FISCAL_YEAR, currentYear);
+        fiscalYearMap.put(FiscalEventAggregateConstants.PREVIOUS_FISCAL_YEAR, (currentYear-1));
+        return fiscalYearMap;
     }
 }

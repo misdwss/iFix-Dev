@@ -26,9 +26,6 @@ public class ConfigProperties {
     @Value("${druid.connect.port}")
     private String druidConnectPort;
 
-    @Value("${fiscal.period}")
-    private String fiscalPeriod;
-
     @Value("${department.hierarchy.level}")
     private String departmentHierarchyLevel;
 }

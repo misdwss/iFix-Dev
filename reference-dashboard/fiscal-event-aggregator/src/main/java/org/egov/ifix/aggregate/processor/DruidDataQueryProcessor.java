@@ -53,85 +53,90 @@ public class DruidDataQueryProcessor {
      * @return
      */
     public List<FiscalEventAggregate> fetchFiscalEventFromDruid() {
-        DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType();
-        DruidQuery distinctProjectQuery = getDruidQueryForProjectDetails();
-        DruidQuery distinctCoaIdQuery = getDruidQueryForCoaDetails();
-        DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND);
-        DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT);
-        DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL);
-        DruidQuery paymentEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_PAYMENT);
+        Map<String, Integer> fiscalYearMap = aggregateUtil.getFiscalYear();
+        List<FiscalEventAggregate> finalFiscalEventAggregates = new ArrayList<>();
 
-        List<Object> groupByResponses = null;
-        List<Object> distinctProjectResponses = null;
-        List<Object> distinctCoaIdResponses = null;
-        List<Object> demandEventTypeResponses = null;
-        List<Object> receiptEventTypeResponses = null;
-        List<Object> billEventTypeResponses = null;
-        List<Object> paymentEventTypeResponses = null;
-        try {
-            groupByResponses = druidClient.query(groupByQuery, Object.class);
-            log.info("Size of record returned from Group by query : {}", groupByResponses.size());
-            distinctProjectResponses = druidClient.query(distinctProjectQuery, Object.class);
-            log.info("Size of record returned from distinct project id query : {}", distinctProjectResponses.size());
-            distinctCoaIdResponses = druidClient.query(distinctCoaIdQuery, Object.class);
-            log.info("Size of record returned from distinct coa id query : {}", distinctCoaIdResponses.size());
+        for (String fyKey : fiscalYearMap.keySet()) {
+            int fiscalYear = fiscalYearMap.get(fyKey);
 
-            demandEventTypeResponses = druidClient.query(demandEventTypeQuery, Object.class);
-            log.info("Size of record returned from demand event type query : {}", demandEventTypeResponses.size());
-            receiptEventTypeResponses = druidClient.query(receiptEventTypeQuery, Object.class);
-            log.info("Size of record returned from receipt event type query : {}", receiptEventTypeResponses.size());
+            DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(fiscalYear);
+            DruidQuery distinctProjectQuery = getDruidQueryForProjectDetails(fiscalYear);
+            DruidQuery distinctCoaIdQuery = getDruidQueryForCoaDetails(fiscalYear);
+            DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND,fiscalYear);
+            DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT,fiscalYear);
+            DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL,fiscalYear);
+            DruidQuery paymentEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_PAYMENT,fiscalYear);
 
-            billEventTypeResponses = druidClient.query(billEventTypeQuery, Object.class);
-            log.info("Size of record returned from bill event type query : {}", billEventTypeResponses.size());
-            paymentEventTypeResponses = druidClient.query(paymentEventTypeQuery, Object.class);
-            log.info("Size of record returned from payment event type query : {}", paymentEventTypeResponses.size());
-        } catch (QueryException e) {
-            log.error("Exception occurred while quering the data from druid data store : {}", e.getDruidError());
+            List<Object> groupByResponses = null;
+            List<Object> distinctProjectResponses = null;
+            List<Object> distinctCoaIdResponses = null;
+            List<Object> demandEventTypeResponses = null;
+            List<Object> receiptEventTypeResponses = null;
+            List<Object> billEventTypeResponses = null;
+            List<Object> paymentEventTypeResponses = null;
+            try {
+                groupByResponses = druidClient.query(groupByQuery, Object.class);
+                log.info("Size of record returned from Group by query : {} for fiscal year : {}", groupByResponses.size(), fiscalYear);
+                distinctProjectResponses = druidClient.query(distinctProjectQuery, Object.class);
+                log.info("Size of record returned from distinct project id query : {} for fiscal year : {}", distinctProjectResponses.size(), fiscalYear);
+                distinctCoaIdResponses = druidClient.query(distinctCoaIdQuery, Object.class);
+                log.info("Size of record returned from distinct coa id query : {} for fiscal year : {}", distinctCoaIdResponses.size(), fiscalYear);
+
+                demandEventTypeResponses = druidClient.query(demandEventTypeQuery, Object.class);
+                log.info("Size of record returned from demand event type query : {} for fiscal year : {}", demandEventTypeResponses.size(), fiscalYear);
+                receiptEventTypeResponses = druidClient.query(receiptEventTypeQuery, Object.class);
+                log.info("Size of record returned from receipt event type query : {} for fiscal year : {}", receiptEventTypeResponses.size(), fiscalYear);
+
+                billEventTypeResponses = druidClient.query(billEventTypeQuery, Object.class);
+                log.info("Size of record returned from bill event type query : {} for fiscal year : {}", billEventTypeResponses.size(), fiscalYear);
+                paymentEventTypeResponses = druidClient.query(paymentEventTypeQuery, Object.class);
+                log.info("Size of record returned from payment event type query : {} for fiscal year : {}", paymentEventTypeResponses.size(), fiscalYear);
+            } catch (QueryException e) {
+                log.error("Exception occurred while querying the data from druid data store : {}", e.getDruidError());
+            }
+            log.debug("Group by Response : {}", groupByResponses);
+            if (groupByResponses == null || groupByResponses.isEmpty()) {
+                log.info("There are no fiscal event data with group by of project id, event type and coa id for fiscal year : {}",fiscalYear);
+                continue;
+            }
+
+            //Create a map of key as project id and event node details as value
+            Map<String, JsonNode> projectNodeMap = aggregateUtil.getProjectDetailsMap(distinctProjectResponses);
+            //Create a map of key as coa id and event node details as value
+            Map<String, JsonNode> coaNodeMap = aggregateUtil.getCOADetailsMap(distinctCoaIdResponses);
+
+            //Create a map of key as project id and demand event node details as value
+            Map<String, JsonNode> demandEventTypeNodeMap = aggregateUtil.getEventTypeMap(demandEventTypeResponses);
+            //Create a map of key as project id and receipt event node details as value
+            Map<String, JsonNode> receiptEventTypeNodeMap = aggregateUtil.getEventTypeMap(receiptEventTypeResponses);
+
+            //Create a map of key as project id and bill event node details as value
+            Map<String, JsonNode> billEventTypeNodeMap = aggregateUtil.getEventTypeMap(billEventTypeResponses);
+            //Create a map of key as project id and payment event node details as value
+            Map<String, JsonNode> paymentEventTypeNodeMap = aggregateUtil.getEventTypeMap(paymentEventTypeResponses);
+
+            //Get the PENDING_COLLECTION aggregated fiscal event data
+            List<FiscalEventAggregate> pendingCollectionAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(demandEventTypeNodeMap, receiptEventTypeNodeMap, projectNodeMap,
+                    FiscalEventAggregateConstants.EVENT_TYPE_PENDING_COLLECTION,fiscalYear);
+            //Get the PENDING PAYMENT aggregated fiscal event data
+            List<FiscalEventAggregate> pendingPaymentAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(billEventTypeNodeMap, paymentEventTypeNodeMap, projectNodeMap,
+                    FiscalEventAggregateConstants.EVENT_TYPE_PENDING_PAYMENT, fiscalYear);
+            //Get the details by project id and coa id map key and create a List<FiscalEventAggregate>
+            List<FiscalEventAggregate> fiscalEventAggregates = aggregateUtil.getFiscalEventAggregateData(groupByResponses
+                    , projectNodeMap, coaNodeMap,fiscalYear);
+
+            finalFiscalEventAggregates.addAll(pendingCollectionAggregatedList);
+            finalFiscalEventAggregates.addAll(pendingPaymentAggregatedList);
+            finalFiscalEventAggregates.addAll(fiscalEventAggregates);
         }
-        log.debug("Group by Response : {}", groupByResponses);
-        if (groupByResponses == null || groupByResponses.isEmpty()) {
-            log.info("There are no fiscal event data with group by of project id, event type and coa id");
-            return null;
-        }
-
-        //Create a map of key as project id and event node details as value
-        Map<String, JsonNode> projectNodeMap = aggregateUtil.getProjectDetailsMap(distinctProjectResponses);
-        //Create a map of key as coa id and event node details as value
-        Map<String, JsonNode> coaNodeMap = aggregateUtil.getCOADetailsMap(distinctCoaIdResponses);
-
-        //Create a map of key as project id and demand event node details as value
-        Map<String, JsonNode> demandEventTypeNodeMap = aggregateUtil.getEventTypeMap(demandEventTypeResponses);
-        //Create a map of key as project id and receipt event node details as value
-        Map<String, JsonNode> receiptEventTypeNodeMap = aggregateUtil.getEventTypeMap(receiptEventTypeResponses);
-
-        //Create a map of key as project id and bill event node details as value
-        Map<String, JsonNode> billEventTypeNodeMap = aggregateUtil.getEventTypeMap(billEventTypeResponses);
-        //Create a map of key as project id and payment event node details as value
-        Map<String, JsonNode> paymentEventTypeNodeMap = aggregateUtil.getEventTypeMap(paymentEventTypeResponses);
-
-        //Get the PENDING_COLLECTION aggregated fiscal event data
-        List<FiscalEventAggregate> pendingCollectionAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(demandEventTypeNodeMap, receiptEventTypeNodeMap, projectNodeMap,
-                FiscalEventAggregateConstants.EVENT_TYPE_PENDING_COLLECTION);
-        //Get the PENDING PAYMENT aggregated fiscal event data
-        List<FiscalEventAggregate> pendingPaymentAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(billEventTypeNodeMap, paymentEventTypeNodeMap, projectNodeMap,
-                FiscalEventAggregateConstants.EVENT_TYPE_PENDING_PAYMENT);
-        //Get the details by project id and coa id map key and create a List<FiscalEventAggregate>
-        List<FiscalEventAggregate> fiscalEventAggregates = aggregateUtil.getFiscalEventAggregateData(groupByResponses
-                , projectNodeMap, coaNodeMap);
-
-        fiscalEventAggregates.addAll(pendingCollectionAggregatedList);
-        fiscalEventAggregates.addAll(pendingPaymentAggregatedList);
-
-        return fiscalEventAggregates;
+        return finalFiscalEventAggregates;
     }
 
-    private DruidQuery getDruidQueryForProjectIdAndSumAmountBy(String eventType) {
+    private DruidQuery getDruidQueryForProjectIdAndSumAmountBy(String eventType, int fiscalYear) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
 
-        Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
-
-        DateTime startTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.START_YEAR), 04, 1, 0, 0, 0, DateTimeZone.UTC);
-        DateTime endTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.END_YEAR), 03, 31, 0, 0, 0, DateTimeZone.UTC);
+        DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
+        DateTime endTime = new DateTime(fiscalYear + 1, 03, 31, 0, 0, 0, DateTimeZone.UTC);
         Interval interval = new Interval(startTime, endTime);
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
@@ -154,13 +159,11 @@ public class DruidDataQueryProcessor {
     }
 
 
-    private DruidQuery getDruidQueryForCoaDetails() {
+    private DruidQuery getDruidQueryForCoaDetails(int fiscalYear) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
 
-        Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
-
-        DateTime startTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.START_YEAR), 04, 1, 0, 0, 0, DateTimeZone.UTC);
-        DateTime endTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.END_YEAR), 03, 31, 0, 0, 0, DateTimeZone.UTC);
+        DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
+        DateTime endTime = new DateTime(fiscalYear + 1, 03, 31, 0, 0, 0, DateTimeZone.UTC);
         Interval interval = new Interval(startTime, endTime);
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
@@ -196,12 +199,11 @@ public class DruidDataQueryProcessor {
     }
 
 
-    private DruidQuery getDruidQueryForProjectDetails() {
+    private DruidQuery getDruidQueryForProjectDetails(int fiscalYear) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
-        Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
 
-        DateTime startTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.START_YEAR), 04, 1, 0, 0, 0, DateTimeZone.UTC);
-        DateTime endTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.END_YEAR), 03, 31, 0, 0, 0, DateTimeZone.UTC);
+        DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
+        DateTime endTime = new DateTime(fiscalYear + 1, 03, 31, 0, 0, 0, DateTimeZone.UTC);
         Interval interval = new Interval(startTime, endTime);
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
@@ -256,12 +258,11 @@ public class DruidDataQueryProcessor {
                 .build());
     }
 
-    private DruidGroupByQuery getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType() {
+    private DruidGroupByQuery getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(int fiscalYear) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
-        Map<String, Integer> intervalYearMap = aggregateUtil.getIntervalYearMap();
 
-        DateTime startTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.START_YEAR), 04, 1, 0, 0, 0, DateTimeZone.UTC);
-        DateTime endTime = new DateTime(intervalYearMap.get(FiscalEventAggregateConstants.END_YEAR), 03, 31, 0, 0, 0, DateTimeZone.UTC);
+        DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
+        DateTime endTime = new DateTime(fiscalYear + 1, 03, 31, 0, 0, 0, DateTimeZone.UTC);
         Interval interval = new Interval(startTime, endTime);
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
