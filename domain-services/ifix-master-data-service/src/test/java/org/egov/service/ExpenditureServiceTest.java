@@ -1,12 +1,5 @@
 package org.egov.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.ExpenditureRepository;
 import org.egov.validator.ExpenditureValidator;
@@ -14,21 +7,24 @@ import org.egov.web.models.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class ExpenditureServiceTest {
     @Autowired
     private TestDataFormatter testDataFormatter;
-    
+
     @Mock
     private ExpenditureEnrichmentService expenditureEnrichmentService;
 

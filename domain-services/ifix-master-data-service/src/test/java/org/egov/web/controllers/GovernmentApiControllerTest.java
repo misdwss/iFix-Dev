@@ -5,7 +5,6 @@ import org.egov.common.contract.response.ResponseHeader;
 import org.egov.config.TestDataFormatter;
 import org.egov.service.GovernmentService;
 import org.egov.util.ResponseHeaderCreator;
-import org.egov.web.controllers.GovernmentApiController;
 import org.egov.web.models.GovernmentRequest;
 import org.egov.web.models.GovernmentResponse;
 import org.egov.web.models.GovernmentSearchRequest;
@@ -36,15 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(GovernmentApiController.class)
 public class GovernmentApiControllerTest {
 
-    @Autowired
-    private TestDataFormatter testDataFormatter;
-
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     GovernmentService governmentService;
-
+    @Autowired
+    private TestDataFormatter testDataFormatter;
+    @Autowired
+    private MockMvc mockMvc;
     @MockBean
     private ResponseHeaderCreator responseHeaderCreator;
 

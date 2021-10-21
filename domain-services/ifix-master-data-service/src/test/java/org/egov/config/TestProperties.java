@@ -76,4 +76,9 @@ public class TestProperties {
     @Value("${expenditure.create.response.data}")
     private String expenditureCreateResponseData;
 
+    @Value("${department.entity.search.response}")
+    private String departmentEntitySearchResponse;
+
+    @Value("${department.entity.search.response.without.children}")
+    private String departmentEntitySearchResponseWithoutChildren;
 }

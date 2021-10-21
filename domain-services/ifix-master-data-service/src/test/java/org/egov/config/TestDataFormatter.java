@@ -1,6 +1,7 @@
 package org.egov.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.egov.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class TestDataFormatter {
             fileName = baseURL + File.separator + fileName;
 
             return new File(fileName);
-        }else {
+        } else {
             return new File(classLoader.getResource(fileName).getFile());
         }
     }
@@ -266,6 +267,65 @@ public class TestDataFormatter {
                         ExpenditureResponse.class);
 
         return expenditureResponse;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public Object getDepartmentEntitySearchResponseDataAsObject() throws IOException {
+        Object object = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getDepartmentEntitySearchResponse()),
+                        Object.class);
+
+        return object;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public String getDepartmentEntitySearchResponseDataAsString() throws IOException {
+        String departmentEntityString = FileUtils
+                .readFileToString(getFileFromClassLoaderResource(
+                        testProperties.getDepartmentEntitySearchResponseWithoutChildren()));
+        return departmentEntityString;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public Object getExpenditureSearchResponseDataAsObject() throws IOException {
+        Object expenditureResponse = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getExpenditureSearchResponseData()),
+                        Object.class);
+
+        return expenditureResponse;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public Object getDepartmentSearchResponseDataAsObject() throws IOException {
+        Object departmentResponse = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getDepartmentSearchResponseData()),
+                        Object.class);
+
+        return departmentResponse;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
+    public Object getGovernmentSearchResponseDataAsObject() throws IOException {
+        Object governmentResponse = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getGovSearchResponseData()),
+                        Object.class);
+
+        return governmentResponse;
     }
 
 
