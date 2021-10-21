@@ -233,9 +233,9 @@ public class DruidDataQueryProcessor {
         druidDimensions.add(new DefaultDimension("project.name", "project.name", OutputType.STRING));
 
         int hierarchyLevel = FiscalEventAggregateConstants.DEFAULT_HIERARCHY_LEVEL;
-        if (StringUtils.isNotBlank(configProperties.getDepartmentHierarchyLevel())) {
-            hierarchyLevel = Integer.parseInt(configProperties.getDepartmentHierarchyLevel());
-        }
+//        if (StringUtils.isNotBlank(configProperties.getDepartmentHierarchyLevel())) {
+//            hierarchyLevel = Integer.parseInt(configProperties.getDepartmentHierarchyLevel());
+//        }
 
         for (int i = 0; i <= hierarchyLevel; i++) {
             druidDimensions.add(new DefaultDimension("departmentEntity.ancestry[" + i + "].code", "departmentEntity.ancestry[" + i + "].code", OutputType.STRING));
