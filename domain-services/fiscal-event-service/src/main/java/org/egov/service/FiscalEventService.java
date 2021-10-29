@@ -1,8 +1,12 @@
 package org.egov.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.producer.Producer;
 import org.egov.repository.FiscalEventRepository;
@@ -50,7 +54,17 @@ public class FiscalEventService {
     public FiscalEventRequest fiscalEventsV1PushPost(FiscalEventRequest fiscalEventRequest) {
         validator.validateFiscalEventPushPost(fiscalEventRequest);
         enricher.enrichFiscalEventPushPost(fiscalEventRequest);
-        producer.push(eventConfiguration.getFiscalPushRequest(), fiscalEventRequest);
+
+        if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
+            RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
+            for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
+                ObjectNode fiscalEventRequestNode = JsonNodeFactory.instance.objectNode();
+                fiscalEventRequestNode.putPOJO("requestHeader",requestHeader);
+                fiscalEventRequestNode.putPOJO("fiscalEvent",fiscalEvent);
+
+                producer.push(eventConfiguration.getFiscalPushRequest(), fiscalEventRequestNode);
+            }
+        }
         return fiscalEventRequest;
     }
 

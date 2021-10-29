@@ -50,7 +50,7 @@ public class FiscalApiController {
         FiscalEventRequest fiscalEventRequest = fiscalEventService.fiscalEventsV1PushPost(body);
         ResponseHeader responseHeader = responseHeaderCreator.createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
         FiscalEventResponse fiscalEventResponse = FiscalEventResponse.builder().responseHeader(responseHeader)
-                .fiscalEvent(Collections.singletonList(fiscalEventRequest.getFiscalEvent())).build();
+                .fiscalEvent(fiscalEventRequest.getFiscalEvent()).build();
         return new ResponseEntity<FiscalEventResponse>(fiscalEventResponse, HttpStatus.ACCEPTED);
     }
 
