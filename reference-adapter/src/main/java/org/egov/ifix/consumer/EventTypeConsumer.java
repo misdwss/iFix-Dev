@@ -1,6 +1,5 @@
 package org.egov.ifix.consumer;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.egov.common.contract.request.RequestHeader;
-import org.egov.common.contract.request.RequestHeader.RequestHeaderBuilder;
 import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.models.FiscalEventRequest;
@@ -17,8 +15,9 @@ import org.egov.ifix.persistance.EventPostingDetail;
 import org.egov.ifix.persistance.EventPostingDetailRepository;
 import org.egov.ifix.service.PostEvent;
 import org.egov.ifix.service.ProjectService;
-import org.egov.ifix.utils.MasterDataMappingUtil;
+import org.egov.ifix.utils.EventConstants;
 import org.egov.ifix.utils.RequestHeaderUtil;
+import org.egov.ifix.exception.GenericCustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -36,10 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class EventTypeConsumer {
-
-	private static final String EVENT_TYPE = "eventType";
-
-	private static final String EVENT = "event";
 
 	private List<EventMapper> eventMappers;
 
@@ -78,86 +72,81 @@ public class EventTypeConsumer {
 	}
 
 	public void process(final String record, EventPostingDetail detail) {
-		log.info("Received Message from topic: " + record);
-		JsonObject jsonObject = null;
-		log.info("\n\n");
+		validateEventRequest(record);
+		FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
+		JsonObject jsonObject = JsonParser.parseString(record).getAsJsonObject();
+		JsonObject eventJsonObject = jsonObject.getAsJsonObject(EventConstants.EVENT);
+
 		try {
-			jsonObject = JsonParser.parseString(record).getAsJsonObject();
-			EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
+			RequestHeader header = requestHeaderUtil.polulateRequestHeader(jsonObject, new RequestHeader());
+			fiscalEventRequest.setRequestHeader(header);
+
+			EventMapper eventMapper = eventTypeMap.get(jsonObject.getAsJsonObject(EventConstants.EVENT)
+					.get(EventConstants.EVENT_TYPE).getAsString());
+
 			List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
-			FiscalEventRequest request = new FiscalEventRequest();
-			RequestHeader header = new RequestHeader();
-			header = requestHeaderUtil.polulateRequestHeader(jsonObject, header);
-			request.setRequestHeader(header);
 
-			loop: for (FiscalEvent event : fiscalEvents) {
+			loop:
+			for (FiscalEvent fiscalEvent : fiscalEvents) {
+				String clientProjectCode = eventJsonObject.get(EventConstants.PROJECT_ID).getAsString();
 
-				if (jsonObject.getAsJsonObject(EVENT).get("projectId") != null) {
-					log.info("mgram prooject id " + jsonObject.getAsJsonObject(EVENT).get("projectId"));
-					String clientCode = jsonObject.getAsJsonObject(EVENT).get("projectId").getAsString();
-					String iFixprojectId = projectService.getProjectId(clientCode, jsonObject);
-					event.setProjectId(iFixprojectId);
+				log.info(EventConstants.LOG_INFO_PREFIX + "MgramSeva project code " + clientProjectCode);
 
-				}
-				request.setFiscalEvent(event);
-				log.info("Project Id" + event.getProjectId());
+				String iFixProjectId = projectService.getProjectId(clientProjectCode, jsonObject);
+
+				log.info(EventConstants.LOG_INFO_PREFIX + "IFix project id " + iFixProjectId);
+
+				fiscalEvent.setProjectId(iFixProjectId);
+				fiscalEventRequest.setFiscalEvent(fiscalEvent);
 
 				if (detail == null) {
 					detail = new EventPostingDetail();
-					if (jsonObject.getAsJsonObject(EVENT).get("id") != null) {
-						detail.setEventId(jsonObject.getAsJsonObject(EVENT).get("id").getAsString());
-						detail.setTenantId(event.getTenantId());
-						detail.setReferenceId(event.getParentReferenceId());
-						detail.setEventType(event.getEventType());
-						detail.setCreatedDate(new Date());
-						detail.setLastModifiedDate(new Date());
-
-					}
+					detail.setEventId(eventJsonObject.get(EventConstants.ID).getAsString());
+					detail.setTenantId(fiscalEvent.getTenantId());
+					detail.setReferenceId(fiscalEvent.getParentReferenceId());
+					detail.setEventType(fiscalEvent.getEventType());
+					detail.setCreatedDate(new Date());
+					detail.setLastModifiedDate(new Date());
 				}
 
 				try {
-
-					ResponseEntity<FiscalEventResponse> response = postEvent.post(request);
+					ResponseEntity<FiscalEventResponse> response = postEvent.post(fiscalEventRequest);
 
 					if (response.getStatusCode().series().equals(HttpStatus.Series.SERVER_ERROR)
 							|| response.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
 						detail.setRecord(record);
 					} else if (response.getStatusCode().series().equals(HttpStatus.Series.SUCCESSFUL)) {
-
 						detail.setIfixEventId(response.getBody().getFiscalEvent().get(0).getId());
 					}
+
 					detail.setStatus(String.valueOf(response.getStatusCode().value()));
 					detail.setRecord(record);
 					eventPostingDetailRepository.save(detail);
 
 				} catch (ResourceAccessException e) {
-					log.info(e.getMessage(), e);
+					log.error(e.getMessage(), e);
 					detail.setStatus("500");
 					detail.setError(extractedMessage(e));
 					detail.setRecord(record);
 					eventPostingDetailRepository.save(detail);
 					break loop;
-				}
 
-				catch (RestClientException e) {
-					log.info(e.getMessage(), e);
+				} catch (RestClientException e) {
+					log.error(e.getMessage(), e);
 					detail.setStatus("400");
 					detail.setError(extractedMessage(e));
 					detail.setRecord(record);
 					eventPostingDetailRepository.save(detail);
-
 				}
 
 			}
 		} catch (RuntimeException e) {
-			log.info(e.getMessage(), e);
-
-			log.info(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			EventPostingDetail errorDetail = new EventPostingDetail();
-			errorDetail.setEventId(jsonObject.getAsJsonObject(EVENT).get("id").getAsString());
-			errorDetail.setTenantId(jsonObject.getAsJsonObject(EVENT).get("tenantId").getAsString());
+			errorDetail.setEventId(eventJsonObject.get(EventConstants.ID).getAsString());
+			errorDetail.setTenantId(eventJsonObject.get(EventConstants.TENANT_ID).getAsString());
 			errorDetail.setReferenceId("Not extracted");
-			errorDetail.setEventType(jsonObject.getAsJsonObject(EVENT).get(EVENT_TYPE).getAsString());
+			errorDetail.setEventType(eventJsonObject.get(EventConstants.EVENT_TYPE).getAsString());
 			errorDetail.setCreatedDate(new Date());
 			errorDetail.setLastModifiedDate(new Date());
 			errorDetail.setStatus("400");
@@ -178,4 +167,45 @@ public class EventTypeConsumer {
 		return message;
 	}
 
+
+	/**
+	 * TODO: Validation of whole event request still pending
+	 *
+	 * @param eventRequest
+	 */
+	private void validateEventRequest(String eventRequest) {
+		if (eventRequest != null) {
+			JsonObject jsonObject = JsonParser.parseString(eventRequest).getAsJsonObject();
+
+			if (!jsonObject.has(EventConstants.EVENT)) {
+				throw new GenericCustomException(EventConstants.EVENT, "Event attribute is missing in payload");
+			} else {
+				Map<String, String> errorMap = new HashMap<>();
+				JsonObject eventObject = jsonObject.getAsJsonObject(EventConstants.EVENT);
+
+				if (!eventObject.has(EventConstants.EVENT_TYPE)) {
+					errorMap.put(EventConstants.EVENT_TYPE, "Event Type is missing in payload");
+				}
+
+				if (!eventObject.has(EventConstants.PROJECT_ID) || eventObject.get(EventConstants.PROJECT_ID).isJsonNull()) {
+					errorMap.put(EventConstants.PROJECT_ID, "Project id is missing in event payload");
+				}
+
+				if (!eventObject.has(EventConstants.ID)) {
+					errorMap.put(EventConstants.ID, "Id is missing in event payload");
+				}
+
+				if (!eventObject.has(EventConstants.ENTITY)
+						|| eventObject.getAsJsonArray(EventConstants.ENTITY).size() <= 0) {
+					errorMap.put(EventConstants.ENTITY, "Event Entity is missing in payload");
+				}
+
+				if (!errorMap.isEmpty()) {
+					throw new GenericCustomException(errorMap);
+				}
+			}
+		}else {
+			throw new GenericCustomException(EventConstants.PAYLOAD, "Invalid payload");
+		}
+	}
 }
