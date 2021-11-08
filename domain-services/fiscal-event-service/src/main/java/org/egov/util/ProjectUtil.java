@@ -2,16 +2,17 @@ package org.egov.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.repository.ServiceRequestRepository;
-import org.egov.tracer.model.CustomException;
 import org.egov.web.models.FiscalEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ProjectUtil {
