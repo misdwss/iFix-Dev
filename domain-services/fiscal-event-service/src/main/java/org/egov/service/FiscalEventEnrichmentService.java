@@ -27,7 +27,7 @@ public class FiscalEventEnrichmentService {
     public void enrichFiscalEventPushPost(FiscalEventRequest fiscalEventRequest) {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
-        if(fiscalEvent !=null){
+        if (fiscalEvent != null) {
             //set the id
             fiscalEvent.setId(UUID.randomUUID().toString());
 

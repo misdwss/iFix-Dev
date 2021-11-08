@@ -24,7 +24,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -64,7 +65,8 @@ class CoaUtilTest {
 
     @Test
     public void testGetCOAIdsFromCOAServiceWithValidResponse() {
-        Map<String, Object> map = objectMapper.convertValue(validCOAResponse, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = objectMapper.convertValue(validCOAResponse, new TypeReference<Map<String, Object>>() {
+        });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
         List<String> validCOAIds = coaUtil.getCOAIdsFromCOAService(fiscalEventRequest.getRequestHeader(),
                 fiscalEventRequest.getFiscalEvent());

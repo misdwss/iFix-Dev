@@ -1,9 +1,5 @@
 package org.egov.producer;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
@@ -15,6 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {Producer.class, CustomKafkaTemplate.class})
 @ExtendWith(SpringExtension.class)

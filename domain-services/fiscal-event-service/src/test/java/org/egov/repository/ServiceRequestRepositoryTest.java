@@ -16,7 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -86,7 +87,7 @@ class ServiceRequestRepositoryTest {
     void testFetchResult() throws IOException {
         when(objectMapper.configure((com.fasterxml.jackson.databind.SerializationFeature) any(), anyBoolean()))
                 .thenReturn(new ObjectMapper());
-        ResponseEntity<Object> responseEntity = new ResponseEntity<Object>("Success client response",HttpStatus.OK);
+        ResponseEntity<Object> responseEntity = new ResponseEntity<Object>("Success client response", HttpStatus.OK);
 
         doReturn(responseEntity).when(restTemplate).postForEntity((String) any(), (Object) any(), any());
 

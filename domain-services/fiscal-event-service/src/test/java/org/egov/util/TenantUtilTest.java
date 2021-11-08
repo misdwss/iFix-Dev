@@ -1,9 +1,5 @@
 package org.egov.util;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doReturn;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,12 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -62,7 +58,8 @@ class TenantUtilTest {
     @Test
     void testValidTenant() {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
-        Map<String, Object> map = objectMapper.convertValue(validGovernmentSearchResult, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = objectMapper.convertValue(validGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
+        });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
         assertTrue(tenantUtil.validateTenant("pb", requestHeader));
     }
@@ -70,7 +67,8 @@ class TenantUtilTest {
     @Test
     void testInvalidTenant() {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
-        Map<String, Object> map = objectMapper.convertValue(emptyGovernmentSearchResult, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = objectMapper.convertValue(emptyGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
+        });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
         assertFalse(tenantUtil.validateTenant("ab", requestHeader));
     }
