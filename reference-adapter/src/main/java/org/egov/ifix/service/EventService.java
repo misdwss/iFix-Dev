@@ -3,8 +3,11 @@ package org.egov.ifix.service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.ifix.consumer.EventTypeConsumer;
 import org.egov.ifix.models.Event;
 import org.egov.ifix.models.EventRequest;
+import org.egov.ifix.persistance.EventPostingDetail;
+import org.egov.ifix.persistance.EventPostingDetailRepository;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.utils.EventConstants;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,6 +31,11 @@ public class EventService {
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
 
+	@Autowired
+	EventPostingDetailRepository eventPostingDetailRepository;
+
+	@Autowired
+	private EventTypeConsumer consumer;
 
     public void pushEvent(EventRequest eventRequest) {
     	validateAndEnrichEventRequest(eventRequest);
@@ -72,5 +81,19 @@ public class EventService {
 		}
 	}
 
+	/**
+	 * @return
+	 */
+	public boolean pushedFailedEvent() {
+		List<EventPostingDetail> nonPostedList = eventPostingDetailRepository.findByStatus("500");
+
+		if (nonPostedList != null && !nonPostedList.isEmpty()) {
+			for (EventPostingDetail detail : nonPostedList) {
+				consumer.process(detail.getRecord(), detail);
+			}
+			return true;
+		}
+		return false;
+	}
 
 }

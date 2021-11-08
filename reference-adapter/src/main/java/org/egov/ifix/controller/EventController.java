@@ -11,9 +11,11 @@ import org.egov.ifix.models.Event;
 import org.egov.ifix.models.EventRequest;
 import org.egov.ifix.models.EventResponse;
 import org.egov.ifix.service.EventService;
+import org.egov.ifix.utils.EventConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +51,17 @@ public class EventController {
 		responseInfo.setStatus(HttpStatus.ACCEPTED.toString());
 		responseInfo.setMsgId(eventRequest.getRequestHeader().getMsgId());
 		return responseInfo;
+	}
+
+	/**
+	 * @return
+	 */
+	@GetMapping("/events/v1/_push_failed_event")
+	public ResponseEntity<?>pushFailedEvents() {
+		log.debug(EventConstants.LOG_INFO_PREFIX + "Push Failed Event request received");
+		boolean isRequestPushed = eventService.pushedFailedEvent();
+
+		return new ResponseEntity<>("Resend failed request " + isRequestPushed, HttpStatus.ACCEPTED);
 	}
 	
 }
