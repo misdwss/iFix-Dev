@@ -63,6 +63,9 @@ public class FiscalEventUnbundleService {
         fiscalEventLineItemUnbundled.setTenantId(fiscalEventDeReferenced.getTenantId());
         fiscalEventLineItemUnbundled.setVersion(fiscalEventDeReferenced.getVersion());
         fiscalEventLineItemUnbundled.setDepartmentEntity(fiscalEventDeReferenced.getDepartmentEntity());
+
+        fiscalEventLineItemUnbundled.setAuditDetails(fiscalEventDeReferenced.getAuditDetails());
+
         return fiscalEventLineItemUnbundled;
     }
 }
