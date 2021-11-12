@@ -2,7 +2,7 @@
 openapi: 3.0.0
 info:
   title: fiscal-event-post-processor
-  version: 1.0.0
+  version: 1.0.2
 servers:
 - url:
   description: SwaggerHub API Auto Mocking
@@ -471,6 +471,8 @@ components:
           description: Start date of the billing period for which transaction is applicable
           format: int64
           example: 1628177643000
+        auditDetails:
+          $ref: '#/components/schemas/AuditDetails'
       description: This is the unbundled line item into individual record from a given fiscal event.
     FiscalEventLineItemFlattened:
       type: object
