@@ -9,10 +9,7 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.repository.FiscalEventRepository;
 import org.egov.tracer.model.CustomException;
-import org.egov.util.CoaUtil;
-import org.egov.util.MasterDataConstants;
-import org.egov.util.ProjectUtil;
-import org.egov.util.TenantUtil;
+import org.egov.util.*;
 import org.egov.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +36,9 @@ public class FiscalEventValidator {
     @Autowired
     private FiscalEventConfiguration fiscalEventConfiguration;
 
+    @Autowired
+    private FiscalEventMapperUtil mapperUtil;
+
     /**
      * Validate the fiscal Event request
      *
@@ -60,14 +60,13 @@ public class FiscalEventValidator {
             for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
                 boolean isMissing = false;
                 if (StringUtils.isBlank(fiscalEvent.getReferenceId())) {
-                    errorMap.put(MasterDataConstants.REFERENCE_ID, "Reference id is missing");
+                    errorMap.put(MasterDataConstants.REFERENCE_ID, "Reference id is missing for project Id : " + fiscalEvent.getProjectId());
                     isMissing = true;
                 }
                 if (fiscalEvent.getEventType() == null
-                        || !EnumUtils.isValidEnum(FiscalEvent.EventTypeEnum.class, fiscalEvent
-                        .getEventType().name())) {
+                        || !EnumUtils.isValidEnum(FiscalEvent.EventTypeEnum.class, fiscalEvent.getEventType().name())) {
 
-                    errorMap.put(MasterDataConstants.EVENT_TYPE, "Fiscal event type is missing");
+                    errorMap.put(MasterDataConstants.EVENT_TYPE, "Fiscal event type is missing for project Id : " + fiscalEvent.getProjectId());
                     isMissing = true;
                 }
                 if (isMissing) {
@@ -108,9 +107,27 @@ public class FiscalEventValidator {
                 criteria.setIds(ids);
 
                 List<Object> fiscalEventList = eventRepository.searchFiscalEvent(criteria);
-                if (fiscalEventList == null || fiscalEventList.isEmpty() || (fiscalEventList.size() != parentEventIds.size())) {
-                    errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Parent event id doesn't exist in the system.");
-                    return;
+                if (fiscalEventList == null || fiscalEventList.isEmpty()) {
+                    errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Parent event id(s) : " + parentEventIds + " doesn't exist in the system.");
+                } else if (!fiscalEventList.isEmpty() && (fiscalEventList.size() != parentEventIds.size())) {
+                    List<FiscalEvent> dbFiscalEvents = mapperUtil.mapDereferencedFiscalEventToFiscalEvent(fiscalEventList);
+                    Set<String> missingParentEventIds = new HashSet<>();
+                    for (String parentEventId : parentEventIds) {
+                        boolean isExist = false;
+                        for (FiscalEvent fiscalEvent : dbFiscalEvents) {
+                            if (fiscalEvent != null && StringUtils.isNotBlank(fiscalEvent.getParentEventId())
+                                    && fiscalEvent.getParentEventId().equals(parentEventId)) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                        if (!isExist) {
+                            missingParentEventIds.add(parentEventId);
+                        }
+                    }
+                    if (!missingParentEventIds.isEmpty()) {
+                        errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Parent event id(s) : " + missingParentEventIds + " doesn't exist in the system.");
+                    }
                 }
             }
         }
@@ -213,11 +230,47 @@ public class FiscalEventValidator {
      * @param fiscalEventRequest
      */
     public void validateProjectId(FiscalEventRequest fiscalEventRequest, Map<String, String> errorMap) {
-        Optional<JsonNode> optionalJsonNode = projectUtil.validateProjectId(fiscalEventRequest);
+        Set<String> projectIds = new HashSet<>();
+
+        if (fiscalEventRequest != null && fiscalEventRequest.getFiscalEvent() != null
+                && !fiscalEventRequest.getFiscalEvent().isEmpty()
+                && StringUtils.isNotBlank(fiscalEventRequest.getFiscalEvent().get(0).getTenantId())) {
+            for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
+                if (StringUtils.isNotBlank(fiscalEvent.getProjectId())) {
+                    projectIds.add(fiscalEvent.getProjectId());
+                }
+            }
+        }
+
+        Optional<JsonNode> optionalJsonNode = projectUtil.validateProjectId(fiscalEventRequest.getRequestHeader(), projectIds,
+                fiscalEventRequest.getFiscalEvent().get(0).getTenantId());
 
         if (!optionalJsonNode.isPresent()) {
-            errorMap.put(MasterDataConstants.PROJECT_ID, "Project id doesn't exist in the system");
-        } else {
+            errorMap.put(MasterDataConstants.PROJECT_ID, "Project ids don't exist in the system");
+        } else if (projectIds.size() != optionalJsonNode.get().get("project").size()) {
+
+            JsonNode projectListNode = optionalJsonNode.get().get("project");
+            List<String> missingProjectIds = new ArrayList<>();
+
+            for (String projectId : projectIds) {
+                boolean isExist = false;
+                if (projectListNode != null && !projectListNode.isEmpty()) {
+                    for (JsonNode projectNode : projectListNode) {
+                        if (projectNode.get("id") != null && projectNode.get("id").asText().equals(projectId)) {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isExist) {
+                    missingProjectIds.add(projectId);
+                }
+            }
+
+            if (!missingProjectIds.isEmpty()) {
+                errorMap.put(MasterDataConstants.PROJECT_ID, "Project id(s) : " + missingProjectIds + " don't exist in the system");
+            }
+        } else{
             JsonNode jsonNode = optionalJsonNode.get();
             JsonNode projectListNode = jsonNode.get("project");
 
