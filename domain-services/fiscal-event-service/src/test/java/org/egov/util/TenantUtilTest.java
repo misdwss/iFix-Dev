@@ -1,7 +1,9 @@
 package org.egov.util;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,10 +14,12 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.ServiceRequestRepository;
+import org.egov.tracer.model.CustomException;
 import org.egov.web.models.FiscalEventRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +27,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @Slf4j
@@ -60,19 +71,81 @@ class TenantUtilTest {
     }
 
     @Test
+    void testValidateTenantWithEmptyTenantIds() {
+        ArrayList<String> tenantIds = new ArrayList<String>();
+        assertFalse(this.tenantUtil.validateTenant(tenantIds, new RequestHeader()));
+    }
+
+    @Test
+    void testValidateTenantWithResultFromServiceReqRepo() {
+        when(this.serviceRequestRepository.fetchResult((String) any(), (Object) any())).thenReturn("Fetch Result");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentSearchPath())
+                .thenReturn("Ifix Master Government Search Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentContextPath())
+                .thenReturn("Ifix Master Government Context Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentHost()).thenReturn("localhost");
+
+        ArrayList<String> stringList = new ArrayList<String>();
+        stringList.add("pb");
+        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, new RequestHeader()));
+        verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentContextPath();
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentHost();
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentSearchPath();
+    }
+
+    @Test
+    void testValidateTenantWithNullResultFromServiceReqRepo() {
+        when(this.serviceRequestRepository.fetchResult((String) any(), (Object) any())).thenReturn(null);
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentSearchPath())
+                .thenReturn("Ifix Master Government Search Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentContextPath())
+                .thenReturn("Ifix Master Government Context Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentHost()).thenReturn("localhost");
+
+        ArrayList<String> stringList = new ArrayList<String>();
+        stringList.add("pb");
+        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, new RequestHeader()));
+        verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentContextPath();
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentHost();
+        verify(this.fiscalEventConfiguration).getIfixMasterGovernmentSearchPath();
+    }
+
+    @Test
+    void testValidateTenantWithNullHeader() {
+        when(this.serviceRequestRepository.fetchResult((String) any(), (Object) any())).thenReturn("Fetch Result");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentSearchPath())
+                .thenReturn("Ifix Master Government Search Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentContextPath())
+                .thenReturn("Ifix Master Government Context Path");
+        when(this.fiscalEventConfiguration.getIfixMasterGovernmentHost()).thenReturn("localhost");
+
+        ArrayList<String> stringList = new ArrayList<String>();
+        stringList.add("foo");
+        assertFalse(this.tenantUtil.validateTenant(stringList, null));
+    }
+
+    @Test
     void testValidTenant() {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
-        Map<String, Object> map = objectMapper.convertValue(validGovernmentSearchResult, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = objectMapper.convertValue(validGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
+        });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
-        assertTrue(tenantUtil.validateTenant("pb", requestHeader));
+        List<String> tenantIds = new ArrayList<>();
+        tenantIds.add("pb");
+        assertTrue(tenantUtil.validateTenant(tenantIds, requestHeader));
     }
 
     @Test
     void testInvalidTenant() {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
-        Map<String, Object> map = objectMapper.convertValue(emptyGovernmentSearchResult, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> map = objectMapper.convertValue(emptyGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
+        });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
-        assertFalse(tenantUtil.validateTenant("ab", requestHeader));
+        List<String> tenantIds = new ArrayList<>();
+        tenantIds.add("pb");
+        assertFalse(tenantUtil.validateTenant(tenantIds, requestHeader));
     }
 
     @Test
