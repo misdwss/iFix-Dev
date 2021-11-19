@@ -15,7 +15,13 @@ public class ApplicationConfiguration {
 	
 	@Value("${kafka.topics.ifix.adaptor.mapper}")
 	private String mapperTopicName;
-	
+
+	@Value("${kafka.topics.ifix.adaptor.error}")
+	private String errorTopicName;
+
+	@Value("${kafka.topics.ifix.adaptor.http.error}")
+	private String httpErrorTopicName;
+
 	@Value("${state.goverment.code}")
 	private String tenantId;
 	

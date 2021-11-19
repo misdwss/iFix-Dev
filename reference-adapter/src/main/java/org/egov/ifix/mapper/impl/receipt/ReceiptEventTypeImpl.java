@@ -9,6 +9,7 @@ import org.egov.ifix.models.Amount;
 import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.service.ChartOfAccountService;
+import org.egov.ifix.service.ProjectService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
 import org.egov.ifix.utils.MasterDataMappingUtil;
@@ -45,6 +46,9 @@ public class ReceiptEventTypeImpl implements EventMapper {
 	private ChartOfAccountService chartOfAccountService;
 
 	@Autowired
+	private ProjectService projectService;
+
+	@Autowired
 	public ReceiptEventTypeImpl(ApplicationConfiguration applicationConfiguration,
 			  ChartOfAccountService chartOfAccountService) {
 		this.applicationConfiguration = applicationConfiguration;
@@ -59,15 +63,21 @@ public class ReceiptEventTypeImpl implements EventMapper {
 	@Override
 	public List<FiscalEvent> transformData(JsonObject data) {
 		log.info("Receipt event impl executing");
-		JsonArray payments = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
+		JsonObject eventJsonObject = data.getAsJsonObject(EventConstants.EVENT);
+
+		JsonArray payments = eventJsonObject.getAsJsonArray(EventConstants.ENTITY);
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
 		for (int i = 0; i < payments.size(); i++) {
 			JsonObject payment = payments.get(i).getAsJsonObject().getAsJsonObject(PAYMENT);
 
+			String clientProjectCode = eventJsonObject.get(EventConstants.PROJECT_ID).getAsString();
+			String iFixProjectId = projectService.getProjectId(clientProjectCode, data);
+
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(payment.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(payment, data)).build();
+					.amountDetails(getAmounts(payment, data))
+					.projectId(iFixProjectId).build();
 
 			fiscalEvents.add(fiscalEvent);
 
