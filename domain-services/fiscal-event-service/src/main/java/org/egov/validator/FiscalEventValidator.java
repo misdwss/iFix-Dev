@@ -123,7 +123,7 @@ public class FiscalEventValidator {
             if (StringUtils.isNotBlank(amount.getCoaId()))
                 coaIds.add(amount.getCoaId());
             else
-                throw new CustomException("COA_ID","COA id is missing in the request data");
+                throw new CustomException("COA_ID", "COA id is missing in the request data");
         }
 
         List<String> responseCoaIds = coaUtil.getCOAIdsFromCOAService(requestHeader, fiscalEventRequest.getFiscalEvent());
@@ -164,7 +164,7 @@ public class FiscalEventValidator {
 
         if (!optionalJsonNode.isPresent()) {
             errorMap.put(MasterDataConstants.PROJECT_ID, "Project id doesn't exist in the system");
-        }else {
+        } else {
             JsonNode jsonNode = optionalJsonNode.get();
             JsonNode projectListNode = jsonNode.get("project");
 
