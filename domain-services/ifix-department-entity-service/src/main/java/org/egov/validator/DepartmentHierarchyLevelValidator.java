@@ -103,9 +103,6 @@ public class DepartmentHierarchyLevelValidator {
         if (requestHeader == null) {
             throw new CustomException(DepartmentEntityConstant.ERROR_REQUEST_HEADER, "Request header is missing");
         }
-        if (requestHeader.getUserInfo() == null || requestHeader.getUserInfo().getUuid() == null) {
-            errorMap.put(DepartmentEntityConstant.USER_INFO, "User info is missing");
-        }
         if (searchCriteria == null) {
             throw new CustomException(DepartmentEntityConstant.ERROR_SEARCH_CRITERIA, "Search criteria is missing");
         }
