@@ -45,14 +45,14 @@ class ProjectValidatorTest {
         projectCreateRequest = testDataFormatter.getProjectCreateRequestData();
     }
 
-    @Test
-    void testValidateProjectSearchRequestUserInfoException() {
-        projectSearchRequest.getRequestHeader().setUserInfo(null);
-
-        assertThrows(CustomException.class,
-                () -> projectValidator.validateProjectSearchRequest(projectSearchRequest),
-                "User information is missing");
-    }
+//    @Test
+//    void testValidateProjectSearchRequestUserInfoException() {
+//        projectSearchRequest.getRequestHeader().setUserInfo(null);
+//
+//        assertThrows(CustomException.class,
+//                () -> projectValidator.validateProjectSearchRequest(projectSearchRequest),
+//                "User information is missing");
+//    }
 
     @Test
     void testValidateProjectSearchRequestTenantIdException() {

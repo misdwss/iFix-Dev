@@ -48,15 +48,6 @@ class ExpenditureValidatorTest {
     }
 
     @Test
-    void testValidateExpenditureSearchRequestUserInfoException() {
-        expenditureSearchRequest.getRequestHeader().setUserInfo(null);
-
-        assertThrows(CustomException.class,
-                () -> this.expenditureValidator.validateExpenditureSearchRequest(expenditureSearchRequest),
-                "User information is missing");
-    }
-
-    @Test
     void testValidateExpenditureSearchRequestTenantIdException() {
         expenditureSearchRequest.getCriteria().setTenantId("");
 
