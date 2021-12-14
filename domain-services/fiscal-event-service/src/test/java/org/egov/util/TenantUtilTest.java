@@ -1,14 +1,6 @@
 package org.egov.util;
 
-<<<<<<< HEAD
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
 
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,48 +9,24 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.ServiceRequestRepository;
-<<<<<<< HEAD
 import org.egov.tracer.model.CustomException;
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.egov.web.models.FiscalEventRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-<<<<<<< HEAD
-import org.junit.jupiter.api.extension.ExtendWith;
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-<<<<<<< HEAD
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
-=======
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
-
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @Slf4j
@@ -90,7 +58,6 @@ class TenantUtilTest {
     }
 
     @Test
-<<<<<<< HEAD
     void testValidateTenantWithEmptyTenantIds() {
         ArrayList<String> tenantIds = new ArrayList<String>();
         assertFalse(this.tenantUtil.validateTenant(tenantIds, new RequestHeader()));
@@ -147,20 +114,14 @@ class TenantUtilTest {
     }
 
     @Test
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidTenant() {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         Map<String, Object> map = objectMapper.convertValue(validGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
         });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
-<<<<<<< HEAD
         List<String> tenantIds = new ArrayList<>();
         tenantIds.add("pb");
         assertTrue(tenantUtil.validateTenant(tenantIds, requestHeader));
-=======
-        assertTrue(tenantUtil.validateTenant("pb", requestHeader));
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -169,13 +130,9 @@ class TenantUtilTest {
         Map<String, Object> map = objectMapper.convertValue(emptyGovernmentSearchResult, new TypeReference<Map<String, Object>>() {
         });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
-<<<<<<< HEAD
         List<String> tenantIds = new ArrayList<>();
         tenantIds.add("pb");
         assertFalse(tenantUtil.validateTenant(tenantIds, requestHeader));
-=======
-        assertFalse(tenantUtil.validateTenant("ab", requestHeader));
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test

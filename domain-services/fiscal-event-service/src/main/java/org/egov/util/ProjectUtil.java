@@ -6,17 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.repository.ServiceRequestRepository;
-<<<<<<< HEAD
-=======
-import org.egov.web.models.FiscalEventRequest;
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ProjectUtil {
@@ -30,13 +23,12 @@ public class ProjectUtil {
     ObjectMapper objectMapper;
 
     /**
-     *
      * @param requestHeader
      * @param projectIds
      * @param tenantId
      * @return
      */
-    public Optional<JsonNode> validateProjectId(RequestHeader requestHeader,Set<String> projectIds, String tenantId ) {
+    public Optional<JsonNode> validateProjectId(RequestHeader requestHeader, Set<String> projectIds, String tenantId) {
         if (requestHeader != null && projectIds != null && !projectIds.isEmpty() && StringUtils.isNotBlank(tenantId)) {
 
             Map<String, Object> projectValueMap = new HashMap<>();

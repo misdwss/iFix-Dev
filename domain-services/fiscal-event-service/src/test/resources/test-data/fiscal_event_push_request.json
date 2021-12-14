@@ -7,12 +7,8 @@
       "uuid": "e4fd96e8-3b6b-4e36-9503-0f14a01af39d"
     }
   },
-<<<<<<< HEAD
   "fiscalEvent": [
   {
-=======
-  "fiscalEvent": {
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     "tenantId": "pb",
     "projectId": "568513ee-d7fb-4b00-ae50-3f7704b22840",
     "eventType": "RECEIPT",
@@ -58,8 +54,6 @@
     ],
     "attributes": {}
   }
-<<<<<<< HEAD
   ]
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
+
 }

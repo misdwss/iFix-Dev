@@ -1,16 +1,11 @@
 package org.egov.util;
 
-<<<<<<< HEAD
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestHeader;
-=======
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
+
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.ServiceRequestRepository;
@@ -18,16 +13,12 @@ import org.egov.web.models.FiscalEventRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-<<<<<<< HEAD
 import org.junit.jupiter.api.extension.ExtendWith;
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-<<<<<<< HEAD
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
@@ -37,19 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-=======
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
-
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @Slf4j
@@ -78,7 +56,6 @@ class ProjectUtilTest {
     }
 
     @Test
-<<<<<<< HEAD
     void testValidateProjectId() {
         RequestHeader requestHeader = new RequestHeader();
         assertFalse(this.projectUtil.validateProjectId(requestHeader, new HashSet<String>(), "pb").isPresent());
@@ -136,19 +113,4 @@ class ProjectUtilTest {
         stringSet.add("ba0298d1-0d32-4da5-9c5c-1dccf2c65e92");
         assertFalse(this.projectUtil.validateProjectId(requestHeader, stringSet, "").isPresent());
     }
-=======
-    void testValidateProjectIdWithEmptyFiscalEvent() {
-        assertFalse(projectUtil.validateProjectId(new FiscalEventRequest()).isPresent());
-    }
-
-    @Test
-    void testValidateProjectIdWithValidProjectId() {
-        Map<String, Object> map = objectMapper.convertValue(projectSearchResponse, new TypeReference<Map<String, Object>>() {
-        });
-        doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());
-        Optional<JsonNode> response = projectUtil.validateProjectId(fiscalEventRequest);
-        assertTrue(response.isPresent());
-    }
-
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 }

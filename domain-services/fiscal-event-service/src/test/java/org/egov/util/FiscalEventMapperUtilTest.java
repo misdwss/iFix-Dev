@@ -3,10 +3,7 @@ package org.egov.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-<<<<<<< HEAD
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.egov.config.TestDataFormatter;
 import org.egov.web.models.FiscalEventGetRequest;
@@ -20,13 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-<<<<<<< HEAD
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-=======
-import java.util.ArrayList;
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -67,11 +60,8 @@ class FiscalEventMapperUtilTest {
     @Test
     void testMapDereferencedFiscalEventToFiscalEvent() throws IllegalArgumentException {
         doReturn(jsonNode).when(objectMapper).convertValue((Object) any(), (Class<Object>) any());
-<<<<<<< HEAD
         assertTrue(this.fiscalEventMapperUtil.mapDereferencedFiscalEventToFiscalEvent(new ArrayList<Object>()).size()>0);
-=======
-        assertTrue(this.fiscalEventMapperUtil.mapDereferencedFiscalEventToFiscalEvent(new ArrayList<Object>()).size() > 0);
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
+
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
     }
 }
