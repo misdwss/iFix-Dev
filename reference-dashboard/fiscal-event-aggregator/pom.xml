@@ -14,6 +14,7 @@
     <name>fiscal-event-aggregator</name>
     <description>Aggregate the fiscal event post processed data</description>
     <properties>
+		<log4j2.version>2.15.0</log4j2.version>
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
