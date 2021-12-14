@@ -1,5 +1,6 @@
 package org.egov.validator;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
@@ -9,22 +10,33 @@ import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.FiscalEventConfiguration;
+=======
+import com.google.gson.Gson;
+import org.egov.common.contract.request.RequestHeader;
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.egov.config.TestDataFormatter;
 import org.egov.repository.FiscalEventRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.CoaUtil;
+<<<<<<< HEAD
 import org.egov.util.FiscalEventMapperUtil;
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.egov.util.ProjectUtil;
 import org.egov.util.TenantUtil;
 import org.egov.web.models.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+<<<<<<< HEAD
 import org.junit.jupiter.api.extension.ExtendWith;
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+<<<<<<< HEAD
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,13 +51,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
+=======
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class FiscalEventValidatorTest {
 
+<<<<<<< HEAD
     @MockBean
     private FiscalEventMapperUtil fiscalEventMapperUtil;
 
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     @Autowired
     private TestDataFormatter testDataFormatter;
 
@@ -62,9 +85,12 @@ class FiscalEventValidatorTest {
     private ProjectUtil projectUtil;
 
     @Mock
+<<<<<<< HEAD
     private FiscalEventConfiguration fiscalEventConfiguration;
 
     @Mock
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     private TenantUtil tenantUtil;
 
     private FiscalEventGetRequest fiscalEventGetRequest;
@@ -94,21 +120,31 @@ class FiscalEventValidatorTest {
     @Test
     void testValidateFiscalEventPushPostWithDefaultRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
+<<<<<<< HEAD
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         fiscalEvents.add(new FiscalEvent());
         when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
                 .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, fiscalEvents)));
+=======
+        assertThrows(CustomException.class, () -> this.fiscalEventValidator
+                .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, new FiscalEvent())));
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
     void testValidateFiscalEventPushPostWithNullUserInfo() {
         FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
+<<<<<<< HEAD
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         fiscalEvents.add(new FiscalEvent());
         when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEvents);
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+=======
+        when(fiscalEventRequest.getFiscalEvent()).thenReturn(new FiscalEvent());
+        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
@@ -132,7 +168,10 @@ class FiscalEventValidatorTest {
 
         when(fiscalEventRequest1.getFiscalEvent()).thenReturn(fiscalEventRequest.getFiscalEvent());
         when(fiscalEventRequest1.getRequestHeader()).thenReturn(fiscalEventRequest.getRequestHeader());
+<<<<<<< HEAD
         when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest1));
@@ -142,6 +181,7 @@ class FiscalEventValidatorTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testValidateFiscalEventPushPost() {
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(new FiscalEventRequest()));
@@ -353,10 +393,15 @@ class FiscalEventValidatorTest {
     void testValidateFiscalEventPushPostMissingProjectId() {
         fiscalEventRequest.getFiscalEvent().get(0).setProjectId(null);
         when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+=======
+    void testValidateFiscalEventPushPostMissingProjectId() {
+        fiscalEventRequest.getFiscalEvent().setProjectId(null);
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
     }
 
+<<<<<<< HEAD
     @Test
     void testValidateTenantId() {
         FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
@@ -535,6 +580,8 @@ class FiscalEventValidatorTest {
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest).getRequestHeader();
     }
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 
     //search validation
     @Test
@@ -589,6 +636,7 @@ class FiscalEventValidatorTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testValidateFiscalEventSearchPostWithReqHeader() {
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventSearchPost(new FiscalEventGetRequest()));
@@ -724,6 +772,8 @@ class FiscalEventValidatorTest {
     }
 
     @Test
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateFiscalEventSearchPostWithInvalidTenant() {
         RequestHeader requestHeader = fiscalEventGetRequest.getRequestHeader();
 
@@ -740,7 +790,11 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventSearchPostWithoutToTime() {
+<<<<<<< HEAD
         when(this.tenantUtil.validateTenant((List<String>) any(), (RequestHeader) any())).thenReturn(true);
+=======
+        when(this.tenantUtil.validateTenant((String) any(), (RequestHeader) any())).thenReturn(true);
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         RequestHeader requestHeader = fiscalEventGetRequest.getRequestHeader();
 
         Criteria criteria = fiscalEventGetRequest.getCriteria();
@@ -756,7 +810,11 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventSearchPostWithoutFromEventTime() {
+<<<<<<< HEAD
         when(this.tenantUtil.validateTenant((List<String>) any(), (RequestHeader) any())).thenReturn(true);
+=======
+        when(this.tenantUtil.validateTenant((String) any(), (RequestHeader) any())).thenReturn(true);
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         RequestHeader requestHeader = fiscalEventGetRequest.getRequestHeader();
 
         Criteria criteria = fiscalEventGetRequest.getCriteria();

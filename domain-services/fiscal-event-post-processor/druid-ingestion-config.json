@@ -170,6 +170,18 @@
           {
             "name": "payment",
             "type": "double"
+          },
+
+          "auditDetails.createdBy",
+          "auditDetails.lastModifiedBy",
+
+          {
+            "type": "long",
+            "name": "auditDetails.createdTime"
+          },
+          {
+            "type": "long",
+            "name": "auditDetails.lastModifiedTime"
           }
         ]
       },

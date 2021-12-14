@@ -1,9 +1,12 @@
 package org.egov.producer;
 
+<<<<<<< HEAD
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.TopicPartition;
@@ -16,6 +19,11 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+<<<<<<< HEAD
+=======
+import static org.mockito.Mockito.*;
+
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 @ContextConfiguration(classes = {Producer.class, CustomKafkaTemplate.class})
 @ExtendWith(SpringExtension.class)
 class ProducerTest {

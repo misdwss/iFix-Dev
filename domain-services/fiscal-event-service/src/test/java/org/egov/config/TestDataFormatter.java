@@ -2,10 +2,15 @@ package org.egov.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+<<<<<<< HEAD
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+=======
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.egov.web.models.FiscalEventGetRequest;
 import org.egov.web.models.FiscalEventRequest;
 import org.egov.web.models.FiscalEventResponse;
@@ -14,7 +19,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 
 @Component
 public class TestDataFormatter {
@@ -23,9 +31,16 @@ public class TestDataFormatter {
 
     private ObjectMapper objectMapper;
 
+<<<<<<< HEAD
     public TestDataFormatter(){
         objectMapper = new ObjectMapper();
     }
+=======
+    public TestDataFormatter() {
+        objectMapper = new ObjectMapper();
+    }
+
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     /**
      * @param fileName
      * @return

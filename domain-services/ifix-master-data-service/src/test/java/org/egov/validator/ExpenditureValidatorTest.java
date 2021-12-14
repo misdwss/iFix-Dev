@@ -48,6 +48,7 @@ class ExpenditureValidatorTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testValidateExpenditureSearchRequestUserInfoException() {
         expenditureSearchRequest.getRequestHeader().setUserInfo(null);
 
@@ -57,6 +58,8 @@ class ExpenditureValidatorTest {
     }
 
     @Test
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateExpenditureSearchRequestTenantIdException() {
         expenditureSearchRequest.getCriteria().setTenantId("");
 

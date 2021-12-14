@@ -49,6 +49,7 @@ class DepartmentValidatorTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testValidateSearchPostUserInfoException() {
         RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class, () -> departmentValidator
@@ -57,6 +58,8 @@ class DepartmentValidatorTest {
     }
 
     @Test
+=======
+>>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateSearchPostSearchCriteriaException() {
         departmentSearchRequest.setCriteria(null);
 

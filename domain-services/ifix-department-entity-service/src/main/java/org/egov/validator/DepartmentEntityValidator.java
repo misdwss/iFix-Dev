@@ -92,10 +92,6 @@ public class DepartmentEntityValidator {
                     errorMap.put(DepartmentEntityConstant.DEPARTMENT_CHILDREN, "Invalid children id list");
                 }
             }
-
-            if (!errorMap.isEmpty()) {
-                throw new CustomException(errorMap);
-            }
             if (StringUtils.isNotBlank(departmentEntity.getDepartmentId())
                     && departmentEntity.getHierarchyLevel() != null
                     && StringUtils.isNotBlank(departmentEntity.getTenantId())) {
@@ -106,6 +102,9 @@ public class DepartmentEntityValidator {
                     errorMap.put(DepartmentEntityConstant.INVALID_HIERARCHY_LEVEL, "Given Hierarchy level of this department id : "
                             + departmentEntity.getDepartmentId() + " doesn't exist in the system.");
                 }
+            }
+            if (!errorMap.isEmpty()) {
+                throw new CustomException(errorMap);
             }
         } else {
             throw new CustomException(DepartmentEntityConstant.REQUEST_PAYLOAD_MISSING, "Request payload is missing some value");
@@ -119,9 +118,6 @@ public class DepartmentEntityValidator {
         //header
         if (requestHeader == null) {
             throw new CustomException(DepartmentEntityConstant.ERROR_REQUEST_HEADER, "Request header is missing");
-        }
-        if (requestHeader.getUserInfo() == null || requestHeader.getUserInfo().getUuid() == null) {
-            errorMap.put(DepartmentEntityConstant.USER_INFO, "User info is missing");
         }
         //criteria
         if (searchCriteria == null) {

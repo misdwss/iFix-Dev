@@ -35,5 +35,4 @@ public class MasterDataConstants {
     public static final String PROJECT_ID_DEPARTMENT_ENTITY_ID = "PROJECT_ID-DEPARTMENT_ENTITY_ID";
 
 
-
 }
