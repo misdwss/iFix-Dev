@@ -49,17 +49,6 @@ class DepartmentValidatorTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testValidateSearchPostUserInfoException() {
-        RequestHeader requestHeader = new RequestHeader();
-        assertThrows(CustomException.class, () -> departmentValidator
-                        .validateSearchPost(new DepartmentSearchRequest(requestHeader, new DepartmentSearchCriteria())),
-                "User info is missing");
-    }
-
-    @Test
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateSearchPostSearchCriteriaException() {
         departmentSearchRequest.setCriteria(null);
 

@@ -122,14 +122,11 @@ class GovernmentValidatorTest {
                 new GovernmentSearchRequest(requestHeader, new GovernmentSearchCriteria())));
     }
 
-<<<<<<< HEAD
-=======
     @Test
     void testValidateGovernmentSearchRequestDataWithNullCriteria() {
         RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class, () -> governmentValidator.validateGovernmentSearchRequestData(
                 new GovernmentSearchRequest(requestHeader, null)));
     }
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 }
 

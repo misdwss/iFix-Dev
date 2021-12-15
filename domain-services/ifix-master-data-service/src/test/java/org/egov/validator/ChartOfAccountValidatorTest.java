@@ -1,10 +1,7 @@
 package org.egov.validator;
 
 import com.google.gson.Gson;
-<<<<<<< HEAD
-=======
 import org.egov.common.contract.AuditDetails;
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.TestDataFormatter;
@@ -12,11 +9,6 @@ import org.egov.repository.ChartOfAccountRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.CoaUtil;
 import org.egov.web.models.*;
-<<<<<<< HEAD
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-=======
 import org.egov.web.models.COARequest;
 import org.egov.web.models.ChartOfAccount;
 import org.egov.web.models.Government;
@@ -24,7 +16,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
-=======
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -51,7 +37,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class ChartOfAccountValidatorTest {
@@ -114,8 +99,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
-<<<<<<< HEAD
-=======
     void testValidateCreatePostWithNullCoaContent() {
         COARequest coaRequest1 = mock(COARequest.class);
         //new RequestHeader(1633332305597L, "1.0.0", "ek9d96e8-3b6b-4e36-9503-0f14a01af74n", new UserInfo(), "ek9d96e8-3b6b-4e36-9503-0f14a01af74n", "Signature")
@@ -128,7 +111,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateCreatePostWithoutUserInfoInHeader() {
         RequestHeader requestHeader = mock(RequestHeader.class);
         when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
@@ -187,8 +169,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
-<<<<<<< HEAD
-=======
     void testValidateCreatePostWithGroupHeadLength() {
         ChartOfAccount chartOfAccount = coaRequest.getChartOfAccount();
         chartOfAccount.setGroupHead("group head");
@@ -204,7 +184,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateCreatePostWithoutMajorHead() {
         ChartOfAccount chartOfAccount = coaRequest.getChartOfAccount();
         chartOfAccount.setMajorHead(null);
@@ -221,8 +200,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
-<<<<<<< HEAD
-=======
     void testValidateCreatePostWithMajorHeadLength() {
         ChartOfAccount chartOfAccount = coaRequest.getChartOfAccount();
         chartOfAccount.setMajorHead("major");
@@ -239,7 +216,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateCreatePostWithoutMinorHead() {
         ChartOfAccount chartOfAccount = coaRequest.getChartOfAccount();
         chartOfAccount.setMinorHead(null);
@@ -288,28 +264,18 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
-<<<<<<< HEAD
-    void testValidateSearchPostWithEmptyCOASearchRequest() {
-=======
     void testValidateSearchPostWithDefaultCOASearchRequest() {
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(new COASearchRequest()));
     }
 
     @Test
-<<<<<<< HEAD
-    void testValidateSearchPostWithEmptyHeader() {
-=======
     void testValidateSearchPostWithDefaultHeader() {
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator
                 .validateSearchPost(new COASearchRequest(requestHeader, new COASearchCriteria())));
     }
 
     @Test
-<<<<<<< HEAD
-=======
     void testValidateSearchPostWithNullSearchCriteria() {
         COASearchRequest coaSearchRequest1 = mock(COASearchRequest.class);
         when(coaSearchRequest1.getRequestHeader())
@@ -321,7 +287,6 @@ class ChartOfAccountValidatorTest {
     }
 
     @Test
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     void testValidateSearchPostWithEmptySearchCriteria() {
         COASearchRequest coaSearchRequest1 = mock(COASearchRequest.class);
         when(coaSearchRequest1.getRequestHeader())
@@ -338,20 +303,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setSubMajorHead("SubMajor Head");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -359,20 +316,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setMajorHead("Major Header");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -380,20 +329,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setSubHead("Sub Head");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -401,20 +342,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setCoaCode("mh-smh-mh-sh-gh-ohqeqwuhewiiwerooierpopeooorpeoweo[wq[pe[o[ewiepoepropoepwoepowopopowpopowo");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -422,20 +355,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setObjectHead("Object head");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -443,20 +368,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setTenantId("p");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -464,20 +381,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setGroupHead("Group Head");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
     @Test
@@ -485,20 +394,12 @@ class ChartOfAccountValidatorTest {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
         coaSearchCriteria.setMinorHead("Minor Head");
         RequestHeader requestHeader = mock(RequestHeader.class);
-<<<<<<< HEAD
-        when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);
         when(coaSearchRequest.getCriteria()).thenReturn(coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
         verify(coaSearchRequest).getCriteria();
         verify(coaSearchRequest).getRequestHeader();
-<<<<<<< HEAD
-        verify(requestHeader, atLeast(1)).getUserInfo();
-=======
->>>>>>> f070c61465b100be594b1916109e464860bcc3cb
     }
 
 }
