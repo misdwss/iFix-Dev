@@ -1,0 +1,17 @@
+{
+  "responseHeader": {
+    "ts": null,
+    "correlationId": "0a510992-8283-4e52-9cb2-0eacb9c03e87",
+    "msgId": null,
+    "status": "successful",
+    "signature": "",
+    "version": null
+  },
+  "project": [
+    {
+      "id": "5455881a-1748-4c07-bc44-18dc911beb14",
+      "code": "DummyProject7",
+      "name": "DummyProject7"
+    }
+  ]
+}
