@@ -65,18 +65,22 @@ public class ReceiptEventTypeImpl implements EventMapper {
 		log.info("Receipt event impl executing");
 		JsonObject eventJsonObject = data.getAsJsonObject(EventConstants.EVENT);
 
-		JsonArray payments = eventJsonObject.getAsJsonArray(EventConstants.ENTITY);
-		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
-		for (int i = 0; i < payments.size(); i++) {
-			JsonObject payment = payments.get(i).getAsJsonObject().getAsJsonObject(PAYMENT);
+		JsonArray entityJsonArray = eventJsonObject.getAsJsonArray(EventConstants.ENTITY);
+		List<FiscalEvent> fiscalEvents = new ArrayList<>();
+
+		for (int i = 0; i < entityJsonArray.size(); i++) {
+			JsonObject paymentJsonObject = entityJsonArray.get(i).getAsJsonObject()
+					.getAsJsonObject(EventConstants.PAYMENT);
 
 			String clientProjectCode = eventJsonObject.get(EventConstants.PROJECT_ID).getAsString();
 			String iFixProjectId = projectService.getProjectId(clientProjectCode, data);
 
 			FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
-					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
-					.referenceId(payment.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(payment, data))
+					.eventType(getEventType())
+					.eventTime(Instant.now().toEpochMilli())
+					.referenceId(paymentJsonObject.get(REFERANCE_ID).getAsString())
+					.parentEventId(null).parentReferenceId(null)
+					.amountDetails(getAmounts(paymentJsonObject, data))
 					.projectId(iFixProjectId).build();
 
 			fiscalEvents.add(fiscalEvent);

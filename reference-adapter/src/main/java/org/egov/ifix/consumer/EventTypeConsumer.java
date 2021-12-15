@@ -3,8 +3,10 @@ package org.egov.ifix.consumer;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.mapper.EventMapper;
+import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.models.FiscalEventRequest;
 import org.egov.ifix.models.FiscalEventResponse;
@@ -102,7 +104,8 @@ public class EventTypeConsumer {
 
 			fiscalEventRequest.setFiscalEvent(fiscalEvents);
 
-			postFiscalEvent(record, eventId, fiscalEventRequest);
+			postFiscalEvent(record, eventId, fiscalEventRequest,
+					eventJsonObject.get(EventConstants.EVENT_TYPE).getAsString());
 
 		} catch (Exception e) {
 			log.error(EventConstants.LOG_ERROR_PREFIX + EventConstants.NON_RECOVERABLE_ERROR +
@@ -132,7 +135,8 @@ public class EventTypeConsumer {
 	 * @param fiscalEventRequest
 	 * @param eventPostingDetailList
 	 */
-	public void postFiscalEvent(final String record, String eventId, FiscalEventRequest fiscalEventRequest) {
+	public void postFiscalEvent(final String record, String eventId, FiscalEventRequest fiscalEventRequest,
+								String eventType) {
 
 		List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
 
@@ -142,20 +146,32 @@ public class EventTypeConsumer {
 				ResponseEntity<FiscalEventResponse> fiscalEventResponseEntity = postEvent.post(fiscalEventRequest);
 
 				eventPostingDetailList = wrapEventResponse(fiscalEventResponseEntity,
-						fiscalEventRequest.getFiscalEvent(), eventId, record);
+						fiscalEventRequest.getFiscalEvent(), eventId, record, eventType);
+
 			} catch (RestClientException e) {
 				log.error(EventConstants.LOG_ERROR_PREFIX + EventConstants.RECOVERABLE_ERROR + e.getMessage(), e);
+
 				eventPostingDetailList = composeEventPostingDetail(fiscalEventRequest.getFiscalEvent(), eventId,
 						HttpStatus.BAD_REQUEST, record, e.getMessage());
 
-//				kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventPostingDetailList);
+				Optional<ErrorDataModel> errorDataModelOptional = getErrorDataModel(record, eventType,
+						EventConstants.RECOVERABLE_ERROR, HttpStatus.BAD_REQUEST.toString(), e.getMessage());
 
+				if (errorDataModelOptional.isPresent()) {
+					kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
+				}
 			} catch (Exception e) {
 				log.error(EventConstants.LOG_ERROR_PREFIX + EventConstants.NON_RECOVERABLE_ERROR + e.getMessage(), e);
+
 				eventPostingDetailList = composeEventPostingDetail(fiscalEventRequest.getFiscalEvent(), eventId,
 						HttpStatus.INTERNAL_SERVER_ERROR, record, e.getMessage());
 
-//				kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventPostingDetailList);
+				Optional<ErrorDataModel> errorDataModelOptional = getErrorDataModel(record, eventType,
+						EventConstants.RECOVERABLE_ERROR, HttpStatus.BAD_REQUEST.toString(), e.getMessage());
+
+				if (errorDataModelOptional.isPresent()) {
+					kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
+				}
 			}
 
 			eventPostingDetailRepository.saveAll(eventPostingDetailList);
@@ -166,6 +182,42 @@ public class EventTypeConsumer {
 	}
 
 	/**
+	 * @param data
+	 * @param type
+	 * @param status
+	 * @param message
+	 * @return
+	 */
+	private Optional<ErrorDataModel> getErrorDataModel(String data, String dataType, String errorType, String status,
+													   String message) {
+		if (!StringUtils.isEmpty(data) && !StringUtils.isEmpty(dataType) && !StringUtils.isEmpty(dataType)
+				&& !StringUtils.isEmpty(status)) {
+			ErrorDataModel errorDataModel = new ErrorDataModel();
+			errorDataModel.setData(data);
+			errorDataModel.setDataName(EventConstants.DATA_NAME);
+			errorDataModel.setAttributeName(EventConstants.EVENT_TYPE);
+			errorDataModel.setAttributeValue(dataType);
+			errorDataModel.setErrorType(errorType);
+			errorDataModel.setStatus(status);
+
+			if (!StringUtils.isEmpty(message)) {
+				errorDataModel.setMessage(message);
+			} else {
+				errorDataModel.setMessage(EventConstants.NA);
+			}
+
+			errorDataModel.setOrigin(EventConstants.APPLICATION_NAME);
+			errorDataModel.setDestination(EventConstants.DESTINATION_APP_NAME);
+			errorDataModel.setCreatedBy(EventConstants.APPLICATION_NAME);
+			errorDataModel.setCreatedTime(System.currentTimeMillis());
+
+			return Optional.ofNullable(errorDataModel);
+		}
+
+		return Optional.empty();
+	}
+
+	/**
 	 * @param fiscalEventResponseEntity
 	 * @param fiscalEventList
 	 * @param eventId
@@ -173,7 +225,8 @@ public class EventTypeConsumer {
 	 * @return
 	 */
 	private List<EventPostingDetail> wrapEventResponse(ResponseEntity<FiscalEventResponse> fiscalEventResponseEntity,
-										 List<FiscalEvent> fiscalEventList, String eventId, String record) {
+										 List<FiscalEvent> fiscalEventList, String eventId, String record,
+													   String eventType) {
 		if (fiscalEventResponseEntity != null && fiscalEventResponseEntity.getStatusCode() != null
 				&& fiscalEventList != null && !StringUtils.isEmpty(eventId) && !StringUtils.isEmpty(record)) {
 			List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
@@ -187,7 +240,13 @@ public class EventTypeConsumer {
 				log.error(EventConstants.LOG_ERROR_PREFIX + EventConstants.RECOVERABLE_ERROR +
 						"4 or 5 Series exception while sending request to Fiscal Event Service");
 
-//					kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventPostingDetailList);
+				Optional<ErrorDataModel> errorDataModelOptional = getErrorDataModel(record, eventType,
+						EventConstants.RECOVERABLE_ERROR, HttpStatus.BAD_REQUEST.toString(),
+						"4 or 5 Series exception while sending request to Fiscal Event Service");
+
+				if (errorDataModelOptional.isPresent()) {
+					kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), eventPostingDetailList);
+				}
 
 			} else if (HttpStatus.Series.SUCCESSFUL.equals(fiscalEventResponseEntity.getStatusCode().series())) {
 				List<FiscalEvent> respondedFiscalEvents = fiscalEventResponseEntity.getBody().getFiscalEvent();
@@ -205,7 +264,13 @@ public class EventTypeConsumer {
 					log.error(EventConstants.LOG_ERROR_PREFIX + EventConstants.RECOVERABLE_ERROR +
 							"Unable to receive Fiscal Event list in response");
 
-//						kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventPostingDetailList);
+					Optional<ErrorDataModel> errorDataModelOptional = getErrorDataModel(record, eventType,
+							EventConstants.RECOVERABLE_ERROR, HttpStatus.BAD_REQUEST.toString(),
+							"Unable to receive Fiscal Event list in response");
+
+					if (errorDataModelOptional.isPresent()) {
+						kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), eventPostingDetailList);
+					}
 				}
 			}
 
@@ -369,7 +434,8 @@ public class EventTypeConsumer {
 					errorMap.put(EventConstants.EVENT_TYPE, "Event Type is missing in payload");
 				}
 
-				if (!eventObject.has(EventConstants.PROJECT_ID) || eventObject.get(EventConstants.PROJECT_ID).isJsonNull()) {
+				if (!eventObject.has(EventConstants.PROJECT_ID)
+						|| eventObject.get(EventConstants.PROJECT_ID).isJsonNull()) {
 					errorMap.put(EventConstants.PROJECT_ID, "Project id is missing in event payload");
 				}
 
