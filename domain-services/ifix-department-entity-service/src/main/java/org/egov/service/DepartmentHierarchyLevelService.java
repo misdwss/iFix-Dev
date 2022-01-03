@@ -50,7 +50,6 @@ public class DepartmentHierarchyLevelService {
      */
     public List<DepartmentHierarchyLevel> searchDepartmentEntityHierarchyLevel(DepartmentHierarchyLevelSearchRequest searchRequest) {
         validator.validateHierarchyLevelSearchPost(searchRequest);
-        //enricher.enrichHierarchyLevelSearchPost(searchRequest);
         DepartmentHierarchyLevelSearchCriteria searchCriteria = searchRequest.getCriteria();
 
         if ((searchCriteria.getIds() == null || searchCriteria.getIds().isEmpty()) && StringUtils.isBlank(searchCriteria.getDepartmentId())
