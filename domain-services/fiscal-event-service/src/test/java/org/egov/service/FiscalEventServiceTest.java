@@ -71,7 +71,6 @@ class FiscalEventServiceTest {
         assertSame(fiscalEventRequest, this.fiscalEventService.fiscalEventsV1PushPost(fiscalEventRequest));
         verify(this.fiscalEventValidator).validateFiscalEventPushPost((FiscalEventRequest) any());
         verify(this.fiscalEventEnrichmentService).enrichFiscalEventPushPost((FiscalEventRequest) any());
-        verify(this.producer).push((String) any(), (Object) any());
     }
 
     @Test

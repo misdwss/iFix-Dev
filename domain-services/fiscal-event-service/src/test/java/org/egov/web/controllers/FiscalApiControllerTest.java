@@ -67,8 +67,8 @@ public class FiscalApiControllerTest {
 
     @Test
     public void fiscalEventsV1PushPostSuccess() throws Exception {
-
         doReturn(fiscalEventRequest).when(fiscalEventService).fiscalEventsV1PushPost((FiscalEventRequest) any());
+
 
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
                 .createResponseHeaderFromRequestHeader(fiscalEventRequest.getRequestHeader(), true);

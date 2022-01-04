@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,25 +65,27 @@ class FiscalEventEnrichmentServiceTest {
 
         RequestHeader requestHeader = new RequestHeader();
         requestHeader.setUserInfo(new UserInfo());
-        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, new FiscalEvent());
+        List<FiscalEvent> fiscalEvents = new ArrayList<>();
+        fiscalEvents.add(new FiscalEvent());
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, fiscalEvents);
 
         this.fiscalEventEnrichmentService.enrichFiscalEventPushPost(fiscalEventRequest);
         verify(this.fiscalEventUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), any(Boolean.TRUE.getClass()));
-        FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
-        assertTrue(fiscalEvent.getAmountDetails().isEmpty());
-        assertSame(auditDetails, fiscalEvent.getAuditDetails());
+        List<FiscalEvent> fiscalEvent = fiscalEventRequest.getFiscalEvent();
+        assertTrue(fiscalEvent.get(0).getAmountDetails().isEmpty());
+        assertSame(auditDetails, fiscalEvent.get(0).getAuditDetails());
     }
 
     @Test
     void testEnrichFiscalEventPushPostWithAuditDetails() {
         when(this.fiscalEventUtil.enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any()))
                 .thenReturn(auditDetails);
-        fiscalEventRequest.getFiscalEvent().setAuditDetails(auditDetails);
+        fiscalEventRequest.getFiscalEvent().get(0).setAuditDetails(auditDetails);
         this.fiscalEventEnrichmentService.enrichFiscalEventPushPost(fiscalEventRequest);
         verify(this.fiscalEventUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), any(Boolean.FALSE.getClass()));
-        FiscalEvent fiscalEvent1 = fiscalEventRequest.getFiscalEvent();
-        assertTrue(fiscalEvent1.getAmountDetails().size() > 0);
-        assertEquals(auditDetails, fiscalEvent1.getAuditDetails());
+        List<FiscalEvent> fiscalEvent1 = fiscalEventRequest.getFiscalEvent();
+        assertTrue(fiscalEvent1.get(0).getAmountDetails().size() > 0);
+        assertEquals(auditDetails, fiscalEvent1.get(0).getAuditDetails());
     }
 
     @Test
@@ -93,15 +96,18 @@ class FiscalEventEnrichmentServiceTest {
         FiscalEvent fiscalEvent = new FiscalEvent();
         fiscalEvent.addAmountDetailsItem(new Amount());
         fiscalEvent.setAuditDetails(auditDetails);
-        FiscalEventRequest fiscalEventRequest1 = FiscalEventRequest.builder().fiscalEvent(fiscalEvent)
+        List<FiscalEvent> fiscalEvents = new ArrayList<>();
+        fiscalEvents.add(fiscalEvent);
+        FiscalEventRequest fiscalEventRequest1 = FiscalEventRequest.builder().fiscalEvent(fiscalEvents)
                 .requestHeader(fiscalEventRequest.getRequestHeader()).build();
 
         this.fiscalEventEnrichmentService.enrichFiscalEventPushPost(fiscalEventRequest1);
         verify(this.fiscalEventUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any());
-        FiscalEvent fiscalEvent1 = fiscalEventRequest1.getFiscalEvent();
-        List<Amount> amountDetails = fiscalEvent1.getAmountDetails();
+        List<FiscalEvent> fiscalEvent1 = fiscalEventRequest1.getFiscalEvent();
+        List<Amount> amountDetails = fiscalEvent1.get(0).getAmountDetails();
         assertEquals(1, amountDetails.size());
-        assertSame(auditDetails, fiscalEvent1.getAuditDetails());
+        assertSame(auditDetails, fiscalEvent1.get(0).getAuditDetails());
+
         Amount getResult = amountDetails.get(0);
         assertNull(getResult.getFromBillingPeriod());
         assertNull(getResult.getCoaId());
@@ -113,15 +119,14 @@ class FiscalEventEnrichmentServiceTest {
     void testEnrichFiscalEventPushPostWithFiscalEventRequest() {
         when(this.fiscalEventUtil.enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any()))
                 .thenReturn(auditDetails);
-
-        FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
+        List<FiscalEvent> fiscalEvent = fiscalEventRequest.getFiscalEvent();
         this.fiscalEventEnrichmentService.enrichFiscalEventPushPost(fiscalEventRequest);
         verify(this.fiscalEventUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any());
-        assertNotNull(fiscalEvent.getAmountDetails());
-        assertTrue(fiscalEvent.getAmountDetails().size() > 0);
-        assertNotNull(fiscalEvent.getAmountDetails().get(0).getId());
-        assertNotNull(fiscalEvent.getId());
-        assertNotNull(fiscalEvent.getIngestionTime());
+        assertNotNull(fiscalEvent.get(0).getAmountDetails());
+        assertTrue(fiscalEvent.get(0).getAmountDetails().size() > 0);
+        assertNotNull(fiscalEvent.get(0).getAmountDetails().get(0).getId());
+        assertNotNull(fiscalEvent.get(0).getId());
+        assertNotNull(fiscalEvent.get(0).getIngestionTime());
     }
 
     @Test
