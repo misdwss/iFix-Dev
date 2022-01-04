@@ -50,8 +50,8 @@ public class FiscalEventValidator {
             Map<String, String> errorMap = new HashMap<>();
 
             //TODO - remove, if not needed
-            if (StringUtils.isNotBlank(fiscalEventConfiguration.getBulkPushFiscalEventDataSize())) {
-                int size = Integer.parseInt(fiscalEventConfiguration.getBulkPushFiscalEventDataSize());
+            if (StringUtils.isNotBlank(fiscalEventConfiguration.getFiscalEventPushReqMaxSize())) {
+                int size = Integer.parseInt(fiscalEventConfiguration.getFiscalEventPushReqMaxSize());
                 if (fiscalEventRequest.getFiscalEvent().size() > size) {
                     throw new CustomException("PUSH_DATA_SIZE", "Fiscal event push data size should be at most : " + size);
                 }

@@ -92,7 +92,7 @@ class FiscalEventValidatorTest {
         RequestHeader requestHeader = new RequestHeader();
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         fiscalEvents.add(new FiscalEvent());
-        when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+        when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
                 .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, fiscalEvents)));
     }
@@ -104,7 +104,7 @@ class FiscalEventValidatorTest {
         fiscalEvents.add(new FiscalEvent());
         when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEvents);
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+        when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
 
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
@@ -129,7 +129,7 @@ class FiscalEventValidatorTest {
 
         when(fiscalEventRequest1.getFiscalEvent()).thenReturn(fiscalEventRequest.getFiscalEvent());
         when(fiscalEventRequest1.getRequestHeader()).thenReturn(fiscalEventRequest.getRequestHeader());
-        when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+        when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest1));
 
@@ -164,7 +164,7 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost4() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
         fiscalEventList.add(new FiscalEvent());
@@ -173,14 +173,14 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
     }
 
     @Test
     void testValidateFiscalEventPushPost5() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("42");
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("42");
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
         fiscalEventList.add(new FiscalEvent());
@@ -189,14 +189,14 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration, atLeast(1)).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration, atLeast(1)).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
     }
 
     @Test
     void testValidateFiscalEventPushPost6() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("");
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("");
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
         fiscalEventList.add(new FiscalEvent());
@@ -205,14 +205,14 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
     }
 
     @Test
     void testValidateFiscalEventPushPost7() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
         ArrayList<Amount> amountDetails = new ArrayList<Amount>();
@@ -223,14 +223,14 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
     }
 
     @Test
     void testValidateFiscalEventPushPost8() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
         when(fiscalEvent.getEventType()).thenReturn(FiscalEvent.EventTypeEnum.Sanction);
         when(fiscalEvent.getReferenceId()).thenReturn("42");
@@ -242,7 +242,7 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
         verify(fiscalEvent, atLeast(1)).getEventType();
@@ -251,7 +251,7 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost9() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
         when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
@@ -264,7 +264,7 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
         verify(fiscalEvent).getEventType();
@@ -274,7 +274,7 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost10() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
         when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
@@ -287,7 +287,7 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
         verify(fiscalEvent).getEventType();
@@ -297,7 +297,7 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost11() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
         when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
@@ -311,7 +311,7 @@ class FiscalEventValidatorTest {
                 .thenReturn(new RequestHeader(1L, "1.0.2", "42", new UserInfo(), "42", "Signature"));
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
         verify(fiscalEvent).getEventType();
@@ -321,7 +321,7 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost12() {
-        when(this.fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn(null);
+        when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         RequestHeader requestHeader = mock(RequestHeader.class);
         when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
@@ -336,7 +336,7 @@ class FiscalEventValidatorTest {
         when(fiscalEventRequest.getRequestHeader()).thenReturn(requestHeader);
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
-        verify(this.fiscalEventConfiguration).getBulkPushFiscalEventDataSize();
+        verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
         verify(fiscalEvent).getEventType();
@@ -348,7 +348,7 @@ class FiscalEventValidatorTest {
     @Test
     void testValidateFiscalEventPushPostMissingProjectId() {
         fiscalEventRequest.getFiscalEvent().get(0).setProjectId(null);
-        when(fiscalEventConfiguration.getBulkPushFiscalEventDataSize()).thenReturn("10");
+        when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
         assertThrows(CustomException.class,
                 () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
     }

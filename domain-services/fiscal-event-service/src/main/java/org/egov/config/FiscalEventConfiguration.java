@@ -57,5 +57,5 @@ public class FiscalEventConfiguration {
     private String ifixMasterProjectSearchPath;
 
     @Value("${fiscal.event.push.request.max.size}")
-    private String bulkPushFiscalEventDataSize;
+    private String fiscalEventPushReqMaxSize;
 }
