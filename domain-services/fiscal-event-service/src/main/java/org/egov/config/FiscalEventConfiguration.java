@@ -55,4 +55,7 @@ public class FiscalEventConfiguration {
 
     @Value("${ifix.master.project.search.path}")
     private String ifixMasterProjectSearchPath;
+
+    @Value("${fiscal.event.push.request.max.size}")
+    private String fiscalEventPushReqMaxSize;
 }

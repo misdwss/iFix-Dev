@@ -1,5 +1,6 @@
 {
-  "fiscalEvent": {
+  "fiscalEvent": [
+  {
     "tenantId": "pb",
     "projectId": "568513ee-d7fb-4b00-ae50-3f7704b22840",
     "eventType": "RECEIPT",
@@ -45,4 +46,5 @@
     ],
     "attributes": {}
   }
+  ]
 }
