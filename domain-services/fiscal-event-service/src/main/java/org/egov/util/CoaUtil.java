@@ -9,8 +9,6 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventConfiguration;
 import org.egov.repository.ServiceRequestRepository;
 import org.egov.tracer.model.CustomException;
-import org.egov.web.models.Amount;
-import org.egov.web.models.FiscalEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,12 +31,13 @@ public class CoaUtil {
      * Get the COA Details from master data service
      *
      * @param requestHeader
-     * @param fiscalEvent
+     * @param coaIds
+     * @param tenantId
      * @return
      */
-    public List<String> getCOAIdsFromCOAService(RequestHeader requestHeader, FiscalEvent fiscalEvent) {
+    public List<String> getCOAIdsFromCOAService(RequestHeader requestHeader, Set<String> coaIds, String tenantId) {
         String url = createCoaSearchUrl();
-        Map<String, Object> coaSearchRequest = createSearchCoaRequest(requestHeader, fiscalEvent);
+        Map<String, Object> coaSearchRequest = createSearchCoaRequest(requestHeader, coaIds, tenantId);
 
         Object response = serviceRequestRepository.fetchResult(url, coaSearchRequest);
         List<String> responseCoaIds = null;
@@ -50,16 +49,12 @@ public class CoaUtil {
         return responseCoaIds;
     }
 
-    private Map<String, Object> createSearchCoaRequest(RequestHeader requestHeader, FiscalEvent fiscalEvent) {
-        if (!StringUtils.isEmpty(fiscalEvent.getTenantId())) {
-            List<String> coaIds = new ArrayList<>();
-            for (Amount amount : fiscalEvent.getAmountDetails()) {
-                coaIds.add(amount.getCoaId());
-            }
+    private Map<String, Object> createSearchCoaRequest(RequestHeader requestHeader, Set<String> coaIds, String tenantId) {
+        if (StringUtils.isNotBlank(tenantId)) {
             Map<String, Object> coaSearchRequest = new HashMap<>();
             Map<String, Object> criteria = new HashMap<>();
             criteria.put("Ids", coaIds);
-            criteria.put("tenantId", fiscalEvent.getTenantId());
+            criteria.put("tenantId", tenantId);
 
             coaSearchRequest.put("requestHeader", requestHeader);
             coaSearchRequest.put("criteria", criteria);
@@ -70,7 +65,8 @@ public class CoaUtil {
     }
 
     private String createCoaSearchUrl() {
-        StringBuilder uriBuilder = new StringBuilder(configuration.getIfixMasterCoaHost())
+        StringBuilder uriBuilder = new StringBuilder();
+        uriBuilder.append(configuration.getIfixMasterCoaHost())
                 .append(configuration.getIfixMasterCoaContextPath()).append(configuration.getIfixMasterCoaSearchPath());
         return uriBuilder.toString();
     }
