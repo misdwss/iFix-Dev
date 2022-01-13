@@ -82,7 +82,7 @@ public class EventTypeConsumer {
 	 * @param record
 	 */
 	private void processFiscalEvent(String record) {
-		log.info(EventConstants.LOG_INFO_PREFIX + "Transforming and collecting fiscal event");
+		log.info(EventConstants.LOG_INFO_PREFIX + "Transforming and collecting fiscal event: \n" + record);
 
 		validateEventRequest(record);
 		FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
