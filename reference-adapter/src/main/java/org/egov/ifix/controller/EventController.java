@@ -28,7 +28,7 @@ public class EventController {
 	private EventService eventService;
 	
 	@PostMapping("/events/v1/_push")
-	public ResponseEntity<?>pushEvents( @Valid @RequestBody EventRequest eventRequest) {
+	public ResponseEntity<EventResponse>pushEvents(@RequestBody EventRequest eventRequest) {
 		log.debug("request received");
 		eventService.pushEvent(eventRequest);
 		EventResponse response=new EventResponse();
