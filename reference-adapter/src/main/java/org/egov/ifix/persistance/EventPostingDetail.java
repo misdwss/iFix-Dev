@@ -53,6 +53,9 @@ public class EventPostingDetail {
 	
 	@Size(max=4000,min=0)
 	private String error;
+
+	@Size(max=36)
+	private String projectId;
 	
 	 
 	@Lob
