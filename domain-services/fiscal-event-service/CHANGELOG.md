@@ -1,10 +1,10 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
-## 1.0.3 - 2022-01-19
+## 1.1.1 - 2022-01-19
 - Upgraded the log4j version to 2.17.1 for vulnerability fix
 
-## 1.0.2 - 2021-10-29
+## 1.1.0 - 2021-10-29
 - Fiscal-Event-Service will receive bulk fiscal event request data in push api request. And it will validate all the bulk data in request and in case of any missing required or invalid attributes , will throw the corresponding error message and stop processing.
 
 ## 1.0.1 - 2021-10-08
