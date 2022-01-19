@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
-## 1.0.1 - 2022-01-19
+## 1.1.1 - 2022-01-19
 - Upgraded the log4j version to 2.17.1 for vulnerability fix
+
+## 1.1.0 - 2021-11-19
+- Support for Bulk fiscal event push to iFIX-Core
 
 ## 1.0.0
 - Base Version
