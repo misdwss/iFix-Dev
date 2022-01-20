@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 /**
  * Fiscal event request along with request metadata
@@ -28,7 +30,7 @@ public class FiscalEventRequest {
     private RequestHeader requestHeader = null;
 
     @JsonProperty("fiscalEvent")
-    private FiscalEvent fiscalEvent = null;
+    private List<FiscalEvent> fiscalEvent = null;
 
 
 }

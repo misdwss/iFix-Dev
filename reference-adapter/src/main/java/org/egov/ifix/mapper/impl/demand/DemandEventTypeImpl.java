@@ -10,6 +10,7 @@ import org.egov.ifix.models.Amount;
 import org.egov.ifix.models.EventTypeEnum;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.service.ChartOfAccountService;
+import org.egov.ifix.service.ProjectService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.EventConstants;
 import org.egov.ifix.utils.MasterDataMappingUtil;
@@ -44,6 +45,9 @@ public class DemandEventTypeImpl implements EventMapper {
 	private ChartOfAccountService chartOfAccountService;
 
 	@Autowired
+	private ProjectService projectService;
+
+	@Autowired
 	public DemandEventTypeImpl(ApplicationConfiguration applicationConfiguration, ChartOfAccountService chartOfAccountService) {
 		this.applicationConfiguration = applicationConfiguration;
 		this.chartOfAccountService=chartOfAccountService;
@@ -52,6 +56,9 @@ public class DemandEventTypeImpl implements EventMapper {
 	@Override
 	public List<FiscalEvent> transformData(JsonObject data) {
 		JsonArray entities = data.getAsJsonObject(EventConstants.EVENT).getAsJsonArray(EventConstants.ENTITY);
+		String clientProjectCode = data.getAsJsonObject(EventConstants.EVENT).get(EventConstants.PROJECT_ID).getAsString();
+		String iFixProjectId = projectService.getProjectId(clientProjectCode, data);
+
 		List<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
 		for (int i = 0; i < entities.size(); i++) {
 			JsonArray demands = entities.get(i).getAsJsonObject().getAsJsonArray("Demands");
@@ -62,7 +69,8 @@ public class DemandEventTypeImpl implements EventMapper {
 			   FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
 					.eventType(getEventType()).eventTime(Instant.now().toEpochMilli())
 					.referenceId(demand.get(REFERANCE_ID).getAsString()).parentEventId(null).parentReferenceId(null)
-					.amountDetails(getAmounts(demand,data)).build();
+					.amountDetails(getAmounts(demand,data))
+				    .projectId(iFixProjectId).build();
 			   fiscalEvents.add(fiscalEvent);
 			}
 			
