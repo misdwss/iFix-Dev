@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collections;
@@ -46,6 +47,7 @@ public class ChartOfAccountApiController {
     }
 
     @RequestMapping(value = "/_create", method = RequestMethod.POST)
+    @RolesAllowed("project-creator")
     public ResponseEntity<COAResponse> chartOfAccountV1CreatePost(@ApiParam(value = "Details for the new COA + RequestHeader (meta data of the API).", required = true) @Valid @RequestBody COARequest body) {
 
         COARequest coaRequest = chartOfAccountService.chartOfAccountV1CreatePost(body);
