@@ -1,0 +1,20 @@
+{
+    "master-data-service": {
+        "context": "/ifix-master-data",
+        "create-government": {
+            "api-endpoint": "/government/v1/_create",
+            "role-list": "project-creator,test-role"
+        },
+        "create-coa": {
+            "api-endpoint": "/chartOfAccount/v1/_create",
+            "role-list": "project-creator,test-role"
+        }
+    },
+    "fiscal-event-service": {
+        "context": "/fiscal-event-service",
+        "push-fiscal-event": {
+            "api-endpoint": "/events/v1/_push",
+            "role-list": "project-creator,test-role"
+        }
+    }
+}

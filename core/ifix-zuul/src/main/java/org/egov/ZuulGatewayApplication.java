@@ -9,6 +9,7 @@ import org.egov.Utils.CustomRateLimitUtils;
 import org.egov.Utils.UserUtils;
 import org.egov.filters.pre.AuthPreCheckFilter;
 import org.egov.filters.pre.JwtAuthenticationFilter;
+import org.egov.filters.pre.RbacPreFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -60,6 +61,11 @@ public class ZuulGatewayApplication {
     @Bean
     public JwtAuthenticationFilter keycloakAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtVerifier);
+    }
+
+    @Bean
+    public RbacPreFilter keycloakAuthorizationFilter() {
+        return new RbacPreFilter(jwtVerifier);
     }
 
     @Bean
