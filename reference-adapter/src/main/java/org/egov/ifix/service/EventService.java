@@ -1,61 +1,75 @@
 package org.egov.ifix.service;
 
-import java.util.UUID;
-
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import lombok.extern.slf4j.Slf4j;
+import org.egov.ifix.models.Event;
 import org.egov.ifix.models.EventRequest;
 import org.egov.ifix.utils.ApplicationConfiguration;
+import org.egov.ifix.exception.HttpCustomException;
+import org.egov.ifix.utils.EventConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class EventService {
-	 
-	private KafkaTemplate<String, Object> kafkaTemplate;
-	
-	private ApplicationConfiguration applicationConfiguration;
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private ApplicationConfiguration applicationConfiguration;
 
 
-	 
-	
-	@Autowired
-	public EventService(KafkaTemplate<String, Object> kafkaTemplate, 
-			ApplicationConfiguration applicationConfiguration
-			) {
+    public void pushEvent(EventRequest eventRequest) {
+    	validateAndEnrichEventRequest(eventRequest);
 
-		this.kafkaTemplate = kafkaTemplate;
-		this.applicationConfiguration = applicationConfiguration;
-	}
-	
+        log.info(EventConstants.LOG_INFO_PREFIX + "Send request on queue");
 
-	public void pushEvent(EventRequest eventRequest) {
+        kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventRequest);
+    }
 
-		eventRequest.getEvent().setId(UUID.randomUUID().toString());
-		log.info("Send request on queue");
-		this.kafkaTemplate.send(applicationConfiguration.getMapperTopicName(), eventRequest);
+	/**
+	 * @param eventRequest
+	 */
+    private void validateAndEnrichEventRequest(EventRequest eventRequest) {
+		Map<String, String> errorMap = new HashMap<>();
 
-	}
+		if (eventRequest != null && eventRequest.getEvent() != null
+				&& !StringUtils.isEmpty(applicationConfiguration.getMapperTopicName())) {
+			Event event = eventRequest.getEvent();
 
-	public KafkaTemplate<String, Object> getKafkaTemplate() {
-		return kafkaTemplate;
-	}
+			if (event.getEventType() == null){
+				errorMap.put(EventConstants.EVENT_TYPE, "Invalid Event Type or it is missing in payload");
+			}
 
+			if (StringUtils.isEmpty(event.getProjectId())) {
+				errorMap.put(EventConstants.PROJECT_ID, "Project id is missing in event payload");
+			}
 
-	public void setKafkaTemplate(KafkaTemplate<String, Object> kafkaTemplate) {
-		this.kafkaTemplate = kafkaTemplate;
-	}
+			if (StringUtils.isEmpty(event.getTenantId())) {
+				errorMap.put(EventConstants.TENANT_ID, "Tenant id is missing in event payload");
+			}
 
+			if (event.getEntity() == null || event.getEntity().isEmpty()) {
+				errorMap.put(EventConstants.ENTITY, "Event Entity is missing in payload");
+			}
+		}else {
+			throw new HttpCustomException(EventConstants.REQUEST_EVENT, "Invalid event request", HttpStatus.BAD_REQUEST);
+		}
 
-	public ApplicationConfiguration getApplicationConfiguration() {
-		return applicationConfiguration;
-	}
-
-
-	public void setApplicationConfiguration(ApplicationConfiguration applicationConfiguration) {
-		this.applicationConfiguration = applicationConfiguration;
+		if (!errorMap.isEmpty()) {
+			throw new HttpCustomException(errorMap, HttpStatus.BAD_REQUEST);
+		}else {
+			eventRequest.getEvent().setId(UUID.randomUUID().toString());
+		}
 	}
 
 
