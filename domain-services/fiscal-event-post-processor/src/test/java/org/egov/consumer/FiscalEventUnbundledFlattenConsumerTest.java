@@ -1,15 +1,12 @@
 package org.egov.consumer;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.config.TestDataFormatter;
 import org.egov.producer.Producer;
 import org.egov.service.FiscalEventFlattenService;
 import org.egov.service.FiscalEventUnbundleService;
-import org.egov.tracer.model.CustomException;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.junit.jupiter.api.Assertions;
+import org.egov.models.FiscalEventDeReferenced;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,11 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

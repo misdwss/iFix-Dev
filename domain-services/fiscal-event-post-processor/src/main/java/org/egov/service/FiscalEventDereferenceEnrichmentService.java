@@ -4,9 +4,9 @@ package org.egov.service;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.util.MasterDataConstants;
-import org.egov.web.models.FiscalEvent;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.egov.web.models.FiscalEventRequest;
+import org.egov.models.FiscalEvent;
+import org.egov.models.FiscalEventDeReferenced;
+import org.egov.models.FiscalEventRequest;
 import org.springframework.stereotype.Service;
 
 @Service
