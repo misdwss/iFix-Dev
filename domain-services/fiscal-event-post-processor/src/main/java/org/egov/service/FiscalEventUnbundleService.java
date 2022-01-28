@@ -2,9 +2,9 @@ package org.egov.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.egov.web.models.AmountDetailsDeReferenced;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.egov.web.models.FiscalEventLineItemUnbundled;
+import org.egov.models.AmountDetailsDeReferenced;
+import org.egov.models.FiscalEventDeReferenced;
+import org.egov.models.FiscalEventLineItemUnbundled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

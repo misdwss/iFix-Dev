@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.resposioty.ServiceRequestRepository;
 import org.egov.tracer.model.CustomException;
-import org.egov.web.models.DepartmentEntity;
-import org.egov.web.models.FiscalEventRequest;
+import org.egov.models.DepartmentEntity;
+import org.egov.models.FiscalEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

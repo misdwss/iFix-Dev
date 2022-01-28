@@ -1,7 +1,7 @@
 package org.egov.service;
 
 import org.egov.common.contract.AuditDetails;
-import org.egov.web.models.*;
+import org.egov.models.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
