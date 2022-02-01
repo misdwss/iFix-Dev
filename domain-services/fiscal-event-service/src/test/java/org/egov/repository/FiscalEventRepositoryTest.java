@@ -18,8 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -66,6 +65,6 @@ class FiscalEventRepositoryTest {
 
         List<Object> fiscalEventsActual = mongoTemplate.find(searchQuery, Object.class, "fiscal_event");
         assertNotNull(fiscalEventsActual);
-        assertTrue(fiscalEventsActual.size() == 0);
+        assertEquals(0,fiscalEventsActual.size());
     }
 }

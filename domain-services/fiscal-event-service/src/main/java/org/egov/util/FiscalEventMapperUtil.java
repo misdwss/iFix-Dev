@@ -19,6 +19,10 @@ import java.util.List;
 @Slf4j
 public class FiscalEventMapperUtil {
 
+    public static final String AUDIT_DETAILS = "auditDetails";
+    public static final String AMOUNT_DETAILS = "amountDetails";
+    public static final String PROJECT = "project";
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -53,19 +57,19 @@ public class FiscalEventMapperUtil {
                 .build();
 
         //audit details
-        if (node.get("auditDetails") != null) {
+        if (node.get(AUDIT_DETAILS) != null) {
             AuditDetails auditDetails = AuditDetails.builder()
-                    .createdBy(node.get("auditDetails").get("createdBy") != null ? node.get("auditDetails").get("createdBy").asText() : null)
-                    .lastModifiedBy(node.get("auditDetails").get("lastModifiedBy") != null ? node.get("auditDetails").get("lastModifiedBy").asText() : null)
-                    .createdTime(node.get("auditDetails").get("createdTime") != null ? node.get("auditDetails").get("createdTime").asLong() : null)
-                    .lastModifiedTime(node.get("auditDetails").get("lastModifiedTime") != null ? node.get("auditDetails").get("lastModifiedTime").asLong() : null)
+                    .createdBy(node.get(AUDIT_DETAILS).get("createdBy") != null ? node.get(AUDIT_DETAILS).get("createdBy").asText() : null)
+                    .lastModifiedBy(node.get(AUDIT_DETAILS).get("lastModifiedBy") != null ? node.get(AUDIT_DETAILS).get("lastModifiedBy").asText() : null)
+                    .createdTime(node.get(AUDIT_DETAILS).get("createdTime") != null ? node.get(AUDIT_DETAILS).get("createdTime").asLong() : null)
+                    .lastModifiedTime(node.get(AUDIT_DETAILS).get("lastModifiedTime") != null ? node.get(AUDIT_DETAILS).get("lastModifiedTime").asLong() : null)
                     .build();
             fiscalEvent.setAuditDetails(auditDetails);
         }
         //Amount Details
-        if (node.get("amountDetails") != null && !node.get("amountDetails").isEmpty()) {
+        if (node.get(AMOUNT_DETAILS) != null && !node.get(AMOUNT_DETAILS).isEmpty()) {
             List<Amount> amountDetails = new ArrayList<>();
-            Iterator<JsonNode> amtIterator = node.get("amountDetails").iterator();
+            Iterator<JsonNode> amtIterator = node.get(AMOUNT_DETAILS).iterator();
             while (amtIterator.hasNext()) {
                 JsonNode amountNode = amtIterator.next();
                 Amount amount = Amount.builder()
@@ -81,8 +85,8 @@ public class FiscalEventMapperUtil {
             fiscalEvent.setAmountDetails(amountDetails);
         }
         //project
-        if (node.get("project") != null && node.get("project").get("id") != null) {
-            fiscalEvent.setProjectId(node.get("project").get("id").asText());
+        if (node.get(PROJECT) != null && node.get(PROJECT).get("id") != null) {
+            fiscalEvent.setProjectId(node.get(PROJECT).get("id").asText());
         }
         return fiscalEvent;
     }

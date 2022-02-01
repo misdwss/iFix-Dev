@@ -15,13 +15,11 @@ import org.egov.web.models.FiscalEventRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -68,8 +66,9 @@ class CoaUtilTest {
         when(this.fiscalEventConfiguration.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventConfiguration.getIfixMasterCoaHost()).thenReturn("localhost");
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
+        HashSet<String> stringHashSet = new HashSet<String>();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, new HashSet<String>(), "pb"));
+                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, stringHashSet, "pb"));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterCoaContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterCoaHost();
@@ -83,8 +82,9 @@ class CoaUtilTest {
         when(this.fiscalEventConfiguration.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventConfiguration.getIfixMasterCoaHost()).thenReturn("localhost");
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
+        HashSet<String> stringHashSet = new HashSet<String>();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, new HashSet<String>(), ""));
+                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, stringHashSet, ""));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterCoaContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterCoaHost();
@@ -101,8 +101,9 @@ class CoaUtilTest {
                 coaIds.add(amount.getCoaId());
             }
         }
+        RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         assertThrows(CustomException.class,
-                () -> coaUtil.getCOAIdsFromCOAService(fiscalEventRequest.getRequestHeader(), coaIds, tenantId));
+                () -> coaUtil.getCOAIdsFromCOAService(requestHeader, coaIds, tenantId));
     }
 
     @Test

@@ -35,11 +35,11 @@ public class ProjectUtil {
             projectValueMap.put(MasterDataConstants.IDS, new ArrayList<>(projectIds));
             projectValueMap.put(MasterDataConstants.CRITERIA_TENANT_ID, tenantId);
 
-            Map<String, Object> ProjectMap = new HashMap<>();
-            ProjectMap.put(MasterDataConstants.REQUEST_HEADER, requestHeader);
-            ProjectMap.put(MasterDataConstants.CRITERIA, projectValueMap);
+            Map<String, Object> projectMap = new HashMap<>();
+            projectMap.put(MasterDataConstants.REQUEST_HEADER, requestHeader);
+            projectMap.put(MasterDataConstants.CRITERIA, projectValueMap);
 
-            Object response = serviceRequestRepository.fetchResult(createSearchProjectUrl(), ProjectMap);
+            Object response = serviceRequestRepository.fetchResult(createSearchProjectUrl(), projectMap);
             JsonNode jsonNode = objectMapper.convertValue(response, JsonNode.class);
             return Optional.ofNullable(jsonNode);
         }
