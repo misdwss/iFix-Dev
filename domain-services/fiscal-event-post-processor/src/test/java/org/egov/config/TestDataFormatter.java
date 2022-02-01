@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.egov.web.models.FiscalEventRequest;
+import org.egov.models.FiscalEventDeReferenced;
+import org.egov.models.FiscalEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

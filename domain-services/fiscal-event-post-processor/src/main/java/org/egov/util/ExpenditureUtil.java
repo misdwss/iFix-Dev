@@ -9,7 +9,7 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.resposioty.ServiceRequestRepository;
 import org.egov.tracer.model.CustomException;
-import org.egov.web.models.Expenditure;
+import org.egov.models.Expenditure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

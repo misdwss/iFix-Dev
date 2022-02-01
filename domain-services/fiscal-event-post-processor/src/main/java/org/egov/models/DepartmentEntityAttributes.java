@@ -1,16 +1,14 @@
-package org.egov.web.models;
+package org.egov.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DepartmentEntity {
+public class DepartmentEntityAttributes {
 
     @JsonProperty("id")
     private String id = null;
@@ -23,8 +21,5 @@ public class DepartmentEntity {
 
     @JsonProperty("hierarchyLevel")
     private Integer hierarchyLevel = null;
-
-    @JsonProperty("ancestry")
-    private List<DepartmentEntityAttributes> ancestry;
 
 }

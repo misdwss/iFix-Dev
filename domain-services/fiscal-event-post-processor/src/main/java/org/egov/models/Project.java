@@ -1,4 +1,4 @@
-package org.egov.web.models;
+package org.egov.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -6,9 +6,9 @@ import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * Department details
+ * Captures the Project attributes
  */
-@ApiModel(description = "Department details")
+@ApiModel(description = "Captures the Project attributes")
 @Validated
 @javax.annotation.Generated(value = "org.egov.codegen.SpringBootCodegen", date = "2021-08-09T17:56:59.067+05:30")
 
@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Department {
+public class Project {
     @JsonProperty("id")
     private String id = null;
 

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.0.4 - 2022-01-28
+- Removed the "web" package as don't have api endpoint.
+
 ## 1.0.3 - 2022-01-19
 - Upgraded the log4j version to 2.17.1 for vulnerability fix
 
