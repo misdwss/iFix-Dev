@@ -74,7 +74,8 @@ class TenantUtilTest {
 
         ArrayList<String> stringList = new ArrayList<String>();
         stringList.add("pb");
-        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, new RequestHeader()));
+        RequestHeader requestHeader = new RequestHeader();
+        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, requestHeader));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterGovernmentContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterGovernmentHost();
@@ -92,7 +93,8 @@ class TenantUtilTest {
 
         ArrayList<String> stringList = new ArrayList<String>();
         stringList.add("pb");
-        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, new RequestHeader()));
+        RequestHeader requestHeader = new RequestHeader();
+        assertThrows(CustomException.class, () -> this.tenantUtil.validateTenant(stringList, requestHeader));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterGovernmentContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterGovernmentHost();

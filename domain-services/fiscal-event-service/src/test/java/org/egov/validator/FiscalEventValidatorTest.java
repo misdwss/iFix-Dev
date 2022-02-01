@@ -82,8 +82,9 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPostWithDefaultFiscalEventRequest() {
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventPushPost(new FiscalEventRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
         assertThrows(CustomException.class, () -> this.fiscalEventValidator.validateFiscalEventPushPost(null));
     }
 
@@ -93,8 +94,9 @@ class FiscalEventValidatorTest {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         fiscalEvents.add(new FiscalEvent());
         when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, fiscalEvents);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, fiscalEvents)));
+                .validateFiscalEventPushPost(fiscalEventRequest));
     }
 
     @Test
@@ -139,16 +141,19 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost() {
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventPushPost(new FiscalEventRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
         assertThrows(CustomException.class, () -> this.fiscalEventValidator.validateFiscalEventPushPost(null));
     }
 
     @Test
     void testValidateFiscalEventPushPost2() {
         RequestHeader requestHeader = new RequestHeader();
+        ArrayList<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, fiscalEvents);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, new ArrayList<FiscalEvent>())));
+                .validateFiscalEventPushPost(fiscalEventRequest));
     }
 
     @Test
@@ -536,15 +541,18 @@ class FiscalEventValidatorTest {
     //search validation
     @Test
     void testValidateFiscalEventSearchPostWithNullHeader() {
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(new FiscalEventGetRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
     void testValidateFiscalEventSearchPostWithNullUserInfo() {
         RequestHeader requestHeader = new RequestHeader();
+        Criteria criteria = new Criteria();
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest(requestHeader, criteria);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventSearchPost(new FiscalEventGetRequest(requestHeader, new Criteria())));
+                .validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
@@ -587,15 +595,18 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventSearchPostWithReqHeader() {
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(new FiscalEventGetRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
     void testValidateFiscalEventSearchPostWithRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
+        Criteria criteria = new Criteria();
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest(requestHeader, criteria);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventSearchPost(new FiscalEventGetRequest(requestHeader, new Criteria())));
+                .validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test

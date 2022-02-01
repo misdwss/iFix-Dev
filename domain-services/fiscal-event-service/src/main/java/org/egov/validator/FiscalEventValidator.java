@@ -21,6 +21,7 @@ import java.util.*;
 public class FiscalEventValidator {
 
 
+    public static final String PROJECT = "project";
     @Autowired
     private CoaUtil coaUtil;
 
@@ -247,9 +248,9 @@ public class FiscalEventValidator {
 
         if (!optionalJsonNode.isPresent()) {
             errorMap.put(MasterDataConstants.PROJECT_ID, "Project ids don't exist in the system");
-        } else if (projectIds.size() != optionalJsonNode.get().get("project").size()) {
+        } else if (projectIds.size() != optionalJsonNode.get().get(PROJECT).size()) {
 
-            JsonNode projectListNode = optionalJsonNode.get().get("project");
+            JsonNode projectListNode = optionalJsonNode.get().get(PROJECT);
             List<String> missingProjectIds = new ArrayList<>();
 
             for (String projectId : projectIds) {
@@ -272,7 +273,7 @@ public class FiscalEventValidator {
             }
         } else{
             JsonNode jsonNode = optionalJsonNode.get();
-            JsonNode projectListNode = jsonNode.get("project");
+            JsonNode projectListNode = jsonNode.get(PROJECT);
 
             if (projectListNode != null && !projectListNode.isEmpty()) {
 
@@ -321,15 +322,11 @@ public class FiscalEventValidator {
             errorMap.put(MasterDataConstants.EVENT_TYPE, "Event type is missing in request");
 
         //validation :  fromEventTime and toEventTime
-        if (criteria.getFromEventTime() != null) {
-            if (criteria.getToEventTime() == null) {
-                errorMap.put(MasterDataConstants.TO_EVENT_TIME, "To(End) event time is missing for given From(start) event time in request.");
-            }
+        if (criteria.getFromEventTime() != null && criteria.getToEventTime() == null) {
+            errorMap.put(MasterDataConstants.TO_EVENT_TIME, "To(End) event time is missing for given From(start) event time in request.");
         }
-        if (criteria.getToEventTime() != null) {
-            if (criteria.getFromEventTime() == null) {
-                errorMap.put(MasterDataConstants.FROM_EVENT_TIME, "From(start) event time is missing for given To(End) event time in request.");
-            }
+        if (criteria.getToEventTime() != null && criteria.getFromEventTime() == null) {
+            errorMap.put(MasterDataConstants.FROM_EVENT_TIME, "From(start) event time is missing for given To(End) event time in request.");
         }
         if (!errorMap.isEmpty()) {
             throw new CustomException(errorMap);
