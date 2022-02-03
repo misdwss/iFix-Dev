@@ -64,7 +64,8 @@ class CoaUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaHost()).thenReturn("localhost");
         RequestHeader requestHeader = new RequestHeader();
-        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, new FiscalEvent()));
+        FiscalEvent fiscalEvent = new FiscalEvent();
+        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, fiscalEvent));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();
@@ -78,7 +79,8 @@ class CoaUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaHost()).thenReturn("localhost");
         RequestHeader requestHeader = new RequestHeader();
-        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, new FiscalEvent()));
+        FiscalEvent fiscalEvent = new FiscalEvent();
+        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader,fiscalEvent));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();
@@ -91,7 +93,8 @@ class CoaUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaSearchPath()).thenReturn("Ifix Master Coa Search Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaHost()).thenReturn("localhost");
-        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(new RequestHeader(), null));
+        RequestHeader requestHeader = new RequestHeader();
+        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, null));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();
@@ -104,8 +107,10 @@ class CoaUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaSearchPath()).thenReturn("Ifix Master Coa Search Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaHost()).thenReturn("localhost");
+        RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
+        FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOAIdsFromCOAService(fiscalEventRequest.getRequestHeader(),fiscalEventRequest.getFiscalEvent()));
+                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader,fiscalEvent));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();

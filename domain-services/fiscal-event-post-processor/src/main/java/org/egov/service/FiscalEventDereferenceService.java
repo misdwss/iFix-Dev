@@ -17,6 +17,7 @@ import java.util.List;
 @Slf4j
 public class FiscalEventDereferenceService {
 
+    public static final String DEPARTMENT_ENTITY = "departmentEntity";
     @Autowired
     private FiscalEventDereferenceEnrichmentService enricher;
 
@@ -66,7 +67,6 @@ public class FiscalEventDereferenceService {
                 amountDetailsDeReferenced.setId(amount.getId());
                 ChartOfAccount coa = new ChartOfAccount();
                 coa.setId(amount.getCoaId());
-                //coaIds.add(amount.getCoaId());
                 amountDetailsDeReferenced.setCoa(coa);
 
                 amtDetailsDereferenced.add(amountDetailsDeReferenced);
@@ -113,12 +113,12 @@ public class FiscalEventDereferenceService {
                 String departmentId = null;
                 if (projectNode != null && !projectNode.isEmpty()) {
                     expenditureId = projectNode.get("expenditureId") != null ? projectNode.get("expenditureId").asText() : null;
-                    departmentId = projectNode.get("departmentEntity") != null && projectNode.get("departmentEntity").get("departmentId") != null
-                            ? projectNode.get("departmentEntity").get("departmentId").asText() : null;
+                    departmentId = projectNode.get(DEPARTMENT_ENTITY) != null && projectNode.get(DEPARTMENT_ENTITY).get("departmentId") != null
+                            ? projectNode.get(DEPARTMENT_ENTITY).get("departmentId").asText() : null;
 
                     fiscalEventDeReferenced.setProject(getProjectDetails(projectNode));
-                    if (projectNode.get("departmentEntity") != null) {
-                        fiscalEventDeReferenced.setDepartmentEntity(projectUtil.getDepartmentEntityFromProject(projectNode.get("departmentEntity")));
+                    if (projectNode.get(DEPARTMENT_ENTITY) != null) {
+                        fiscalEventDeReferenced.setDepartmentEntity(projectUtil.getDepartmentEntityFromProject(projectNode.get(DEPARTMENT_ENTITY)));
                     }
                 }
 

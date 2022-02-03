@@ -45,11 +45,11 @@ public class ProjectUtil {
             projectValueMap.put(MasterDataConstants.CRITERIA_TENANT_ID,
                     fiscalEventRequest.getFiscalEvent().getTenantId());
 
-            Map<String, Object> ProjectMap = new HashMap<>();
-            ProjectMap.put(MasterDataConstants.REQUEST_HEADER, fiscalEventRequest.getRequestHeader());
-            ProjectMap.put(MasterDataConstants.CRITERIA, projectValueMap);
+            Map<String, Object> projectMap = new HashMap<>();
+            projectMap.put(MasterDataConstants.REQUEST_HEADER, fiscalEventRequest.getRequestHeader());
+            projectMap.put(MasterDataConstants.CRITERIA, projectValueMap);
 
-            Object response = serviceRequestRepository.fetchResult(createSearchProjectUrl(), ProjectMap);
+            Object response = serviceRequestRepository.fetchResult(createSearchProjectUrl(), projectMap);
             JsonNode jsonNode = objectMapper.convertValue(response, JsonNode.class);
             return jsonNode;
         }

@@ -15,7 +15,6 @@ public class FiscalEventDereferenceEnrichmentService {
 
 
     public void enrich(FiscalEventRequest fiscalEventRequest, FiscalEventDeReferenced fiscalEventDeReferenced) {
-        RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
 
         fiscalEventDeReferenced.setIngestionTime(fiscalEvent.getIngestionTime());

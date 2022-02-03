@@ -142,8 +142,9 @@ class ProjectUtilTest {
     void testGetDepartmentEntityFromProjectWithInvalidJsonNode() throws JsonProcessingException {
         when(this.objectMapper.treeToValue((com.fasterxml.jackson.core.TreeNode) any(), (Class<Object>) any()))
                 .thenThrow(mock(JsonProcessingException.class));
+        DoubleNode doubleNode = DoubleNode.valueOf(10.0);
         assertThrows(CustomException.class,
-                () -> this.projectUtil.getDepartmentEntityFromProject(DoubleNode.valueOf(10.0)));
+                () -> this.projectUtil.getDepartmentEntityFromProject(doubleNode));
         verify(this.objectMapper).treeToValue((com.fasterxml.jackson.core.TreeNode) any(), (Class<Object>) any());
     }
 

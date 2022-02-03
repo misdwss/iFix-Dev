@@ -90,8 +90,9 @@ class FiscalEventUnbundledFlattenConsumerTest {
         List<String> strings = new ArrayList<>();
         strings.add("id");
         when(fiscalEventFlattenService.getFlattenData(any())).thenReturn(strings);
+        HashMap<String, Object> hashMap = new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                ()->this.fiscalEventUnbundledFlattenConsumer.listen(new HashMap<String, Object>(1), "Topic"));
+                ()->this.fiscalEventUnbundledFlattenConsumer.listen(hashMap, "Topic"));
         verify(this.objectMapper).enable((com.fasterxml.jackson.databind.DeserializationFeature) any());
     }
 }

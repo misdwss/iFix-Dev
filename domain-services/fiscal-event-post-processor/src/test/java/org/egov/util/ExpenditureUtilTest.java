@@ -65,9 +65,10 @@ class ExpenditureUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterExpenditureContextPath())
                 .thenReturn("Ifix Master Expenditure Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterExpenditureHost()).thenReturn("localhost");
+        RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class,
                 () -> this.expenditureUtil.getExpenditureReference("pb",
-                        "910f4d23-fc63-48fb-a8fb-f0ad567b788a", new RequestHeader()));
+                        "910f4d23-fc63-48fb-a8fb-f0ad567b788a", requestHeader));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterExpenditureContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterExpenditureHost();

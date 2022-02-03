@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -53,8 +54,9 @@ class FiscalEventDereferenceConsumerTest {
     @Test
     void testListenWithInvalidFiscalEventData() throws IllegalArgumentException {
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenThrow(new RuntimeException("foo"));
+        HashMap<String, Object> hMap= new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                () -> this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "Topic"));
+                () -> this.fiscalEventDereferenceConsumer.listen(hMap, "Topic"));
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
     }
 
@@ -83,8 +85,9 @@ class FiscalEventDereferenceConsumerTest {
         when(this.fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink()).thenReturn("Fiscal Event Mongo Db Sink");
         when(this.fiscalEventDereferenceService.dereference((FiscalEventRequest) any()))
                 .thenReturn(new FiscalEventDeReferenced());
+        HashMap<String, Object> hMap= new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                () -> this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "Topic"));
+                () -> this.fiscalEventDereferenceConsumer.listen(hMap, "Topic"));
         verify(this.producer).push((String) any(), (Object) any());
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
         verify(this.fiscalEventPostProcessorConfig).getFiscalEventDereferenceTopic();

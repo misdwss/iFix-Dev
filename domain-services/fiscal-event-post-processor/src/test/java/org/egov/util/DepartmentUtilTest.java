@@ -65,9 +65,10 @@ class DepartmentUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterDepartmentContextPath())
                 .thenReturn("Ifix Master Department Context Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterDepartmentHost()).thenReturn("localhost");
+        RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class,
                 () -> this.departmentUtil.getDepartmentReference("pb",
-                        "3d9ef18a-361a-40cf-b142-dd6f998e1ac1", new RequestHeader()));
+                        "3d9ef18a-361a-40cf-b142-dd6f998e1ac1", requestHeader));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterDepartmentContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterDepartmentHost();
