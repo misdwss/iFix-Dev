@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.1.2 - 2022-02-01
+- Sonar issues fix
+
 ## 1.1.1 - 2022-01-19
 - Upgraded the log4j version to 2.17.1 for vulnerability fix
 
