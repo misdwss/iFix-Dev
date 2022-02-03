@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.0.5 - 2022-02-03
+- Sonar issues fix
+
 ## 1.0.4 - 2022-01-28
 - Removed the "web" package as don't have api endpoint.
 

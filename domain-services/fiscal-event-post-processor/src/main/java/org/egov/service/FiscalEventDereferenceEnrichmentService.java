@@ -2,11 +2,10 @@ package org.egov.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.egov.common.contract.request.RequestHeader;
-import org.egov.util.MasterDataConstants;
 import org.egov.models.FiscalEvent;
 import org.egov.models.FiscalEventDeReferenced;
 import org.egov.models.FiscalEventRequest;
+import org.egov.util.MasterDataConstants;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,6 @@ public class FiscalEventDereferenceEnrichmentService {
 
 
     public void enrich(FiscalEventRequest fiscalEventRequest, FiscalEventDeReferenced fiscalEventDeReferenced) {
-        RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
 
         fiscalEventDeReferenced.setIngestionTime(fiscalEvent.getIngestionTime());

@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.config.TestDataFormatter;
-import org.egov.resposioty.ServiceRequestRepository;
-import org.egov.tracer.model.CustomException;
 import org.egov.models.DepartmentEntity;
 import org.egov.models.FiscalEvent;
 import org.egov.models.FiscalEventRequest;
 import org.egov.models.Project;
+import org.egov.resposioty.ServiceRequestRepository;
+import org.egov.tracer.model.CustomException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -142,14 +142,15 @@ class ProjectUtilTest {
     void testGetDepartmentEntityFromProjectWithInvalidJsonNode() throws JsonProcessingException {
         when(this.objectMapper.treeToValue((com.fasterxml.jackson.core.TreeNode) any(), (Class<Object>) any()))
                 .thenThrow(mock(JsonProcessingException.class));
+        DoubleNode doubleNode = DoubleNode.valueOf(10.0);
         assertThrows(CustomException.class,
-                () -> this.projectUtil.getDepartmentEntityFromProject(DoubleNode.valueOf(10.0)));
+                () -> this.projectUtil.getDepartmentEntityFromProject(doubleNode));
         verify(this.objectMapper).treeToValue((com.fasterxml.jackson.core.TreeNode) any(), (Class<Object>) any());
     }
 
     @Test
     void testGetDepartmentEntityFromProject() throws JsonProcessingException {
-        DepartmentEntity departmentEntity = objectMapper.convertValue(deptEntityJsonNode,DepartmentEntity.class);
+        DepartmentEntity departmentEntity = objectMapper.convertValue(deptEntityJsonNode, DepartmentEntity.class);
         when(this.objectMapper.treeToValue((com.fasterxml.jackson.core.TreeNode) any(), (Class<Object>) any()))
                 .thenReturn(departmentEntity);
         DepartmentEntity actualResult = projectUtil.getDepartmentEntityFromProject(deptEntityJsonNode);

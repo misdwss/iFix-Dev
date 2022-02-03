@@ -3,10 +3,10 @@ package org.egov.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.config.TestDataFormatter;
+import org.egov.models.FiscalEventDeReferenced;
 import org.egov.producer.Producer;
 import org.egov.service.FiscalEventFlattenService;
 import org.egov.service.FiscalEventUnbundleService;
-import org.egov.models.FiscalEventDeReferenced;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,12 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -85,13 +82,14 @@ class FiscalEventUnbundledFlattenConsumerTest {
     void testListenWithConversionException() {
         when(this.objectMapper.enable((com.fasterxml.jackson.databind.DeserializationFeature) any()))
                 .thenReturn(this.objectMapper);
-        when(this.objectMapper.convertValue((Map)any(), (Class<Object>) any()))
+        when(this.objectMapper.convertValue((Map) any(), (Class<Object>) any()))
                 .thenThrow(new IllegalArgumentException());
         List<String> strings = new ArrayList<>();
         strings.add("id");
         when(fiscalEventFlattenService.getFlattenData(any())).thenReturn(strings);
+        HashMap<String, Object> hashMap = new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                ()->this.fiscalEventUnbundledFlattenConsumer.listen(new HashMap<String, Object>(1), "Topic"));
+                () -> this.fiscalEventUnbundledFlattenConsumer.listen(hashMap, "Topic"));
         verify(this.objectMapper).enable((com.fasterxml.jackson.databind.DeserializationFeature) any());
     }
 }
