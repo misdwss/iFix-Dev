@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.config.TestDataFormatter;
-import org.egov.resposioty.ServiceRequestRepository;
-import org.egov.tracer.model.CustomException;
 import org.egov.models.ChartOfAccount;
 import org.egov.models.FiscalEvent;
 import org.egov.models.FiscalEventRequest;
+import org.egov.resposioty.ServiceRequestRepository;
+import org.egov.tracer.model.CustomException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -54,7 +54,7 @@ class CoaUtilTest {
     void init() throws IOException {
         coaJsonNode = testDataFormatter.getCOASearchResponse();
         chartOfAccount = objectMapper.convertValue(coaJsonNode.get("chartOfAccounts").get(0), ChartOfAccount.class);
-        fiscalEventRequest =  testDataFormatter.getFiscalEventValidatedData();
+        fiscalEventRequest = testDataFormatter.getFiscalEventValidatedData();
     }
 
     @Test
@@ -80,7 +80,7 @@ class CoaUtilTest {
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaHost()).thenReturn("localhost");
         RequestHeader requestHeader = new RequestHeader();
         FiscalEvent fiscalEvent = new FiscalEvent();
-        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader,fiscalEvent));
+        assertThrows(CustomException.class, () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, fiscalEvent));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();
@@ -110,7 +110,7 @@ class CoaUtilTest {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         FiscalEvent fiscalEvent = fiscalEventRequest.getFiscalEvent();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader,fiscalEvent));
+                () -> this.coaUtil.getCOAIdsFromCOAService(requestHeader, fiscalEvent));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaContextPath();
         verify(this.fiscalEventPostProcessorConfig).getIfixMasterCoaHost();
@@ -119,7 +119,8 @@ class CoaUtilTest {
 
     @Test
     void testGetCOAIdsFromCOAService8() {
-        Map<String, Object> response = objectMapper.convertValue(coaJsonNode, new TypeReference<Map<String, Object>>(){});
+        Map<String, Object> response = objectMapper.convertValue(coaJsonNode, new TypeReference<Map<String, Object>>() {
+        });
         when(this.serviceRequestRepository.fetchResult((String) any(), (Object) any())).thenReturn(response);
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaSearchPath()).thenReturn("Ifix Master Coa Search Path");
         when(this.fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath()).thenReturn("Ifix Master Coa Context Path");
