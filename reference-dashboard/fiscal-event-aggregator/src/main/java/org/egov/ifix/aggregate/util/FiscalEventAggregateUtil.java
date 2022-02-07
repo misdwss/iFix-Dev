@@ -3,7 +3,6 @@ package org.egov.ifix.aggregate.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.egov.ifix.aggregate.config.ConfigProperties;
 import org.egov.ifix.aggregate.model.FiscalEventAggregate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,10 @@ import java.util.*;
 @Component
 public class FiscalEventAggregateUtil {
 
+    public static final String EVENT = "event";
+    public static final String PROJECT_ID = "project.id";
+    public static final String COA_ID = "coa.id";
+    public static final String AMOUNT = "amount";
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -34,10 +37,10 @@ public class FiscalEventAggregateUtil {
         Map<String, JsonNode> projectNodeMap = new HashMap<>();
         while (nodeIterator.hasNext()) {
             JsonNode node = nodeIterator.next();
-            if (node != null && !node.isEmpty() && node.get("event") != null) {
-                JsonNode eventNode = node.get("event");
-                if (eventNode.get("project.id") != null) {
-                    projectNodeMap.put(eventNode.get("project.id").asText(), eventNode);
+            if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
+                JsonNode eventNode = node.get(EVENT);
+                if (eventNode.get(PROJECT_ID) != null) {
+                    projectNodeMap.put(eventNode.get(PROJECT_ID).asText(), eventNode);
                 }
             }
         }
@@ -54,10 +57,10 @@ public class FiscalEventAggregateUtil {
         Map<String, JsonNode> coaNodeMap = new HashMap<>();
         while (nodeIterator.hasNext()) {
             JsonNode node = nodeIterator.next();
-            if (node != null && !node.isEmpty() && node.get("event") != null) {
-                JsonNode eventNode = node.get("event");
-                if (eventNode.get("coa.id") != null) {
-                    coaNodeMap.put(eventNode.get("coa.id").asText(), eventNode);
+            if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
+                JsonNode eventNode = node.get(EVENT);
+                if (eventNode.get(COA_ID) != null) {
+                    coaNodeMap.put(eventNode.get(COA_ID).asText(), eventNode);
                 }
             }
         }
@@ -77,14 +80,14 @@ public class FiscalEventAggregateUtil {
         Iterator<JsonNode> nodeIterator = responseJsonNode.iterator();
         while (nodeIterator.hasNext()) {
             JsonNode node = nodeIterator.next();
-            if (node != null && !node.isEmpty() && node.get("event") != null) {
-                JsonNode eventNode = node.get("event");
+            if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
+                JsonNode eventNode = node.get(EVENT);
                 FiscalEventAggregate eventAggregate = new FiscalEventAggregate();
 
-                BigDecimal amount = eventNode.get("amount") != null ? eventNode.get("amount").decimalValue() : null;
+                BigDecimal amount = eventNode.get(AMOUNT) != null ? eventNode.get(AMOUNT).decimalValue() : null;
                 BigInteger count = eventNode.get("Count") != null ? eventNode.get("Count").bigIntegerValue() : null;
-                String projectId = eventNode.get("project.id") != null ? eventNode.get("project.id").asText() : null;
-                String coaId = eventNode.get("coa.id") != null ? eventNode.get("coa.id").asText() : null;
+                String projectId = eventNode.get(PROJECT_ID) != null ? eventNode.get(PROJECT_ID).asText() : null;
+                String coaId = eventNode.get(COA_ID) != null ? eventNode.get(COA_ID).asText() : null;
                 String eventType = eventNode.get("eventType") != null ? eventNode.get("eventType").asText() : null;
 
                 eventAggregate.setProject_id(projectId);
@@ -301,10 +304,10 @@ public class FiscalEventAggregateUtil {
         Map<String, JsonNode> projectNodeMap = new HashMap<>();
         while (nodeIterator.hasNext()) {
             JsonNode node = nodeIterator.next();
-            if (node != null && !node.isEmpty() && node.get("event") != null) {
-                JsonNode eventNode = node.get("event");
-                if (eventNode.get("project.id") != null) {
-                    projectNodeMap.put(eventNode.get("project.id").asText(), eventNode);
+            if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
+                JsonNode eventNode = node.get(EVENT);
+                if (eventNode.get(PROJECT_ID) != null) {
+                    projectNodeMap.put(eventNode.get(PROJECT_ID).asText(), eventNode);
                 }
             }
         }
@@ -312,8 +315,7 @@ public class FiscalEventAggregateUtil {
     }
 
     /**
-     *
-     * @param firstEventTypeNodeMap - will be demand or bill
+     * @param firstEventTypeNodeMap  - will be demand or bill
      * @param secondEventTypeNodeMap - will be receipt or payment
      * @param projectNodeMap
      * @param pendingEventType
@@ -329,12 +331,12 @@ public class FiscalEventAggregateUtil {
             for (String dPid : firstEventTypeNodeMap.keySet()) {
                 boolean isAvail = false;
                 JsonNode demandJsonNode = firstEventTypeNodeMap.get(dPid);
-                BigDecimal dAmt = demandJsonNode.get("amount") != null ? demandJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                BigDecimal dAmt = demandJsonNode.get(AMOUNT) != null ? demandJsonNode.get(AMOUNT).decimalValue() : BigDecimal.ZERO;
                 for (String rPid : secondEventTypeNodeMap.keySet()) {
                     if (dPid.equalsIgnoreCase(rPid)) {
                         isAvail = true;
                         JsonNode receiptJsonNode = secondEventTypeNodeMap.get(rPid);
-                        BigDecimal rAmt = receiptJsonNode.get("amount") != null ? receiptJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                        BigDecimal rAmt = receiptJsonNode.get(AMOUNT) != null ? receiptJsonNode.get(AMOUNT).decimalValue() : BigDecimal.ZERO;
                         pendingAmountMap.put(dPid, (dAmt.subtract(rAmt)));
                     }
                 }
@@ -348,15 +350,15 @@ public class FiscalEventAggregateUtil {
             for (String rPid : secondEventTypeNodeMap.keySet()) {
                 if (!pendingAmountMap.containsKey(rPid)) {
                     JsonNode receiptJsonNode = secondEventTypeNodeMap.get(rPid);
-                    BigDecimal rAmt = receiptJsonNode.get("amount") != null ? receiptJsonNode.get("amount").decimalValue() : BigDecimal.ZERO;
+                    BigDecimal rAmt = receiptJsonNode.get(AMOUNT) != null ? receiptJsonNode.get(AMOUNT).decimalValue() : BigDecimal.ZERO;
                     pendingAmountMap.put(rPid, BigDecimal.ZERO.subtract(rAmt));
                 }
             }
         }
 
         //Create a fiscal event aggregated data for pending collections
-        if(!pendingAmountMap.isEmpty()){
-            for(String pid : pendingAmountMap.keySet()){
+        if (!pendingAmountMap.isEmpty()) {
+            for (String pid : pendingAmountMap.keySet()) {
                 FiscalEventAggregate pendingEventAggregate = new FiscalEventAggregate();
 
                 pendingEventAggregate.setVer(FiscalEventAggregateConstants.VER);
@@ -387,13 +389,14 @@ public class FiscalEventAggregateUtil {
 
     /**
      * Calculate the fiscal year(s) based on system time.
+     *
      * @return
      */
     public Map<String, Integer> getFiscalYear() {
         Map<String, Integer> fiscalYearMap = new HashMap<>();
         int currentYear = Year.now().getValue();
         fiscalYearMap.put(FiscalEventAggregateConstants.CURRENT_FISCAL_YEAR, currentYear);
-        fiscalYearMap.put(FiscalEventAggregateConstants.PREVIOUS_FISCAL_YEAR, (currentYear-1));
+        fiscalYearMap.put(FiscalEventAggregateConstants.PREVIOUS_FISCAL_YEAR, (currentYear - 1));
         return fiscalYearMap;
     }
 }

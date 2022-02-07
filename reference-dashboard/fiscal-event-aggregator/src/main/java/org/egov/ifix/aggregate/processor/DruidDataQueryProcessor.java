@@ -19,7 +19,6 @@ import in.zapr.druid.druidry.query.DruidQuery;
 import in.zapr.druid.druidry.query.aggregation.DruidGroupByQuery;
 import in.zapr.druid.druidry.query.config.Interval;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.egov.ifix.aggregate.config.ConfigProperties;
 import org.egov.ifix.aggregate.model.FiscalEventAggregate;
 import org.egov.ifix.aggregate.util.FiscalEventAggregateConstants;
@@ -38,6 +37,10 @@ import java.util.Map;
 @Slf4j
 public class DruidDataQueryProcessor {
 
+    public static final String PROJECT_ID = "project.id";
+    public static final String EVENT_TYPE = "eventType";
+    public static final String AMOUNT = "amount";
+    public static final String COA_ID = "coa.id";
     @Autowired
     private DruidClient druidClient;
 
@@ -50,6 +53,7 @@ public class DruidDataQueryProcessor {
     /**
      * Fetch the fiscal event data with total sum amount , count from druid date store
      * based on the group of project id, coa id, event type
+     *
      * @return
      */
     public List<FiscalEventAggregate> fetchFiscalEventFromDruid() {
@@ -62,10 +66,10 @@ public class DruidDataQueryProcessor {
             DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(fiscalYear);
             DruidQuery distinctProjectQuery = getDruidQueryForProjectDetails(fiscalYear);
             DruidQuery distinctCoaIdQuery = getDruidQueryForCoaDetails(fiscalYear);
-            DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND,fiscalYear);
-            DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT,fiscalYear);
-            DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL,fiscalYear);
-            DruidQuery paymentEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_PAYMENT,fiscalYear);
+            DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND, fiscalYear);
+            DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT, fiscalYear);
+            DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL, fiscalYear);
+            DruidQuery paymentEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_PAYMENT, fiscalYear);
 
             List<Object> groupByResponses = null;
             List<Object> distinctProjectResponses = null;
@@ -96,7 +100,7 @@ public class DruidDataQueryProcessor {
             }
             log.debug("Group by Response : {}", groupByResponses);
             if (groupByResponses == null || groupByResponses.isEmpty()) {
-                log.info("There are no fiscal event data with group by of project id, event type and coa id for fiscal year : {}",fiscalYear);
+                log.info("There are no fiscal event data with group by of project id, event type and coa id for fiscal year : {}", fiscalYear);
                 continue;
             }
 
@@ -117,13 +121,13 @@ public class DruidDataQueryProcessor {
 
             //Get the PENDING_COLLECTION aggregated fiscal event data
             List<FiscalEventAggregate> pendingCollectionAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(demandEventTypeNodeMap, receiptEventTypeNodeMap, projectNodeMap,
-                    FiscalEventAggregateConstants.EVENT_TYPE_PENDING_COLLECTION,fiscalYear);
+                    FiscalEventAggregateConstants.EVENT_TYPE_PENDING_COLLECTION, fiscalYear);
             //Get the PENDING PAYMENT aggregated fiscal event data
             List<FiscalEventAggregate> pendingPaymentAggregatedList = aggregateUtil.getPendingCollectionFiscalEventAggregatedData(billEventTypeNodeMap, paymentEventTypeNodeMap, projectNodeMap,
                     FiscalEventAggregateConstants.EVENT_TYPE_PENDING_PAYMENT, fiscalYear);
             //Get the details by project id and coa id map key and create a List<FiscalEventAggregate>
             List<FiscalEventAggregate> fiscalEventAggregates = aggregateUtil.getFiscalEventAggregateData(groupByResponses
-                    , projectNodeMap, coaNodeMap,fiscalYear);
+                    , projectNodeMap, coaNodeMap, fiscalYear);
 
             finalFiscalEventAggregates.addAll(pendingCollectionAggregatedList);
             finalFiscalEventAggregates.addAll(pendingPaymentAggregatedList);
@@ -141,12 +145,12 @@ public class DruidDataQueryProcessor {
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
-        DruidDimension druidDimension = new DefaultDimension("project.id", "project.id", OutputType.STRING);
+        DruidDimension druidDimension = new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING);
 
-        SelectorFilter filter = new SelectorFilter("eventType", eventType);
+        SelectorFilter filter = new SelectorFilter(EVENT_TYPE, eventType);
 
         List<DruidAggregator> aggregators = new ArrayList<>();
-        aggregators.add(new DoubleSumAggregator("amount", "amount"));
+        aggregators.add(new DoubleSumAggregator(AMOUNT, AMOUNT));
 
         return (DruidGroupByQuery.builder()
                 .dataSource(dataSource)
@@ -169,7 +173,7 @@ public class DruidDataQueryProcessor {
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
         List<DruidDimension> druidDimensions = new ArrayList<>();
-        druidDimensions.add(new DefaultDimension("coa.id", "coa.id", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(COA_ID, COA_ID, OutputType.STRING));
 
         druidDimensions.add(new DefaultDimension("coa.coaCode", "coa.coaCode", OutputType.STRING));
         druidDimensions.add(new DefaultDimension("coa.groupHead", "coa.groupHead", OutputType.STRING));
@@ -209,7 +213,7 @@ public class DruidDataQueryProcessor {
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
         List<DruidDimension> druidDimensions = new ArrayList<>();
-        druidDimensions.add(new DefaultDimension("project.id", "project.id", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING));
 
         druidDimensions.add(new DefaultDimension("department.code", "department.code", OutputType.STRING));
         druidDimensions.add(new DefaultDimension("department.id", "department.id", OutputType.STRING));
@@ -265,13 +269,13 @@ public class DruidDataQueryProcessor {
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
         List<DruidDimension> druidDimensions = new ArrayList<>();
-        druidDimensions.add(new DefaultDimension("project.id", "project.id", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("coa.id", "coa.id", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("eventType", "eventType", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(COA_ID, COA_ID, OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(EVENT_TYPE, EVENT_TYPE, OutputType.STRING));
 
         List<DruidAggregator> aggregators = new ArrayList<>();
         aggregators.add(new CountAggregator("Count"));
-        aggregators.add(new DoubleSumAggregator("amount", "amount"));
+        aggregators.add(new DoubleSumAggregator(AMOUNT, AMOUNT));
 
         return (DruidGroupByQuery.builder()
                 .dataSource(dataSource)
