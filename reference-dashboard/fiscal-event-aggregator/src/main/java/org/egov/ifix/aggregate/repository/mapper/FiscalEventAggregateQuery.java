@@ -11,8 +11,8 @@ public class FiscalEventAggregateQuery {
             "department_name,expenditure_id,expenditure_code,expenditure_name,expenditure_type,project_id,project_code,project_name,coa_id,coa_coaCode,coa_majorHead,coa_majorHeadName," +
             "coa_majorHeadType,coa_subMajorHead,coa_subMajorHeadName,coa_minorHead,coa_minorHeadName,coa_subHead,coa_subHeadName," +
             "coa_groupHead,coa_groupHeadName,coa_objectHead,coa_objectHeadName," +
-            "departmentEntity_ancestry_0_id,departmentEntity_ancestry_0_code,departmentEntity_ancestry_0_name,"+
-            "departmentEntity_ancestry_0_hierarchyLevel,departmentEntity_ancestry_1_id,departmentEntity_ancestry_1_code,"+
+            "departmentEntity_ancestry_0_id,departmentEntity_ancestry_0_code,departmentEntity_ancestry_0_name," +
+            "departmentEntity_ancestry_0_hierarchyLevel,departmentEntity_ancestry_1_id,departmentEntity_ancestry_1_code," +
             "departmentEntity_ancestry_1_name,departmentEntity_ancestry_1_hierarchyLevel,departmentEntity_ancestry_2_id," +
             "departmentEntity_ancestry_2_code,departmentEntity_ancestry_2_name,departmentEntity_ancestry_2_hierarchyLevel," +
             "departmentEntity_ancestry_3_id,departmentEntity_ancestry_3_code,departmentEntity_ancestry_3_name," +
