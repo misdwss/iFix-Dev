@@ -8,14 +8,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
+import javax.ws.rs.core.Application;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+
+@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+@ContextConfiguration(classes = Application.class)
 class FiscalEventAggregateProcessorTest {
 
     @Mock
