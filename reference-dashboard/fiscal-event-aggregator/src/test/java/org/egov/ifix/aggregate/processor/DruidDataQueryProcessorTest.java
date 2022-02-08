@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@ContextConfiguration(classes= Application.class)
+@ContextConfiguration(classes = Application.class)
 class DruidDataQueryProcessorTest {
 
     @Mock
