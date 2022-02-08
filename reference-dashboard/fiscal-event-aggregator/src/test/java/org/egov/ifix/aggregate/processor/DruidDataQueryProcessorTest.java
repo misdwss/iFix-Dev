@@ -2,7 +2,9 @@ package org.egov.ifix.aggregate.processor;
 
 import in.zapr.druid.druidry.client.DruidClient;
 import in.zapr.druid.druidry.client.exception.QueryException;
+import org.egov.ifix.aggregate.config.AbstractIT;
 import org.egov.ifix.aggregate.config.ConfigProperties;
+import org.egov.ifix.aggregate.config.ContainersEnvironment;
 import org.egov.ifix.aggregate.util.FiscalEventAggregateUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,10 +18,9 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(SpringExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-class DruidDataQueryProcessorTest {
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@SpringBootTest
+class DruidDataQueryProcessorTest extends AbstractIT {
 
     @Mock
     private ConfigProperties configProperties;

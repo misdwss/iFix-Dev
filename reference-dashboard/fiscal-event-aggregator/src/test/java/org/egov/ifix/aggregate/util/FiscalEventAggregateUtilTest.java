@@ -7,12 +7,18 @@ import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.util.ArrayIterator;
+import org.egov.ifix.aggregate.config.AbstractIT;
 import org.egov.ifix.aggregate.config.ConfigProperties;
+import org.egov.ifix.aggregate.config.ContainersEnvironment;
+import org.egov.ifix.aggregate.config.PostgresTestContainer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -23,9 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-class FiscalEventAggregateUtilTest {
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@SpringBootTest(classes = TestcontainersConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class FiscalEventAggregateUtilTest extends AbstractIT {
 
     @Mock
     private ConfigProperties configProperties;
