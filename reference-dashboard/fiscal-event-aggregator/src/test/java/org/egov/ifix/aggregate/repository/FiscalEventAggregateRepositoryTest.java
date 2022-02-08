@@ -4,16 +4,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
+import javax.ws.rs.core.Application;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+
+@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+@ContextConfiguration(classes= Application.class)
 class FiscalEventAggregateRepositoryTest {
 
     @InjectMocks
