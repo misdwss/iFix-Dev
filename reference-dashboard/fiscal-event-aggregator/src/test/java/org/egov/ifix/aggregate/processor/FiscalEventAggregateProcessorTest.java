@@ -20,9 +20,9 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest(classes = TestcontainersConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FiscalEventAggregateProcessorTest extends AbstractIT {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+class FiscalEventAggregateProcessorTest /*extends ContainersEnvironment*/ {
 
     @Mock
     private DruidDataQueryProcessor druidDataQueryProcessor;

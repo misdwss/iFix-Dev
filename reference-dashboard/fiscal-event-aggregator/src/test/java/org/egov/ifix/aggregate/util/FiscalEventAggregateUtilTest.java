@@ -29,9 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest(classes = TestcontainersConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FiscalEventAggregateUtilTest extends AbstractIT {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+class FiscalEventAggregateUtilTest extends ContainersEnvironment {
 
     @Mock
     private ConfigProperties configProperties;

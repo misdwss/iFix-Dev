@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest(classes = TestcontainersConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FiscalEventAggregateRepositoryTest extends AbstractIT {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+class FiscalEventAggregateRepositoryTest extends ContainersEnvironment {
 
     @InjectMocks
     private FiscalEventAggregateRepository fiscalEventAggregateRepository;

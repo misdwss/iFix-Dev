@@ -2,15 +2,21 @@ package org.egov.ifix.aggregate.processor;
 
 import in.zapr.druid.druidry.client.DruidClient;
 import in.zapr.druid.druidry.client.exception.QueryException;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.egov.ifix.aggregate.config.AbstractIT;
 import org.egov.ifix.aggregate.config.ConfigProperties;
 import org.egov.ifix.aggregate.config.ContainersEnvironment;
+import org.egov.ifix.aggregate.config.PostgresTestContainer;
 import org.egov.ifix.aggregate.util.FiscalEventAggregateUtil;
+import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +24,13 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest
-class DruidDataQueryProcessorTest extends AbstractIT {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureEmbeddedDatabase
+class DruidDataQueryProcessorTest/* extends ContainersEnvironment*/ {
+
+//    @ClassRule
+//    public static PostgreSQLContainer postgreSQLContainer = PostgresTestContainer.getInstance();
 
     @Mock
     private ConfigProperties configProperties;

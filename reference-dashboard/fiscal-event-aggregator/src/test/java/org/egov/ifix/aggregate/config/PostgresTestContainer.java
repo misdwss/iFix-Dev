@@ -3,10 +3,10 @@ package org.egov.ifix.aggregate.config;
 import lombok.extern.slf4j.Slf4j;
 //import org.springframework.test.context.DynamicPropertyRegistry;
 //import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
+//import org.testcontainers.containers.PostgreSQLContainer;
 
 @Slf4j
-public class PostgresTestContainer extends PostgreSQLContainer<PostgresTestContainer> {
+public class PostgresTestContainer /*extends PostgreSQLContainer<PostgresTestContainer>*/ {
 
 //    public static final String IMAGE_VERSION = "postgres:11.1";
 //    public static final String DATABASE_NAME = "test";
@@ -26,9 +26,9 @@ public class PostgresTestContainer extends PostgreSQLContainer<PostgresTestConta
 //    @Override
 //    public void start() {
 //        super.start();
-//        System.setProperty("spring.datasource.url", container.getJdbcUrl());
-//        System.setProperty("spring.datasource.username", container.getUsername());
-//        System.setProperty("spring.datasource.password", container.getPassword());
+//        System.setProperty("DB_URL", container.getJdbcUrl());
+//        System.setProperty("DB_USERNAME", container.getUsername());
+//        System.setProperty("DB_PASSWORD", container.getPassword());
 //    }
 //
 ////    @DynamicPropertySource
