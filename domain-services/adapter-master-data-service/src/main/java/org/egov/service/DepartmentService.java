@@ -3,6 +3,7 @@ package org.egov.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.egov.repository.DepartmentRepository;
+import org.egov.validator.DepartmentValidator;
 import org.egov.web.models.Department;
 import org.egov.web.models.DepartmentRequest;
 import org.egov.web.models.DepartmentSearchCriteria;
@@ -18,6 +19,9 @@ import java.util.List;
 public class DepartmentService {
 
     @Autowired
+    private DepartmentValidator validator;
+
+    @Autowired
     private DepartmentEnrichmentService enricher;
 
     @Autowired
@@ -30,6 +34,7 @@ public class DepartmentService {
      * @return
      */
     public List<Department> departmentV1SearchPost(DepartmentSearchRequest searchRequest) {
+        validator.validateSearchPost(searchRequest);
         enricher.enrichSearchPost(searchRequest);
 
         DepartmentSearchCriteria searchCriteria = searchRequest.getCriteria();
@@ -49,6 +54,7 @@ public class DepartmentService {
      * @return
      */
     public DepartmentRequest createDepartment(DepartmentRequest departmentRequest) {
+        validator.validateCreateRequestData(departmentRequest);
         enricher.enrichDepartmentData(departmentRequest);
         departmentRepo.save(departmentRequest.getDepartment());
 
