@@ -80,7 +80,7 @@ public class EventTypeConsumer {
         String eventId = eventJsonObject.get(ID).getAsString();
 
         try {
-            RequestHeader header = requestHeaderUtil.polulateRequestHeader(jsonObject, new RequestHeader());
+            RequestHeader header = requestHeaderUtil.populateRequestHeader(jsonObject, new RequestHeader());
             fiscalEventRequest.setRequestHeader(header);
 
             EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());

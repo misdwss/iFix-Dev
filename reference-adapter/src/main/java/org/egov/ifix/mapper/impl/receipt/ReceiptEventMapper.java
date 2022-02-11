@@ -49,7 +49,7 @@ public class ReceiptEventMapper implements EventMapper {
 
         List<FiscalEvent> fiscalEventList = new ArrayList<>();
         String clientProjectCode = data.getAsJsonObject(EVENT).get(PROJECT_ID).getAsString();
-        String iFixProjectId = projectService.getProjectId(clientProjectCode, data);
+        String iFixProjectId = projectService.getResolvedProjectId(clientProjectCode, data);
         JsonArray entityJsonArray = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
 
         entityJsonArray.forEach(entityJsonElement -> {
@@ -85,17 +85,17 @@ public class ReceiptEventMapper implements EventMapper {
             JsonArray billDetailsJA = paymentDetailsJB.getAsJsonObject(BILL).getAsJsonArray(BILL_DETAILS);
 
             billDetailsJA.forEach(billDetailsJE -> {
-                Long taxPeriodFrom = billDetailsJE.getAsJsonObject().get(FROM_PERIOD).getAsLong();
-                Long taxPeriodTo = billDetailsJE.getAsJsonObject().get(TO_PERIOD).getAsLong();
+                Long taxPeriodFrom = billDetailsJE.getAsJsonObject().get(PAYMENT_RECEIPT_FROM_BILLING_PERIOD).getAsLong();
+                Long taxPeriodTo = billDetailsJE.getAsJsonObject().get(PAYMENT_RECEIPT_TO_BILLING_PERIOD).getAsLong();
                 JsonArray billAccountDetailsJA = billDetailsJE.getAsJsonObject().getAsJsonArray(BILL_ACCOUNT_DETAILS);
 
                 billAccountDetailsJA.forEach(billAccountDetailsJE -> {
                     JsonObject billAccountDetailsJB = billAccountDetailsJE.getAsJsonObject();
-                    String coaCode = billAccountDetailsJB.get(TAX_HEAD_CODE).getAsString();
+                    String coaCode = billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_CODE).getAsString();
 
                     Amount amount = Amount.builder()
-                            .amount(billAccountDetailsJB.get(ADJUSTED_AMOUNT).getAsBigDecimal())
-                            .coaId(chartOfAccountService.getChartOfAccount(coaCode, data))
+                            .amount(billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal())
+                            .coaId(chartOfAccountService.getResolvedChartOfAccount(coaCode, data))
                             .fromBillingPeriod(taxPeriodFrom)
                             .toBillingPeriod(taxPeriodTo).build();
 

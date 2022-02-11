@@ -76,7 +76,7 @@ public class ProjectRepository {
             criteria.setCode(projectCode);
             criteria.setTenantId(applicationConfiguration.getTenantId());
             RequestHeader requestHeader = new RequestHeader();
-            requestHeader = requestHeaderUtil.polulateRequestHeader(jsonObjectData, requestHeader);
+            requestHeader = requestHeaderUtil.populateRequestHeader(jsonObjectData, requestHeader);
 
             ProjectRequest projectRequest = new ProjectRequest();
             projectRequest.setRequestHeader(requestHeader);

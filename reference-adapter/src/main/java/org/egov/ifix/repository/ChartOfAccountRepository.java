@@ -98,7 +98,7 @@ public class ChartOfAccountRepository {
             headers.setBearerAuth(authTokenService.getAuthToken());
 
             RequestHeader requestHeader = new RequestHeader();
-            requestHeader = requestHeaderUtil.polulateRequestHeader(jsonObject, requestHeader);
+            requestHeader = requestHeaderUtil.populateRequestHeader(jsonObject, requestHeader);
 
             ChartOfAccountRequest chartOfAccountRequest = new ChartOfAccountRequest();
             chartOfAccountRequest.setRequestHeader(requestHeader);

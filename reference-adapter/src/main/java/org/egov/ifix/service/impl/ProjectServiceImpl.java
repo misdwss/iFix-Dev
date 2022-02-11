@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
      * @return
      */
     @Override
-    public String getProjectId(String projectCode, JsonObject jsonObjectData) {
+    public String getResolvedProjectId(String projectCode, JsonObject jsonObjectData) {
 
         Project project = projectCache.getValue(projectCode);
 

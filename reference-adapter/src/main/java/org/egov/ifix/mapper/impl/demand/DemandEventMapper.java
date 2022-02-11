@@ -53,7 +53,7 @@ public class DemandEventMapper implements EventMapper {
         List<FiscalEvent> fiscalEventList = new ArrayList<>();
         String clientProjectCode = data.getAsJsonObject(EventConstants.EVENT).get(EventConstants.PROJECT_ID)
                 .getAsString();
-        String iFixProjectId = projectService.getProjectId(clientProjectCode, data);
+        String iFixProjectId = projectService.getResolvedProjectId(clientProjectCode, data);
         JsonArray entityJA = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
 
         entityJA.forEach(entityJE -> {
@@ -88,19 +88,19 @@ public class DemandEventMapper implements EventMapper {
      */
     private List<Amount> getAmountDetails(JsonObject demand, JsonObject data) {
         List<Amount> amountList = new ArrayList<>();
-        Long taxPeriodFrom = demand.get(TAX_PERIOD_FROM).getAsLong();
-        Long taxPeriodTo = demand.get(TAX_PERIOD_TO).getAsLong();
+        Long taxPeriodFrom = demand.get(BILL_DEMAND_FROM_BILLING_PERIOD).getAsLong();
+        Long taxPeriodTo = demand.get(BILL_DEMAND_TO_BILLING_PERIOD).getAsLong();
 
         JsonArray demandDetailsJA = demand.getAsJsonArray(DEMAND_DETAILS);
 
         demandDetailsJA.forEach(demandDetailsJE -> {
             JsonObject demandDetailsJO = demandDetailsJE.getAsJsonObject();
 
-            String coaCode = demandDetailsJO.get(TAX_HEAD_MASTER_CODE).getAsString();
+            String coaCode = demandDetailsJO.get(BILL_DEMAND_CLIENT_COA_CODE).getAsString();
 
             Amount amount = Amount.builder()
-                    .amount(demandDetailsJO.get(TAX_AMOUNT).getAsBigDecimal())
-                    .coaId(chartOfAccountService.getChartOfAccount(coaCode, data))
+                    .amount(demandDetailsJO.get(BILL_DEMAND_CLIENT_COA_AMOUNT).getAsBigDecimal())
+                    .coaId(chartOfAccountService.getResolvedChartOfAccount(coaCode, data))
                     .fromBillingPeriod(taxPeriodFrom)
                     .toBillingPeriod(taxPeriodTo).build();
 
