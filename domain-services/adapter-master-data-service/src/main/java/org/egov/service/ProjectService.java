@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class ProjectService {
+
     @Autowired
     ProjectValidator projectValidator;
 
@@ -27,6 +28,7 @@ public class ProjectService {
      */
     public List<Project> findAllByCriteria(ProjectSearchRequest projectSearchRequest) {
         projectValidator.validateProjectSearchRequest(projectSearchRequest);
+
         return projectRepository.findAllByCriteria(projectSearchRequest.getCriteria());
     }
 

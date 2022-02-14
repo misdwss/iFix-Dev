@@ -14,10 +14,7 @@ public class DepartmentQueryBuilder {
 
     public Query buildSearchQuery(DepartmentSearchCriteria searchCriteria) {
 
-        Criteria criteria = new Criteria();
-
-        if (StringUtils.isNotBlank(searchCriteria.getTenantId()))
-            criteria.and("tenantId").is(searchCriteria.getTenantId());
+        Criteria criteria = Criteria.where("tenantId").is(searchCriteria.getTenantId());
 
         if (StringUtils.isNotBlank(searchCriteria.getCode()))
             criteria.and("code").is(searchCriteria.getCode());

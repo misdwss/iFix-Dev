@@ -3,6 +3,7 @@ package org.egov.validator;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.tracer.model.CustomException;
+import org.egov.util.DepartmentUtil;
 import org.egov.util.ExpenditureUtil;
 import org.egov.util.MasterDataConstants;
 import org.egov.web.models.Project;
@@ -21,6 +22,9 @@ public class ProjectValidator {
 
     @Autowired
     private ExpenditureUtil expenditureUtil;
+
+    @Autowired
+    private DepartmentUtil departmentUtil;
 
     /**
      * @param projectSearchRequest
@@ -137,6 +141,11 @@ public class ProjectValidator {
                             "Length range [2-64]");
                 }
 
+                if (!departmentUtil.validateDepartmentEntity(project.getTenantId(),
+                        Collections.singletonList(project.getDepartmentEntitytId()), requestHeader)) {
+                    errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id : "
+                            + project.getExpenditureId() + " doesn't exist in the system");
+                }
             }
 
             if (!errorMap.isEmpty()) {

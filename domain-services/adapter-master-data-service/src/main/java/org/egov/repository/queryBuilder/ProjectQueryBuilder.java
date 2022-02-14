@@ -12,11 +12,7 @@ import java.util.Collections;
 public class ProjectQueryBuilder {
 
     public Query buildQuerySearch(ProjectSearchCriteria projectSearchCriteria) {
-        Criteria criteria = new Criteria();
-
-        if (!StringUtils.isEmpty(projectSearchCriteria.getTenantId())) {
-            criteria.and("tenantId").is(projectSearchCriteria.getTenantId());
-        }
+        Criteria criteria = Criteria.where("tenantId").is(projectSearchCriteria.getTenantId());
 
         if (!StringUtils.isEmpty(projectSearchCriteria.getName())) {
             criteria.and("name").is(projectSearchCriteria.getName());
