@@ -35,6 +35,16 @@ public class MasterDataServiceConfiguration {
     @Value("${ifix.master.expenditure.search.path}")
     private String ifixMasterExpenditureSearchPath;
 
+    @Value("${ifix.department.entity.host}")
+    private String departmentEntityHost;
+
+    @Value("${ifix.department.entity.context.path}")
+    private String departmentEntityContextPath;
+
+    @Value("${ifix.department.entity.search.path}")
+    private String departmentEntitySearchPath;
+
+
     @Value("${ifix.master.department.host}")
     private String ifixMasterDepartmenteHost;
 
@@ -43,4 +53,5 @@ public class MasterDataServiceConfiguration {
 
     @Value("${ifix.master.department.search.path}")
     private String ifixMasterDepartmentSearchPath;
+
 }
