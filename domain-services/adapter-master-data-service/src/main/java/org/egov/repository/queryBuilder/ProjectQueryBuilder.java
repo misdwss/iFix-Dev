@@ -30,8 +30,8 @@ public class ProjectQueryBuilder {
             criteria.and("expenditureId").is(projectSearchCriteria.getExpenditureId());
         }
 
-        if (!StringUtils.isEmpty(projectSearchCriteria.getGetDepartmentEntitytId())) {
-            criteria.and("departmentEntitytId").is(projectSearchCriteria.getGetDepartmentEntitytId());
+        if (!StringUtils.isEmpty(projectSearchCriteria.getDepartmentEntityId())) {
+            criteria.and("departmentEntityId").is(projectSearchCriteria.getDepartmentEntityId());
         }
 
         if (projectSearchCriteria.getIds() != null && !projectSearchCriteria.getIds().isEmpty())

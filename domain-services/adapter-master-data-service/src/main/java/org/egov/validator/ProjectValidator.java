@@ -72,9 +72,9 @@ public class ProjectValidator {
                         "Length range [2-64]");
             }
 
-            if (!StringUtils.isEmpty(projectSearchCriteria.getGetDepartmentEntitytId())
-                    && (projectSearchCriteria.getGetDepartmentEntitytId().length() < 2
-                    || projectSearchCriteria.getGetDepartmentEntitytId().length() > 64)) {
+            if (!StringUtils.isEmpty(projectSearchCriteria.getDepartmentEntityId())
+                    && (projectSearchCriteria.getDepartmentEntityId().length() < 2
+                    || projectSearchCriteria.getDepartmentEntityId().length() > 64)) {
 
                 throw new CustomException(MasterDataConstants.DEPARTMENT_ID, "Department id length is invalid. " +
                         "Length range [2-64]");
@@ -136,11 +136,11 @@ public class ProjectValidator {
                 }
             }
 
-            if(!project.getDepartmentEntitytIds().isEmpty()) {
-                List<String> departmentEntitytIds = project.getDepartmentEntitytIds();
-                for(String departmentEntitytId : departmentEntitytIds) {
-                    if (!StringUtils.isEmpty(departmentEntitytId)) {
-                        if (departmentEntitytId.length() < 2 || departmentEntitytId.length() > 64) {
+            if(!project.getDepartmentEntityIds().isEmpty()) {
+                List<String> departmentEntityIds = project.getDepartmentEntityIds();
+                for(String departmentEntityId : departmentEntityIds) {
+                    if (!StringUtils.isEmpty(departmentEntityId)) {
+                        if (departmentEntityId.length() < 2 || departmentEntityId.length() > 64) {
                             errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
                                     "Length range [2-64]");
                         }
@@ -148,9 +148,9 @@ public class ProjectValidator {
                 }
 
                 if (!departmentUtil.validateDepartmentEntityIds(project.getTenantId(),
-                        project.getDepartmentEntitytIds(), requestHeader)) {
+                        project.getDepartmentEntityIds(), requestHeader)) {
                     errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Some of the Department Entity ids : "
-                            + project.getDepartmentEntitytIds() + " doesn't exist in the system");
+                            + project.getDepartmentEntityIds() + " doesn't exist in the system");
                 }
             }
 

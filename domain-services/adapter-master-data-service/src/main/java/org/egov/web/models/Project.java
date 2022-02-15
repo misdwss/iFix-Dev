@@ -7,7 +7,6 @@ import org.egov.common.contract.AuditDetails;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,8 +37,8 @@ public class Project {
     @JsonProperty("expenditureId")
     private String expenditureId = null;
 
-    @JsonProperty("departmentEntitytIds")
-    private List<String> departmentEntitytIds = null;
+    @JsonProperty("departmentEntityIds")
+    private List<String> departmentEntityIds = null;
 
     @JsonProperty("departmentEntities")
     private List<DepartmentEntity> departmentEntities = null;
