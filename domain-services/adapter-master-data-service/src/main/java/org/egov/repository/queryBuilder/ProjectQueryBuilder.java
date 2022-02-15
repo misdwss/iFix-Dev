@@ -31,7 +31,7 @@ public class ProjectQueryBuilder {
         }
 
         if (!StringUtils.isEmpty(projectSearchCriteria.getDepartmentEntityId())) {
-            criteria.and("departmentEntityIds").all(Collections.singletonList(projectSearchCriteria.getDepartmentEntityId()));
+            criteria.and("departmentEntityIds").in(Collections.singletonList(projectSearchCriteria.getDepartmentEntityId()));
         }
 
         if (projectSearchCriteria.getIds() != null && !projectSearchCriteria.getIds().isEmpty())
