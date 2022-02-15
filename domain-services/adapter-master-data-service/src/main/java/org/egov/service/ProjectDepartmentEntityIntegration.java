@@ -30,27 +30,30 @@ public class ProjectDepartmentEntityIntegration {
     @Autowired
     private ServiceRequestRepository serviceRequestRepository;
 
-    public DepartmentEntity getDepartmentEntityForId(RequestHeader requestHeader, String tenantId,
-                                                     String departmentEntityId) {
-        JsonNode searchRequest = createDepartmentEntitySearchRequest(requestHeader, tenantId, departmentEntityId);
+    public List<DepartmentEntity> getDepartmentEntityForIds(RequestHeader requestHeader, String tenantId,
+                                                      List<String> departmentEntityIds) {
+        JsonNode searchRequest = createDepartmentEntitySearchRequest(requestHeader, tenantId, departmentEntityIds);
         Object response = serviceRequestRepository.fetchResult(createDepartmentEntitySearchUrl(), searchRequest);
         JsonNode responseJson = objectMapper.convertValue(response, JsonNode.class);
+        ArrayNode departmentEntityDetails = (ArrayNode) responseJson.get("departmentEntity");
 
-        JsonNode departmentEntityDetails = responseJson.get("departmentEntity").get(0);
+        List<DepartmentEntity> departmentEntities = new ArrayList<>();
+        for(JsonNode departmentEntityDetail : departmentEntityDetails) {
+            DepartmentEntity departmentEntity = getCurrentDepartmentEntity(departmentEntityDetail);
+            departmentEntity.setAncestry(createAncestryArrayFor(departmentEntityDetail));
+            departmentEntities.add(departmentEntity);
+        }
 
-        DepartmentEntity departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
-        departmentEntity.setAncestry(createAncestryArrayFor(departmentEntityDetails));
-
-        return departmentEntity;
+        return departmentEntities;
     }
 
     private JsonNode createDepartmentEntitySearchRequest(RequestHeader requestHeader, String tenantId,
-                                                         String departmentEntityId) {
-        ArrayNode departmentEntityIds = objectMapper.createArrayNode();
-        departmentEntityIds.add(departmentEntityId);
+                                                         List<String> departmentEntityIds) {
+        ArrayNode departmentEntityIdArrayNode = objectMapper.createArrayNode();
+        departmentEntityIds.forEach(departmentEntityId -> departmentEntityIdArrayNode.add(departmentEntityId));
 
         ObjectNode searchCriteria = objectMapper.createObjectNode();
-        searchCriteria.set("Ids", departmentEntityIds);
+        searchCriteria.set("Ids", departmentEntityIdArrayNode);
         searchCriteria.put("tenantId", tenantId);
         searchCriteria.put("getAncestry", true);
 
@@ -62,21 +65,21 @@ public class ProjectDepartmentEntityIntegration {
         return searchRequest;
     }
 
-    private DepartmentEntity getCurrentDepartmentEntity(JsonNode departmentEntityDetails) {
-        if (departmentEntityDetails != null) {
-            while (departmentEntityDetails.get("children").size() != 0) {
-                departmentEntityDetails = departmentEntityDetails.get("children").get(0);
+    private DepartmentEntity getCurrentDepartmentEntity(JsonNode departmentEntityDetail) {
+        if (departmentEntityDetail != null) {
+            while (departmentEntityDetail.get("children").size() != 0) {
+                departmentEntityDetail = departmentEntityDetail.get("children").get(0);
             }
             DepartmentEntity departmentEntity = DepartmentEntity.builder()
-                    .id(departmentEntityDetails.get("id") != null ? departmentEntityDetails.get("id").asText() : null)
-                    .code(departmentEntityDetails.get("code") != null
-                            ? departmentEntityDetails.get("code").asText() : null)
-                    .name(departmentEntityDetails.get("name") != null
-                            ? departmentEntityDetails.get("name").asText() : null)
-                    .hierarchyLevel(departmentEntityDetails.get("hierarchyLevel") != null
-                            ? departmentEntityDetails.get("hierarchyLevel").asInt() : null)
-                    .departmentId(departmentEntityDetails.get("departmentId") != null
-                            ? departmentEntityDetails.get("departmentId").asText() : null)
+                    .id(departmentEntityDetail.get("id") != null ? departmentEntityDetail.get("id").asText() : null)
+                    .code(departmentEntityDetail.get("code") != null
+                            ? departmentEntityDetail.get("code").asText() : null)
+                    .name(departmentEntityDetail.get("name") != null
+                            ? departmentEntityDetail.get("name").asText() : null)
+                    .hierarchyLevel(departmentEntityDetail.get("hierarchyLevel") != null
+                            ? departmentEntityDetail.get("hierarchyLevel").asInt() : null)
+                    .departmentId(departmentEntityDetail.get("departmentId") != null
+                            ? departmentEntityDetail.get("departmentId").asText() : null)
                     .build();
             return departmentEntity;
         } else {
@@ -84,20 +87,20 @@ public class ProjectDepartmentEntityIntegration {
         }
     }
 
-    private List<DepartmentEntityAttributes> createAncestryArrayFor(JsonNode departmentEntityDetails) {
+    private List<DepartmentEntityAttributes> createAncestryArrayFor(JsonNode departmentEntityDetail) {
         List<DepartmentEntityAttributes> ancestry = new ArrayList<>();
-        while (departmentEntityDetails != null) {
+        while (departmentEntityDetail != null) {
             DepartmentEntityAttributes departmentEntityAttributes = DepartmentEntityAttributes.builder()
-                    .id(departmentEntityDetails.get("id").asText())
-                    .code(departmentEntityDetails.get("code").asText())
-                    .name(departmentEntityDetails.get("name").asText())
-                    .hierarchyLevel(departmentEntityDetails.get("hierarchyLevel").asInt())
+                    .id(departmentEntityDetail.get("id").asText())
+                    .code(departmentEntityDetail.get("code").asText())
+                    .name(departmentEntityDetail.get("name").asText())
+                    .hierarchyLevel(departmentEntityDetail.get("hierarchyLevel").asInt())
                     .build();
             ancestry.add(departmentEntityAttributes);
-            if (departmentEntityDetails.get("children").size() != 0)
-                departmentEntityDetails = departmentEntityDetails.get("children").get(0);
+            if (departmentEntityDetail.get("children").size() != 0)
+                departmentEntityDetail = departmentEntityDetail.get("children").get(0);
             else
-                departmentEntityDetails = null;
+                departmentEntityDetail = null;
         }
         return ancestry;
     }

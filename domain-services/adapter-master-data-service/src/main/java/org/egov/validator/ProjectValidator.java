@@ -137,10 +137,10 @@ public class ProjectValidator {
             }
 
             if(!project.getDepartmentEntityIds().isEmpty()) {
-                List<String> departmentEntityIds = project.getDepartmentEntityIds();
-                for(String departmentEntityId : departmentEntityIds) {
-                    if (!StringUtils.isEmpty(departmentEntityId)) {
-                        if (departmentEntityId.length() < 2 || departmentEntityId.length() > 64) {
+                List<String> departmentEntitytIds = project.getDepartmentEntityIds();
+                for(String departmentEntitytId : departmentEntitytIds) {
+                    if (!StringUtils.isEmpty(departmentEntitytId)) {
+                        if (departmentEntitytId.length() < 2 || departmentEntitytId.length() > 64) {
                             errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
                                     "Length range [2-64]");
                         }
