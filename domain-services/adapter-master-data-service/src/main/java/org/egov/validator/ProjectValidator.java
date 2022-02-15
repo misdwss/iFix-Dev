@@ -75,9 +75,8 @@ public class ProjectValidator {
             if (!StringUtils.isEmpty(projectSearchCriteria.getDepartmentEntityId())
                     && (projectSearchCriteria.getDepartmentEntityId().length() < 2
                     || projectSearchCriteria.getDepartmentEntityId().length() > 64)) {
-
-                throw new CustomException(MasterDataConstants.DEPARTMENT_ID, "Department id length is invalid. " +
-                        "Length range [2-64]");
+                throw new CustomException(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid."
+                        + "Length range [2-64]");
             }
 
             if (!StringUtils.isEmpty(projectSearchCriteria.getLocationId())
