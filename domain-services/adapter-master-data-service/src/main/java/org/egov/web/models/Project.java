@@ -38,11 +38,11 @@ public class Project {
     @JsonProperty("expenditureId")
     private String expenditureId = null;
 
-    @JsonProperty("departmentEntitytId")
-    private String departmentEntitytId = null;
+    @JsonProperty("departmentEntitytIds")
+    private List<String> departmentEntitytIds = null;
 
-    @JsonProperty("departmentEntity")
-    private DepartmentEntity departmentEntity = null;
+    @JsonProperty("departmentEntities")
+    private List<DepartmentEntity> departmentEntities = null;
 
     @JsonProperty("locationIds")
     @Valid

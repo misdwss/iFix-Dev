@@ -13,6 +13,6 @@
     "code": "7378",
     "name": "MAJHER",
     "expenditureId": "910f4d23-fc63-48fb-a8fb-f0ad567b788a",
-    "departmentEntitytId": "e75e4840-2586-42f8-b8bd-841b8637da06"
+    "departmentEntitytIds": [ "e75e4840-2586-42f8-b8bd-841b8637da06" ]
   }
 }

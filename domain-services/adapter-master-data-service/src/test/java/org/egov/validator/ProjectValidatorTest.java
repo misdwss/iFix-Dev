@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -187,7 +188,7 @@ class ProjectValidatorTest {
 
     @Test
     void testValidateProjectCreateRequestDepartmentEntityIdLengthException() {
-        projectCreateRequest.getProject().setDepartmentEntitytId("0");
+        projectCreateRequest.getProject().setDepartmentEntitytIds(Collections.singletonList("0"));
 
         assertThrows(CustomException.class,
                 () -> projectValidator.validateProjectCreateRequest(projectCreateRequest),

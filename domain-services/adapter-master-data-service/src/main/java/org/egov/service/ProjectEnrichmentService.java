@@ -9,6 +9,8 @@ import org.egov.web.models.ProjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -43,10 +45,13 @@ public class ProjectEnrichmentService {
 
     private void addDepartmentEntityDetails(ProjectRequest projectRequest) {
         Project project = projectRequest.getProject();
-        DepartmentEntity departmentEntity =
-                projectDepartmentEntityIntegration.getDepartmentEntityForId(projectRequest.getRequestHeader(),
-                        project.getTenantId(), project.getDepartmentEntitytId());
-        project.setDepartmentEntity(departmentEntity);
+        List<DepartmentEntity> departmentEntityList = new ArrayList<>();
+        for(String departmentEntityId : project.getDepartmentEntitytIds()) {
+            DepartmentEntity departmentEntity = projectDepartmentEntityIntegration.getDepartmentEntityForId(
+                    projectRequest.getRequestHeader(), project.getTenantId(), departmentEntityId);
+            departmentEntityList.add(departmentEntity);
+        }
+        project.setDepartmentEntities(departmentEntityList);
     }
 
 }

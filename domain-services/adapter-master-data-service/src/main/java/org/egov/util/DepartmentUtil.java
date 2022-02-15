@@ -29,7 +29,7 @@ public class DepartmentUtil {
      * @param requestHeader
      * @return
      */
-    public boolean validateDepartmentEntity(String tenantId, List<String> idList, RequestHeader requestHeader) {
+    public boolean validateDepartmentEntityIds(String tenantId, List<String> idList, RequestHeader requestHeader) {
         if (StringUtils.isNotBlank(tenantId) && idList != null && !idList.isEmpty()) {
             Map<String, Object> departmentEntityValueMap = new HashMap<>();
             departmentEntityValueMap.put(MasterDataConstants.IDS, idList);
@@ -45,7 +45,7 @@ public class DepartmentUtil {
             try {
                 List list = JsonPath.read(response, MasterDataConstants.DEPARTMENT_ENTITY_LIST);
 
-                return list != null && !list.isEmpty();
+                return list != null && list.size() == idList.size();
             } catch (Exception e) {
                 throw new CustomException(MasterDataConstants.JSONPATH_ERROR, "Failed to parse department response");
             }
