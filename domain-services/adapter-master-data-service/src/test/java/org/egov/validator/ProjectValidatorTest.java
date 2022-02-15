@@ -89,7 +89,7 @@ class ProjectValidatorTest {
 
     @Test
     void testValidateProjectSearchRequestDepartmentIdMinLengthException() {
-        projectSearchRequest.getCriteria().setGetDepartmentEntitytId("0");
+        projectSearchRequest.getCriteria().setDepartmentEntityId("0");
 
         assertThrows(CustomException.class,
                 () -> projectValidator.validateProjectSearchRequest(projectSearchRequest),
@@ -99,7 +99,7 @@ class ProjectValidatorTest {
     @Test
     void testValidateProjectSearchRequestDepartmentIdMaxLengthException() {
         projectSearchRequest.getCriteria()
-                .setGetDepartmentEntitytId("6413d1d9ef49fbc4b6dac524c5e92d487b010464abd89839e4e7591d100f41a6a");
+                .setDepartmentEntityId("6413d1d9ef49fbc4b6dac524c5e92d487b010464abd89839e4e7591d100f41a6a");
 
         assertThrows(CustomException.class,
                 () -> projectValidator.validateProjectSearchRequest(projectSearchRequest),
@@ -188,7 +188,7 @@ class ProjectValidatorTest {
 
     @Test
     void testValidateProjectCreateRequestDepartmentEntityIdLengthException() {
-        projectCreateRequest.getProject().setDepartmentEntitytIds(Collections.singletonList("0"));
+        projectCreateRequest.getProject().setDepartmentEntityIds(Collections.singletonList("0"));
 
         assertThrows(CustomException.class,
                 () -> projectValidator.validateProjectCreateRequest(projectCreateRequest),

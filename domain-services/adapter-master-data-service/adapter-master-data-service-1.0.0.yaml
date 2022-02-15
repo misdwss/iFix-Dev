@@ -380,7 +380,7 @@ components:
           minLength: 2
           type: string
           description: Capture the expenditure id from expenditure master
-        departmentEntitytIds:
+        departmentEntityIds:
           type: array
           items:
             maxLength: 64

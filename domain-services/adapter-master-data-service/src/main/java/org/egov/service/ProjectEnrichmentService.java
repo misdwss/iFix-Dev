@@ -46,7 +46,7 @@ public class ProjectEnrichmentService {
     private void addDepartmentEntityDetails(ProjectRequest projectRequest) {
         Project project = projectRequest.getProject();
         List<DepartmentEntity> departmentEntityList = new ArrayList<>();
-        for(String departmentEntityId : project.getDepartmentEntitytIds()) {
+        for(String departmentEntityId : project.getDepartmentEntityIds()) {
             DepartmentEntity departmentEntity = projectDepartmentEntityIntegration.getDepartmentEntityForId(
                     projectRequest.getRequestHeader(), project.getTenantId(), departmentEntityId);
             departmentEntityList.add(departmentEntity);

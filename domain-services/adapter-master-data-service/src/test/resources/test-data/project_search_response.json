@@ -14,7 +14,7 @@
       "code": "Sukhsal-Project",
       "name": "Sukhsal-Project",
       "expenditureId": "910f4d23-fc63-48fb-a8fb-f0ad567b788a",
-      "departmentEntitytIds": [ "901f76a8-1911-4960-b389-57b62bd4dcdb" ],
+      "departmentEntityIds": [ "901f76a8-1911-4960-b389-57b62bd4dcdb" ],
       "departmentEntities": [ {
         "id": "901f76a8-1911-4960-b389-57b62bd4dcdb",
         "code": "DIV23",
