@@ -10,7 +10,7 @@ paths:
   /department/v1/_create:
     post:
       tags:
-      - Department
+        - Department
       summary: Create/Add new department on iFix for a tenant
       description: Create/Add new department on iFix for a tenant
       requestBody:
@@ -42,7 +42,7 @@ paths:
   /department/v1/_search:
     post:
       tags:
-      - Department
+        - Department
       summary: Get the list departments.
       description: |
         Based on the criteria get the list of departments.
@@ -75,7 +75,7 @@ paths:
   /expenditure/v1/_create:
     post:
       tags:
-      - Expenditure
+        - Expenditure
       summary: Create/Add new Expenditure on iFix for a tenant
       description: Create/Add new Expenditure on iFix for a tenant
       requestBody:
@@ -107,7 +107,7 @@ paths:
   /expenditure/v1/_search:
     post:
       tags:
-      - Expenditure
+        - Expenditure
       summary: Get the list Expenditure.
       description: |
         Based on the criteria get the list of Expenditure.
@@ -140,7 +140,7 @@ paths:
   /project/v1/_create:
     post:
       tags:
-      - Project
+        - Project
       summary: Create/Add new project on iFix for a tenant
       description: Create/Add new project on iFix for a tenant
       requestBody:
@@ -172,7 +172,7 @@ paths:
   /project/v1/_search:
     post:
       tags:
-      - Project
+        - Project
       summary: Get the list Project.
       description: |
         Based on the criteria get the list of Project.
@@ -206,9 +206,9 @@ components:
   schemas:
     Department:
       required:
-      - code
-      - name
-      - tenantId
+        - code
+        - name
+        - tenantId
       type: object
       properties:
         id:
@@ -246,10 +246,10 @@ components:
       description: Captures the department attributes
     Expenditure:
       required:
-      - code
-      - name
-      - tenantId
-      - type
+        - code
+        - name
+        - tenantId
+        - type
       type: object
       properties:
         id:
@@ -277,8 +277,8 @@ components:
           type: string
           description: Capture the type of the expenditure
           enum:
-          - Scheme
-          - Non-Scheme
+            - Scheme
+            - Non-Scheme
         departmentId:
           maxLength: 64
           minLength: 1
@@ -314,10 +314,10 @@ components:
       description: The list basic attributes of a department entity that are stored as part of the ancestry list
     DepartmentEntity:
       required:
-      - code
-      - hierarchyLevelId
-      - id
-      - name
+        - code
+        - hierarchyLevelId
+        - id
+        - name
       type: object
       properties:
         id:
@@ -349,9 +349,9 @@ components:
       readOnly: true
     Project:
       required:
-      - code
-      - name
-      - tenantId
+        - code
+        - name
+        - tenantId
       type: object
       properties:
         id:
@@ -381,14 +381,17 @@ components:
           type: string
           description: Capture the expenditure id from expenditure master
         departmentEntitytIds:
-          maxLength: 64
-          minLength: 2
           type: array
-          description: Capture the department entity id from department entity master
           items:
+            maxLength: 64
+            minLength: 2
             type: string
-        departmentEntity:
-          $ref: '#/components/schemas/DepartmentEntity'
+            description: Capture the department entity id from department entity master
+        departmentEntities:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DepartmentEntity'
         locationIds:
           type: array
           description: Capture the location id from location master
@@ -399,8 +402,8 @@ components:
       description: Captures the Project attributes
     DepartmentRequest:
       required:
-      - department
-      - requestHeader
+        - department
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -418,8 +421,8 @@ components:
       description: Contains the ResponseHeader and the enriched Department information
     DepartmentSearchRequest:
       required:
-      - criteria
-      - requestHeader
+        - criteria
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -428,7 +431,7 @@ components:
       description: Department search request along with request metadata. Defoult operator b/w multiple criteria is AND.
     DepartmentSearchCriteria:
       required:
-      - tenantId
+        - tenantId
       type: object
       properties:
         Ids:
@@ -455,8 +458,8 @@ components:
       description: The object contains all the search criteria of the Department
     ExpenditureRequest:
       required:
-      - expenditure
-      - requestHeader
+        - expenditure
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -474,8 +477,8 @@ components:
       description: Contains the ResponseHeader and the enriched Expenditure information
     ExpenditureSearchRequest:
       required:
-      - criteria
-      - requestHeader
+        - criteria
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -484,7 +487,7 @@ components:
       description: Expenditure search request along with request metadata. Defoult operator b/w multiple criteria is AND.
     ExpenditureSearchCriteria:
       required:
-      - tenantId
+        - tenantId
       type: object
       properties:
         Ids:
@@ -511,8 +514,8 @@ components:
       description: The object contains all the search criteria of the Expenditure
     ProjectRequest:
       required:
-      - project
-      - requestHeader
+        - project
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -530,8 +533,8 @@ components:
       description: Contains the ResponseHeader and the enriched Project information
     ProjectSearchRequest:
       required:
-      - criteria
-      - requestHeader
+        - criteria
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -540,7 +543,7 @@ components:
       description: Project search request along with request metadata. Default operator b/w multiple criteria is AND
     ProjectSearchCriteria:
       required:
-      - tenantId
+        - tenantId
       type: object
       properties:
         Ids:
@@ -574,6 +577,11 @@ components:
           minLength: 2
           type: string
           description: Capture the department id from department master
+        departmentEntityId:
+          maxLength: 64
+          minLength: 2
+          type: string
+          description: Capture the department entity id from department entity service
         locationId:
           maxLength: 64
           minLength: 2
@@ -582,7 +590,7 @@ components:
       description: The object contains all the search criteria of the Project
     ErrorResponse:
       required:
-      - ResponseHeader
+        - ResponseHeader
       type: object
       properties:
         ResponseHeader:
@@ -613,8 +621,8 @@ components:
           type: string
           description: status of request processing
           enum:
-          - SUCCESS
-          - FAILED
+            - SUCCESS
+            - FAILED
         signature:
           type: string
           description: Hash describing the current Request
@@ -628,9 +636,9 @@ components:
       readOnly: true
     Error:
       required:
-      - code
-      - description
-      - message
+        - code
+        - description
+        - message
       type: object
       properties:
         code:

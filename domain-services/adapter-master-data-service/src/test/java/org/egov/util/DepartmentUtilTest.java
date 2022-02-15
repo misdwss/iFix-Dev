@@ -57,13 +57,13 @@ class DepartmentUtilTest {
     void testValidateDepartmentEntity() {
         doReturn(departmentEntityResponse).when(searchRequestRepository).fetchResult((String) any(), any());
 
-        assertTrue(departmentUtil.validateDepartmentEntity("pb", idList, requestHeader));
+        assertTrue(departmentUtil.validateDepartmentEntityIds("pb", idList, requestHeader));
     }
 
     @Test
     void testFalseValidateDepartmentEntity() {
 
-        assertFalse(departmentUtil.validateDepartmentEntity(null, new ArrayList(), requestHeader));
+        assertFalse(departmentUtil.validateDepartmentEntityIds(null, new ArrayList(), requestHeader));
     }
 
     @Test
@@ -71,7 +71,7 @@ class DepartmentUtilTest {
         doReturn(new Object()).when(searchRequestRepository).fetchResult((String) any(), any());
 
         assertThrows(CustomException.class,
-                () -> departmentUtil.validateDepartmentEntity("pb", idList, requestHeader));
+                () -> departmentUtil.validateDepartmentEntityIds("pb", idList, requestHeader));
     }
 }
 

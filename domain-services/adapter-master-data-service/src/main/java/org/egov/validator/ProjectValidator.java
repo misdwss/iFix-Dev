@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -135,16 +136,21 @@ public class ProjectValidator {
                 }
             }
 
-            if (!StringUtils.isEmpty(project.getDepartmentEntitytId())) {
-                if (project.getDepartmentEntitytId().length() < 2 || project.getDepartmentEntitytId().length() > 64) {
-                    errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
-                            "Length range [2-64]");
+            if(!project.getDepartmentEntitytIds().isEmpty()) {
+                List<String> departmentEntitytIds = project.getDepartmentEntitytIds();
+                for(String departmentEntitytId : departmentEntitytIds) {
+                    if (!StringUtils.isEmpty(departmentEntitytId)) {
+                        if (departmentEntitytId.length() < 2 || departmentEntitytId.length() > 64) {
+                            errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
+                                    "Length range [2-64]");
+                        }
+                    }
                 }
 
-                if (!departmentUtil.validateDepartmentEntity(project.getTenantId(),
-                        Collections.singletonList(project.getDepartmentEntitytId()), requestHeader)) {
-                    errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id : "
-                            + project.getExpenditureId() + " doesn't exist in the system");
+                if (!departmentUtil.validateDepartmentEntityIds(project.getTenantId(),
+                        project.getDepartmentEntitytIds(), requestHeader)) {
+                    errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Some of the Department Entity ids : "
+                            + project.getDepartmentEntitytIds() + " doesn't exist in the system");
                 }
             }
 

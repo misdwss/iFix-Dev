@@ -67,7 +67,7 @@ class ProjectDepartmentEntityIntegrationTest {
 
     @Test
     void getDepartmentEntityForId() {
-        assertNotNull(projectCreateRequest.getProject().getDepartmentEntitytId());
+        assertNotNull(projectCreateRequest.getProject().getDepartmentEntitytIds());
 
         when(objectMapper.convertValue((Object) any(), (Class<Object>) any()))
                 .thenReturn(jsonNode);
@@ -80,6 +80,6 @@ class ProjectDepartmentEntityIntegrationTest {
         projectDepartmentEntityIntegration
                 .getDepartmentEntityForId(projectCreateRequest.getRequestHeader(),
                         projectCreateRequest.getProject().getTenantId(),
-                        projectCreateRequest.getProject().getDepartmentEntitytId());
+                        projectCreateRequest.getProject().getDepartmentEntitytIds().get(0));
     }
 }
