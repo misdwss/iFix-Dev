@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -53,32 +55,32 @@ class ProjectEnrichmentServiceTest {
     void testEnrichProjectDataWithAuditDetails() {
         projectRequest.getProject().setAuditDetails(auditDetails);
 
-        when(this.projectDepartmentEntityIntegration.getDepartmentEntityForId((RequestHeader) any(), (String) any(),
-                (String) any())).thenReturn(new DepartmentEntity());
+        when(this.projectDepartmentEntityIntegration.getDepartmentEntityForIds((RequestHeader) any(), (String) any(),
+                (List<String>) any())).thenReturn(Collections.singletonList(new DepartmentEntity()));
         doReturn(auditDetails).when(masterDataServiceUtil).enrichAuditDetails(userId, auditDetails, false);
 
         projectEnrichmentService.enrichProjectData(projectRequest);
 
         assertNotNull(projectRequest.getProject().getAuditDetails());
 
-        verify(this.projectDepartmentEntityIntegration, atLeast(0)).getDepartmentEntityForId((RequestHeader) any(),
-                (String) any(), (String) any());
+        verify(this.projectDepartmentEntityIntegration, atLeast(0)).getDepartmentEntityForIds((RequestHeader) any(),
+                (String) any(), (List<String>) any());
         verify(masterDataServiceUtil).enrichAuditDetails(userId, auditDetails, false);
 
     }
 
     @Test
     void testEnrichProjectDataWithoutAuditDetails() {
-        when(this.projectDepartmentEntityIntegration.getDepartmentEntityForId((RequestHeader) any(), (String) any(),
-                (String) any())).thenReturn(new DepartmentEntity());
+        when(this.projectDepartmentEntityIntegration.getDepartmentEntityForIds((RequestHeader) any(), (String) any(),
+                (List<String>) any())).thenReturn(Collections.singletonList(new DepartmentEntity()));
         doReturn(auditDetails).when(masterDataServiceUtil).enrichAuditDetails(userId, projectRequest.getProject().getAuditDetails(), true);
 
         projectEnrichmentService.enrichProjectData(projectRequest);
 
         assertNotNull(projectRequest.getProject().getAuditDetails());
 
-        verify(this.projectDepartmentEntityIntegration, atLeast(0)).getDepartmentEntityForId((RequestHeader) any(),
-                (String) any(), (String) any());
+        verify(this.projectDepartmentEntityIntegration, atLeast(0)).getDepartmentEntityForIds((RequestHeader) any(),
+                (String) any(), (List<String>) any());
         verify(masterDataServiceUtil).enrichAuditDetails(userId, null, true);
 
     }

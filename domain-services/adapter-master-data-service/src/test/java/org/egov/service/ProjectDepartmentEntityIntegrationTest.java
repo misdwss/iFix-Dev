@@ -78,8 +78,8 @@ class ProjectDepartmentEntityIntegrationTest {
         doReturn(new Object()).when(serviceRequestRepository).fetchResult((String) any(), (JsonNode) any());
 
         projectDepartmentEntityIntegration
-                .getDepartmentEntityForId(projectCreateRequest.getRequestHeader(),
+                .getDepartmentEntityForIds(projectCreateRequest.getRequestHeader(),
                         projectCreateRequest.getProject().getTenantId(),
-                        projectCreateRequest.getProject().getDepartmentEntityIds().get(0));
+                        projectCreateRequest.getProject().getDepartmentEntityIds());
     }
 }
