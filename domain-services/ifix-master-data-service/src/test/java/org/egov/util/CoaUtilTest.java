@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -76,7 +75,7 @@ class CoaUtilTest {
         List<Government> actualResult = coaUtil.searchTenants(requestHeader, chartOfAccount);
 
         assertNotNull(actualResult);
-        assertTrue(actualResult.size() == 0);
+        assertEquals(0, actualResult.size());
     }
 
     @Test
@@ -90,6 +89,6 @@ class CoaUtilTest {
         List<Government> actualResult = coaUtil.searchTenants(requestHeader, chartOfAccount);
 
         assertNotNull(actualResult);
-        assertTrue(actualResult.size() == 0);
+        assertEquals(0, actualResult.size());
     }
 }
