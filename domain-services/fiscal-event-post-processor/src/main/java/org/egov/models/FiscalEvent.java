@@ -32,9 +32,6 @@ public class FiscalEvent {
     @JsonProperty("tenantId")
     private String tenantId = null;
 
-    @JsonProperty("projectId")
-    private String projectId = null;
-
     @JsonProperty("eventType")
     private EventTypeEnum eventType = null;
 
