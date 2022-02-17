@@ -27,20 +27,10 @@ public class FiscalEventDereferenceService {
     @Autowired
     private GovernmentUtil governmentUtil;
 
-    @Autowired
-    private ProjectUtil projectUtil;
-
-    @Autowired
-    private ExpenditureUtil expenditureUtil;
-
-    @Autowired
-    private DepartmentUtil departmentUtil;
-
     public FiscalEventDeReferenced dereference(FiscalEventRequest fiscalEventRequest) {
         FiscalEventDeReferenced fiscalEventDeReferenced = new FiscalEventDeReferenced();
         dereferenceTenantId(fiscalEventRequest, fiscalEventDeReferenced);
         dereferenceCoaId(fiscalEventRequest, fiscalEventDeReferenced);
-        dereferenceProjectId(fiscalEventRequest, fiscalEventDeReferenced);
         enricher.enrich(fiscalEventRequest, fiscalEventDeReferenced);
         return fiscalEventDeReferenced;
     }
@@ -97,74 +87,4 @@ public class FiscalEventDereferenceService {
         fiscalEventDeReferenced.setAmountDetails(updatedAmtDereferences);
     }
 
-    /**
-     * @param fiscalEventRequest
-     * @param fiscalEventDeReferenced
-     */
-    private void dereferenceProjectId(FiscalEventRequest fiscalEventRequest, FiscalEventDeReferenced fiscalEventDeReferenced) {
-        if (isValidProjectIdParam(fiscalEventRequest) && fiscalEventDeReferenced != null) {
-
-            JsonNode jsonNode = projectUtil.getProjectReference(fiscalEventRequest);
-            JsonNode projectListNode = jsonNode.get("project");
-            if (projectListNode != null && !projectListNode.isEmpty()) {
-                JsonNode projectNode = projectListNode.get(0);
-
-                String expenditureId = null;
-                String departmentId = null;
-                if (projectNode != null && !projectNode.isEmpty()) {
-                    expenditureId = projectNode.get("expenditureId") != null ? projectNode.get("expenditureId").asText() : null;
-                    departmentId = projectNode.get(DEPARTMENT_ENTITY) != null && projectNode.get(DEPARTMENT_ENTITY).get("departmentId") != null
-                            ? projectNode.get(DEPARTMENT_ENTITY).get("departmentId").asText() : null;
-
-                    fiscalEventDeReferenced.setProject(getProjectDetails(projectNode));
-                    if (projectNode.get(DEPARTMENT_ENTITY) != null) {
-                        fiscalEventDeReferenced.setDepartmentEntity(projectUtil.getDepartmentEntityFromProject(projectNode.get(DEPARTMENT_ENTITY)));
-                    }
-                }
-
-                List<Expenditure> expenditureList = null;
-                if (StringUtils.isNotBlank(expenditureId)) {
-                    expenditureList = expenditureUtil.getExpenditureReference(fiscalEventRequest.getFiscalEvent().getTenantId(),
-                            expenditureId, fiscalEventRequest.getRequestHeader());
-                }
-
-                if (expenditureList != null && !expenditureList.isEmpty()) {
-                    fiscalEventDeReferenced.setExpenditure(expenditureList.get(0));
-                }
-
-                List<Department> departmentList = null;
-                if (StringUtils.isNotBlank(departmentId)) {
-                    departmentList = departmentUtil
-                            .getDepartmentReference(fiscalEventRequest.getFiscalEvent().getTenantId(),
-                                    departmentId, fiscalEventRequest.getRequestHeader());
-                }
-
-                if (departmentList != null && !departmentList.isEmpty()) {
-                    fiscalEventDeReferenced.setDepartment(departmentList.get(0));
-                }
-            }
-        }
-    }
-
-    private Project getProjectDetails(JsonNode projectNode) {
-        return Project.builder().id(projectNode.get("id") != null ? projectNode.get("id").asText() : null)
-                .code(projectNode.get("code") != null ? projectNode.get("code").asText() : null)
-                .name(projectNode.get("name") != null ? projectNode.get("name").asText() : null).build();
-    }
-
-    /**
-     * @param fiscalEventRequest
-     * @return
-     */
-    private boolean isValidProjectIdParam(FiscalEventRequest fiscalEventRequest) {
-        if (fiscalEventRequest != null && fiscalEventRequest.getFiscalEvent() != null
-                && fiscalEventRequest.getRequestHeader() != null
-                && !StringUtils.isBlank(fiscalEventRequest.getFiscalEvent().getProjectId())
-                && !StringUtils.isBlank(fiscalEventRequest.getFiscalEvent().getTenantId())
-        ) {
-            return true;
-        }
-
-        return false;
-    }
 }

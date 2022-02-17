@@ -37,18 +37,6 @@ public class FiscalEventLineItemUnbundled {
     @JsonProperty("government")
     private Government government = null;
 
-    @JsonProperty("department")
-    private Department department = null;
-
-    @JsonProperty("departmentEntity")
-    private DepartmentEntity departmentEntity = null;
-
-    @JsonProperty("expenditure")
-    private Expenditure expenditure = null;
-
-    @JsonProperty("project")
-    private Project project = null;
-
     @JsonProperty("eventType")
     private String eventType = null;
 

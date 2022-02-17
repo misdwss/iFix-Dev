@@ -50,19 +50,15 @@ public class FiscalEventUnbundleService {
         fiscalEventLineItemUnbundled.setFromBillingPeriod(amountDetailsDeReferenced.getFromBillingPeriod());
         fiscalEventLineItemUnbundled.setToBillingPeriod(amountDetailsDeReferenced.getToBillingPeriod());
 
-        fiscalEventLineItemUnbundled.setDepartment(fiscalEventDeReferenced.getDepartment());
         fiscalEventLineItemUnbundled.setIngestionTime(fiscalEventDeReferenced.getIngestionTime());
         fiscalEventLineItemUnbundled.setEventTime(fiscalEventDeReferenced.getEventTime());
         fiscalEventLineItemUnbundled.setEventType(fiscalEventDeReferenced.getEventType());
-        fiscalEventLineItemUnbundled.setExpenditure(fiscalEventDeReferenced.getExpenditure());
         fiscalEventLineItemUnbundled.setGovernment(fiscalEventDeReferenced.getGovernment());
         fiscalEventLineItemUnbundled.setParentEventId(fiscalEventDeReferenced.getParentEventId());
         fiscalEventLineItemUnbundled.setParentReferenceId(fiscalEventDeReferenced.getParentReferenceId());
-        fiscalEventLineItemUnbundled.setProject(fiscalEventDeReferenced.getProject());
         fiscalEventLineItemUnbundled.setReferenceId(fiscalEventDeReferenced.getReferenceId());
         fiscalEventLineItemUnbundled.setTenantId(fiscalEventDeReferenced.getTenantId());
         fiscalEventLineItemUnbundled.setVersion(fiscalEventDeReferenced.getVersion());
-        fiscalEventLineItemUnbundled.setDepartmentEntity(fiscalEventDeReferenced.getDepartmentEntity());
 
         fiscalEventLineItemUnbundled.setAuditDetails(fiscalEventDeReferenced.getAuditDetails());
 
