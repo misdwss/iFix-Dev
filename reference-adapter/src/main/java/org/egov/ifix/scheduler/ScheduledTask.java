@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTask {
-	
+
+/*
 	@Autowired
 	EventPostingDetailRepository eventPostingDetailRepository;
 	@Autowired
@@ -32,5 +33,6 @@ public class ScheduledTask {
 		}
 		
 	}
-	
+*/
+
 }
