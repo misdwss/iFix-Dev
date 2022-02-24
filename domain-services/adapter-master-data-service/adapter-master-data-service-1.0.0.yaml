@@ -287,66 +287,6 @@ components:
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
       description: Captures the Expenditure attributes
-    DepartmentEntityAttributes:
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique the department entity code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures the department entity name
-        hierarchyLevel:
-          maxLength: 256
-          minLength: 1
-          type: number
-          description: Capture the level of the given department entity
-      description: The list basic attributes of a department entity that are stored as part of the ancestry list
-    DepartmentEntity:
-      required:
-        - code
-        - hierarchyLevelId
-        - id
-        - name
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique the department entity code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures the department entity name
-        hierarchyLevel:
-          maxLength: 256
-          minLength: 1
-          type: number
-          description: Capture the level of the given department entity
-        ancestry:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepartmentEntityAttributes'
-      description: This object captures the information for department entity
-      readOnly: true
     Project:
       required:
         - code
@@ -387,11 +327,6 @@ components:
             minLength: 2
             type: string
             description: Capture the department entity id from department entity master
-        departmentEntities:
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/DepartmentEntity'
         locationIds:
           type: array
           description: Capture the location id from location master
