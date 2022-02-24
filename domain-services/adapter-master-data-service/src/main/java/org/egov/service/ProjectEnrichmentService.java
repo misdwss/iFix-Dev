@@ -26,7 +26,6 @@ public class ProjectEnrichmentService {
      */
     public void enrichProjectData(ProjectRequest projectRequest) {
         Project project = projectRequest.getProject();
-        addDepartmentEntityDetails(projectRequest);
         RequestHeader requestHeader = projectRequest.getRequestHeader();
 
         AuditDetails auditDetails = null;
@@ -41,12 +40,6 @@ public class ProjectEnrichmentService {
 
         project.setId(UUID.randomUUID().toString());
         project.setAuditDetails(auditDetails);
-    }
-
-    private void addDepartmentEntityDetails(ProjectRequest projectRequest) {
-        Project project = projectRequest.getProject();
-        project.setDepartmentEntities(projectDepartmentEntityIntegration.getDepartmentEntityForIds(
-                projectRequest.getRequestHeader(), project.getTenantId(), project.getDepartmentEntityIds()));
     }
 
 }
