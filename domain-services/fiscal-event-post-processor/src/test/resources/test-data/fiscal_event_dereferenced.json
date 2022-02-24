@@ -10,8 +10,8 @@
   "ingestionTime": 1636559855914,
   "eventTime": 1629286294000,
   "referenceId": "013e9c56-8207-4dac-9f4d-f1e20bd824e7",
-  "parentEventId": null,
-  "parentReferenceId": null,
+  "linkedEventId": null,
+  "linkedReferenceId": null,
   "amountDetails": [
     {
       "id": "166860dd-ffad-4780-88b9-3b5fe8f41c04",

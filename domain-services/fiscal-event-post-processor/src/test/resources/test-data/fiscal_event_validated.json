@@ -24,8 +24,8 @@
     "ingestionTime": 1636559260541,
     "eventTime": 1629286294000,
     "referenceId": "013e9c56-8207-4dac-9f4d-f1e20bd824e7",
-    "parentEventId": null,
-    "parentReferenceId": null,
+    "linkedEventId": null,
+    "linkedReferenceId": null,
     "amountDetails": [
       {
         "id": "124784c9-bd37-4db9-a00f-ba40ed79faed",
