@@ -11,7 +11,7 @@ class FiscalEventPostProcessorConfigTest {
     @Test
     void testInitialize() {
         FiscalEventPostProcessorConfig fiscalEventPostProcessorConfig = new FiscalEventPostProcessorConfig("UTC",
-                "Fiscal Event Mongo Db Sink", "Fiscal Event Dereference Topic", "Fiscal Event Flattened Topic", "1234",
+                "Fiscal Event Dereference Topic", "Fiscal Event Flattened Topic", "1234",
                 "localhost", "Ifix Master Coa Context Path", "Ifix Master Coa Search Path", "localhost",
                 "Ifix Master Government Context Path", "Ifix Master Government Search Path");
         fiscalEventPostProcessorConfig.initialize();
@@ -25,7 +25,6 @@ class FiscalEventPostProcessorConfigTest {
         assertEquals("Ifix Master Coa Search Path", fiscalEventPostProcessorConfig.getIfixMasterCoaSearchPath());
         assertEquals("localhost", fiscalEventPostProcessorConfig.getIfixMasterCoaHost());
         assertEquals("Ifix Master Coa Context Path", fiscalEventPostProcessorConfig.getIfixMasterCoaContextPath());
-        assertEquals("Fiscal Event Mongo Db Sink", fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink());
         assertEquals("Fiscal Event Flattened Topic", fiscalEventPostProcessorConfig.getFiscalEventFlattenedTopic());
         assertEquals("1234", fiscalEventPostProcessorConfig.getFiscalEventDruidTopic());
     }
@@ -33,7 +32,7 @@ class FiscalEventPostProcessorConfigTest {
     @Test
     void testJacksonConverter() {
         FiscalEventPostProcessorConfig fiscalEventPostProcessorConfig = new FiscalEventPostProcessorConfig("UTC",
-                "Fiscal Event Mongo Db Sink", "Fiscal Event Dereference Topic", "Fiscal Event Flattened Topic", "1234",
+                "Fiscal Event Dereference Topic", "Fiscal Event Flattened Topic", "1234",
                 "localhost", "Ifix Master Coa Context Path", "Ifix Master Coa Search Path", "localhost",
                 "Ifix Master Government Context Path", "Ifix Master Government Search Path");
         ObjectMapper objectMapper = new ObjectMapper();

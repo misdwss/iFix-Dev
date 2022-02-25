@@ -38,9 +38,6 @@ public class FiscalEventPostProcessorConfig {
         return converter;
     }
 
-    @Value("${fiscal.event.processor.kafka.mongodb.topic}")
-    private String fiscalEventMongoDbSink;
-
     @Value("${fiscal.event.kafka.dereferenced.topic}")
     private String fiscalEventDereferenceTopic;
 

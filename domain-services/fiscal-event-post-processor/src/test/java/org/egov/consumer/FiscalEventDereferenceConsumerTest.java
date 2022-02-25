@@ -65,14 +65,12 @@ class FiscalEventDereferenceConsumerTest {
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenReturn(fiscalEventRequest);
         when(this.fiscalEventPostProcessorConfig.getFiscalEventDereferenceTopic())
                 .thenReturn("Fiscal Event Dereference Topic");
-        when(this.fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink()).thenReturn("Fiscal Event Mongo Db Sink");
         when(this.fiscalEventDereferenceService.dereference((FiscalEventRequest) any()))
                 .thenReturn(new FiscalEventDeReferenced());
         this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "fiscal-event-request-validated");
         verify(this.producer, atLeast(1)).push((String) any(), (Object) any());
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
         verify(this.fiscalEventPostProcessorConfig).getFiscalEventDereferenceTopic();
-        verify(this.fiscalEventPostProcessorConfig).getFiscalEventMongoDbSink();
         verify(this.fiscalEventDereferenceService).dereference((FiscalEventRequest) any());
     }
 
@@ -81,16 +79,13 @@ class FiscalEventDereferenceConsumerTest {
         doNothing().when(this.producer).push((String) any(), (Object) any());
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenReturn(fiscalEventRequest);
         when(this.fiscalEventPostProcessorConfig.getFiscalEventDereferenceTopic()).thenThrow(new RuntimeException("foo"));
-        when(this.fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink()).thenReturn("Fiscal Event Mongo Db Sink");
         when(this.fiscalEventDereferenceService.dereference((FiscalEventRequest) any()))
                 .thenReturn(new FiscalEventDeReferenced());
         HashMap<String, Object> hMap = new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
                 () -> this.fiscalEventDereferenceConsumer.listen(hMap, "Topic"));
-        verify(this.producer).push((String) any(), (Object) any());
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
         verify(this.fiscalEventPostProcessorConfig).getFiscalEventDereferenceTopic();
-        verify(this.fiscalEventPostProcessorConfig).getFiscalEventMongoDbSink();
         verify(this.fiscalEventDereferenceService).dereference((FiscalEventRequest) any());
     }
 }

@@ -44,11 +44,11 @@ public class FiscalEvent {
     @JsonProperty("referenceId")
     private String referenceId = null;
 
-    @JsonProperty("parentEventId")
-    private String parentEventId = null;
+    @JsonProperty("linkedEventId")
+    private String linkedEventId = null;
 
-    @JsonProperty("parentReferenceId")
-    private String parentReferenceId = null;
+    @JsonProperty("linkedReferenceId")
+    private String linkedReferenceId = null;
 
     @JsonProperty("amountDetails")
     @Valid
