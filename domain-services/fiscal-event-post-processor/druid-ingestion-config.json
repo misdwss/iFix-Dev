@@ -74,6 +74,9 @@
             "name": "toBillingPeriod"
           },
 
+          "government.id",
+          "government.name",
+
           "coa.id",
           "coa.coaCode",
           "coa.majorHead",
@@ -92,6 +95,15 @@
           "attribute.department.id",
           "attribute.department.code",
           "attribute.department.name",
+
+          "attribute.expenditure.id",
+          "attribute.expenditure.code",
+          "attribute.expenditure.name",
+          "attribute.expenditure.type",
+
+          "attribute.project.id",
+          "attribute.project.code",
+          "attribute.project.name",
 
           "attribute.departmentEntity.id",
           "attribute.departmentEntity.code",
@@ -142,18 +154,6 @@
           "attribute.departmentEntity.ancestry[10].code",
           "attribute.departmentEntity.ancestry[10].name",
           "attribute.departmentEntity.ancestry[10].hierarchyLevel",
-
-          "attribute.expenditure.id",
-          "attribute.expenditure.code",
-          "attribute.expenditure.name",
-          "attribute.expenditure.type",
-
-          "government.id",
-          "government.name",
-
-          "attribute.project.id",
-          "attribute.project.code",
-          "attribute.project.name",
 
           {
             "name": "bill",
