@@ -37,7 +37,6 @@ public class FiscalEventDereferenceConsumer {
         try {
             FiscalEventRequest fiscalEventRequest = mapper.convertValue(record, FiscalEventRequest.class);
             FiscalEventDeReferenced fiscalEventDeReferenced = dereferenceService.dereference(fiscalEventRequest);
-            producer.push(processorConfig.getFiscalEventMongoDbSink(), fiscalEventDeReferenced);
             producer.push(processorConfig.getFiscalEventDereferenceTopic(), fiscalEventDeReferenced);
         } catch (Exception e) {
             log.error("Error occurred while processing the record from topic : " + topic, e);
