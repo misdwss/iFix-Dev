@@ -56,3 +56,8 @@ config:
      - work-dir: "utilities/mongodb-kafka-source-connector"
        image-name: "mongodb-kafka-source-connector"
        dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/domain-services/adapter-master-data-service"
+    build:
+      - work-dir: "domain-services/adapter-master-data-service"
+        image-name: "adapter-master-data-service"
+        dockerfile: "build/maven/Dockerfile"
