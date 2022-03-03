@@ -31,9 +31,6 @@ public class TestProperties {
     @Value("${gov.search.response.data}")
     private String govSearchResponseData;
 
-    @Value("${project.search.response.data}")
-    private String projectSearchResponseData;
-
     @Value("${coa.search.response.data}")
     private String coaSearchResponseData;
 

@@ -1,16 +1,16 @@
 ---
 openapi: 3.0.0
 info:
-  title: fiscal-event-service
-  version: 1.0.2
+  title: iFIX-Fiscal-Event
+  description: ""
+  version: 2.0.0
 servers:
-- url: https://<server_address>/fiscal-event-service
-  description: SwaggerHub API Auto Mocking
+  - url: https://<server_address>/fiscal-event-service
 paths:
-  /fiscal/events/v1/_push:
+  /fiscal/events/v1/_publish:
     post:
       tags:
-      - Fiscal Events
+        - Fiscal Events
       summary: Create(publish) new fiscal event on iFix
       description: Create the new fiscal event
       requestBody:
@@ -36,10 +36,9 @@ paths:
   /fiscal/events/v1/_search:
     post:
       tags:
-      - Fiscal Events
+        - Fiscal Events
       summary: Get the list fiscal events.
-      description: |
-        Based on the criteria get the list of events.
+      description: Based on the criteria get the list of events.
       requestBody:
         description: RequestHeader meta data.
         content:
@@ -64,11 +63,11 @@ components:
   schemas:
     FiscalEvent:
       required:
-      - amountDetails
-      - eventType
-      - referenceId
-      - tenantId
-      - transactionTime
+        - amountDetails
+        - eventType
+        - referenceId
+        - tenantId
+        - transactionTime
       type: object
       properties:
         id:
@@ -85,18 +84,25 @@ components:
           description: Tenant Id
           nullable: false
           example: pb
-        projectId:
+        sender:
+          maxLength: 256
+          minLength: 2
           type: string
-          description: The unique reference id of the project under which the event is occurring
-          format: uuid
-          example: 090d1d25-8b88-46a3-b4c9-95b66483beb5
+          description: Client id of the registered source system(Get the client id from the request header)
+          readOnly: true
+        receivers:
+          type: array
+          description: Client ids of the registered data receivers system
+          items:
+            maxItems: 100
+            type: string
         eventType:
           maxLength: 64
           minLength: 1
           type: string
-          description: Captures the event type (eg- SANCTION(B), APPROPRIATION(B), ALLOCATION(FIN-AD-BCO-DDO)(B), INTRA_TRANSFER(C), INTER_TRANSFER(C), DEMAND(A), RECEIPT(C), BILL(A), PAYMENT(C))
+          description: Captures the event type (eg- 1.a. DEMAND, 1.b. BILL, 2.a. RECEIPT, 2.b. PAYMENT, 2.c. INTER_TRANSFER, 2.d. INTRA_TRANSFER, 3.a. SANCTION, 3.b. APPROPRIATION, 3.c. ALLOCATION)
           nullable: false
-          example: PAYMENT
+          example: Appropriation
         eventTime:
           type: integer
           description: when the event occured at source system level
@@ -115,14 +121,14 @@ components:
           type: string
           description: reference unique id(transaction id) of the caller system
           example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
-        parentEventId:
+        linkedEventId:
           maxLength: 64
           minLength: 1
           type: string
           description: If this is a follow up event then it will refer to the parent event using this reference id.
           nullable: true
           example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
-        parentReferenceId:
+        linkedReferenceId:
           maxLength: 64
           minLength: 1
           type: string
@@ -133,15 +139,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Amount'
+        location:
+          $ref: '#/components/schemas/Location'
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
         attributes:
           type: object
-      description: This object captures the fiscal information of external systems.
+          description: Capture the extra information as a json
+      description: The object captures the fiscal information of external systems.
+    Location:
+      type: object
+      properties:
+        code:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: location code
+        hierarchyType:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: location hierarchy type
+          example: State, District etc
+        name:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: location name
+        child:
+          $ref: '#/components/schemas/Location'
+      description: Capture the location where fiscal event happened. This object represent geographical hierarchy
     Amount:
       required:
-      - amount
-      - coa
+        - amount
+        - coaCode
       type: object
       properties:
         id:
@@ -155,12 +186,17 @@ components:
           type: number
           description: Transaction Amount
           example: 10234.5
-        coaId:
+        coaCode:
           maxLength: 64
           minLength: 1
           type: string
-          description: Id of Chart of Account from the iFix master data.
-          example: d1e87330-4de0-4d15-8d92-d40bfa9b3ca4
+          description: Chart of account code. Publish request should contain coaCode, but search response will not contain it.
+          example: 1234-123-123-12-12-12
+        coaId:
+          type: string
+          description: Unique system generated Chart of Account UUID
+          readOnly: true
+          example: e9f940d4-69aa-4bbb-aa82-111b8948a6b6
         fromBillingPeriod:
           type: integer
           description: Start date of the billing period for which transaction is applicable
@@ -174,8 +210,8 @@ components:
       description: Capture the transaction amount and chart of account corresponding to the transaction amount
     Criteria:
       required:
-      - eventType
-      - tenantId
+        - eventType
+        - tenantId
       type: object
       properties:
         Ids:
@@ -212,8 +248,8 @@ components:
       description: The object contains all the search criteria of the fiscal events
     FiscalEventRequest:
       required:
-      - fiscalInfo
-      - requestHeader
+        - fiscalInfo
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -224,8 +260,8 @@ components:
       description: Fiscal event request along with request metadata
     FiscalEventGetRequest:
       required:
-      - fiscalInfo
-      - requestHeader
+        - fiscalInfo
+        - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
@@ -243,7 +279,7 @@ components:
       description: Contains the ResponseHeader and the enriched fiscal information
     ErrorResponse:
       required:
-      - ResponseHeader
+        - ResponseHeader
       type: object
       properties:
         ResponseHeader:
@@ -274,8 +310,8 @@ components:
           type: string
           description: status of request processing
           enum:
-          - SUCCESS
-          - FAILED
+            - SUCCESS
+            - FAILED
         signature:
           type: string
           description: Hash describing the current Request
@@ -289,9 +325,9 @@ components:
       readOnly: true
     Error:
       required:
-      - code
-      - description
-      - message
+        - code
+        - description
+        - message
       type: object
       properties:
         code:

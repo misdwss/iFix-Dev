@@ -44,7 +44,7 @@ public class FiscalApiController {
         this.request = request;
     }
 
-    @RequestMapping(value = "/_push", method = RequestMethod.POST)
+    @RequestMapping(value = "/_publish", method = RequestMethod.POST)
     public ResponseEntity<FiscalEventResponse> fiscalEventsV1PushPost(@ApiParam(value = "Details for the new fiscal event + RequestHeader (meta data of the API).", required = true) @Valid @RequestBody FiscalEventRequest body) {
         FiscalEventRequest fiscalEventRequest = fiscalEventService.fiscalEventsV1PushPost(body);
         ResponseHeader responseHeader = responseHeaderCreator.createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
