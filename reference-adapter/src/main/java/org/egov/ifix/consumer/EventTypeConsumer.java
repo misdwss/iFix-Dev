@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.mapper.EventMapper;
+import org.egov.ifix.master.MasterDataEnricher;
 import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.models.FiscalEventRequest;
@@ -38,6 +39,9 @@ public class EventTypeConsumer {
 
     @Autowired
     private Map<String, EventMapper> eventTypeMap;
+
+    @Autowired
+    private MasterDataEnricher masterDataEnricher;
 
     @Autowired
     private PostEvent postEvent;
@@ -83,9 +87,13 @@ public class EventTypeConsumer {
             RequestHeader header = requestHeaderUtil.populateRequestHeader(jsonObject, new RequestHeader());
             fiscalEventRequest.setRequestHeader(header);
 
+            JsonObject additionalAttributes = masterDataEnricher.getMasterDataForProjectCode(
+                    eventJsonObject.get(PROJECT_ID).getAsString());
+
             EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());
 
             List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
+            fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(additionalAttributes));
 
             fiscalEventRequest.setFiscalEvent(fiscalEvents);
 
