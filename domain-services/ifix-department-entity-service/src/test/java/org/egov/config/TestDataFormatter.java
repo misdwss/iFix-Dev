@@ -145,23 +145,6 @@ public class TestDataFormatter {
         return departmentHierarchyLevelResponse;
     }
 
-
-    public JsonNode getValidGovernmentSearchResponse() throws IOException {
-        JsonNode validGovernmentResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getGovSearchResponseData()));
-        return validGovernmentResponse;
-    }
-
-    public JsonNode getEmptyGovernmentSearchResponse() throws IOException {
-        ObjectNode invalidGovernmentResponse =
-                (ObjectNode) new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getGovSearchResponseData()));
-
-        ArrayNode emptyArray = new ObjectMapper().createArrayNode();
-        invalidGovernmentResponse.set("government", emptyArray);
-
-        return invalidGovernmentResponse;
-    }
-
     public JsonNode getProjectSearchResponse() throws IOException {
         JsonNode projectSearchResponse =
                 new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getProjectSearchResponseData()));
