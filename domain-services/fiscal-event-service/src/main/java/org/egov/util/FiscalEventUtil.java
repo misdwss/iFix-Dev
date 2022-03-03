@@ -36,9 +36,9 @@ public class FiscalEventUtil {
 
     /**
      * @param fiscalEventRequest
-     * @param jsonNode
+     * @param chartOfAccountsJN
      */
-    public void enrichCoaDetails(FiscalEventRequest fiscalEventRequest, JsonNode jsonNode) {
+    public void enrichCoaDetails(FiscalEventRequest fiscalEventRequest, JsonNode chartOfAccountsJN) {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
 
         for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
@@ -53,7 +53,7 @@ public class FiscalEventUtil {
                 Amount newAmount = new Amount();
                 BeanUtils.copyProperties(amount, newAmount);
 
-                for (JsonNode chartOfAccountJN : jsonNode) {
+                for (JsonNode chartOfAccountJN : chartOfAccountsJN) {
                     String coaCode = chartOfAccountJN.get("coaCode").asText();
                     String coaId = chartOfAccountJN.get("id").asText();
                     if (StringUtils.isNotBlank(reqCoaCode) && StringUtils.isNotBlank(coaCode) && coaCode.equals(reqCoaCode)) {

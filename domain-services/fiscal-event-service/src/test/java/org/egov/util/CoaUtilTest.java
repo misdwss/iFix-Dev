@@ -67,7 +67,7 @@ class CoaUtilTest {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         HashSet<String> stringHashSet = new HashSet<String>();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOACodesFromCOAService(requestHeader, stringHashSet, "pb"));
+                () -> this.coaUtil.fetchCoaDetailsByCoaCodes(requestHeader, stringHashSet, "pb"));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterCoaContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterCoaHost();
@@ -83,7 +83,7 @@ class CoaUtilTest {
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         HashSet<String> stringHashSet = new HashSet<String>();
         assertThrows(CustomException.class,
-                () -> this.coaUtil.getCOACodesFromCOAService(requestHeader, stringHashSet, ""));
+                () -> this.coaUtil.fetchCoaDetailsByCoaCodes(requestHeader, stringHashSet, ""));
         verify(this.serviceRequestRepository).fetchResult((String) any(), (Object) any());
         verify(this.fiscalEventConfiguration).getIfixMasterCoaContextPath();
         verify(this.fiscalEventConfiguration).getIfixMasterCoaHost();
@@ -102,7 +102,7 @@ class CoaUtilTest {
         }
         RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
         assertThrows(CustomException.class,
-                () -> coaUtil.getCOACodesFromCOAService(requestHeader, coaCodes, tenantId));
+                () -> coaUtil.fetchCoaDetailsByCoaCodes(requestHeader, coaCodes, tenantId));
     }
 
     @Test
@@ -117,7 +117,7 @@ class CoaUtilTest {
                 coaCodes.add(amount.getCoaCode());
             }
         }
-        JsonNode validCOACodes = coaUtil.getCOACodesFromCOAService(fiscalEventRequest.getRequestHeader(), coaCodes, tenantId);
+        JsonNode validCOACodes = coaUtil.fetchCoaDetailsByCoaCodes(fiscalEventRequest.getRequestHeader(), coaCodes, tenantId);
         assertTrue(validCOACodes.size() > 0);
     }
 

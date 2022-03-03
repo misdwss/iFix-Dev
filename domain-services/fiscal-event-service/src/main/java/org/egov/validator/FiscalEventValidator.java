@@ -182,7 +182,7 @@ public class FiscalEventValidator {
                 }
             }
 
-            JsonNode jsonNode = coaUtil.getCOACodesFromCOAService(requestHeader, coaCodes, tenantId);
+            JsonNode jsonNode = coaUtil.fetchCoaDetailsByCoaCodes(requestHeader, coaCodes, tenantId);
 
             List<String> errorCoaCodes = new ArrayList<>();
             for (String coaCode : coaCodes) {

@@ -36,7 +36,7 @@ public class CoaUtil {
      * @param tenantId
      * @return
      */
-    public JsonNode getCOACodesFromCOAService(RequestHeader requestHeader, Set<String> coaCodes, String tenantId) {
+    public JsonNode fetchCoaDetailsByCoaCodes(RequestHeader requestHeader, Set<String> coaCodes, String tenantId) {
         String url = createCoaSearchUrl();
         Map<String, Object> coaSearchRequest = createSearchCoaRequest(requestHeader, coaCodes, tenantId);
 
