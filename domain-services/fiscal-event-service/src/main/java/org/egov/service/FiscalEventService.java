@@ -11,13 +11,12 @@ import org.egov.producer.Producer;
 import org.egov.repository.FiscalEventRepository;
 import org.egov.util.FiscalEventMapperUtil;
 import org.egov.validator.FiscalEventValidator;
-import org.egov.web.models.Criteria;
-import org.egov.web.models.FiscalEvent;
-import org.egov.web.models.FiscalEventGetRequest;
-import org.egov.web.models.FiscalEventRequest;
+import org.egov.web.models.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,17 +53,75 @@ public class FiscalEventService {
         validator.validateFiscalEventPushPost(fiscalEventRequest);
         enricher.enrichFiscalEventPushPost(fiscalEventRequest);
 
+        FiscalEventRequest fiscalEventRequestCopy = new FiscalEventRequest();
+        BeanUtils.copyProperties(fiscalEventRequest, fiscalEventRequestCopy);
+        //nullify the coaCode before pushing to topics
+        nullifyCoaCode(fiscalEventRequest);
+
         if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
             RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
             for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
                 ObjectNode fiscalEventRequestNode = JsonNodeFactory.instance.objectNode();
-                fiscalEventRequestNode.putPOJO("requestHeader",requestHeader);
-                fiscalEventRequestNode.putPOJO("fiscalEvent",fiscalEvent);
+                fiscalEventRequestNode.putPOJO("requestHeader", requestHeader);
+                fiscalEventRequestNode.putPOJO("fiscalEvent", fiscalEvent);
 
+                //push with request header details
                 producer.push(eventConfiguration.getFiscalPushRequest(), fiscalEventRequestNode);
+                //push without request header details
+                producer.push(eventConfiguration.getFiscalEventPushToMongoSink(), fiscalEvent);
             }
         }
-        return fiscalEventRequest;
+        //nullify coaId before sending the response
+        nullifyCoaIdCode(fiscalEventRequestCopy);
+        return fiscalEventRequestCopy;
+    }
+
+    private void nullifyCoaIdCode(FiscalEventRequest fiscalEventRequest) {
+        List<FiscalEvent> fiscalEvents = new ArrayList<>();
+
+        if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
+            for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
+                FiscalEvent fiscalEventCopy = new FiscalEvent();
+                BeanUtils.copyProperties(fiscalEvent, fiscalEventCopy);
+
+                if (fiscalEvent.getAmountDetails() != null && !fiscalEvent.getAmountDetails().isEmpty()) {
+                    List<Amount> amounts = new ArrayList<>();
+                    for (Amount amount : fiscalEvent.getAmountDetails()) {
+                        Amount amountCopy = new Amount();
+                        BeanUtils.copyProperties(amount, amountCopy);
+                        amountCopy.setCoaId(null);
+                        amounts.add(amountCopy);
+                    }
+                    fiscalEventCopy.setAmountDetails(amounts);
+                }
+                fiscalEvents.add(fiscalEventCopy);
+            }
+            fiscalEventRequest.setFiscalEvent(fiscalEvents);
+        }
+    }
+
+    private void nullifyCoaCode(FiscalEventRequest fiscalEventRequest) {
+        List<FiscalEvent> fiscalEvents = new ArrayList<>();
+
+        if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
+            for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
+                FiscalEvent fiscalEventCopy = new FiscalEvent();
+                BeanUtils.copyProperties(fiscalEvent, fiscalEventCopy);
+
+                if (fiscalEvent.getAmountDetails() != null && !fiscalEvent.getAmountDetails().isEmpty()) {
+                    List<Amount> amounts = new ArrayList<>();
+                    for (Amount amount : fiscalEvent.getAmountDetails()) {
+                        Amount amountCopy = new Amount();
+                        BeanUtils.copyProperties(amount, amountCopy);
+                        amountCopy.setCoaCode(null);
+                        amounts.add(amountCopy);
+                    }
+                    fiscalEventCopy.setAmountDetails(amounts);
+                }
+                fiscalEvents.add(fiscalEventCopy);
+            }
+            fiscalEventRequest.setFiscalEvent(fiscalEvents);
+        }
     }
 
     /**

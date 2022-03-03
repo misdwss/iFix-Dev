@@ -1,6 +1,7 @@
 package org.egov.util;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
@@ -31,29 +32,30 @@ public class CoaUtil {
      * Get the COA Details from master data service
      *
      * @param requestHeader
-     * @param coaIds
+     * @param coaCodes
      * @param tenantId
      * @return
      */
-    public List<String> getCOAIdsFromCOAService(RequestHeader requestHeader, Set<String> coaIds, String tenantId) {
+    public JsonNode getCOACodesFromCOAService(RequestHeader requestHeader, Set<String> coaCodes, String tenantId) {
         String url = createCoaSearchUrl();
-        Map<String, Object> coaSearchRequest = createSearchCoaRequest(requestHeader, coaIds, tenantId);
+        Map<String, Object> coaSearchRequest = createSearchCoaRequest(requestHeader, coaCodes, tenantId);
 
         Object response = serviceRequestRepository.fetchResult(url, coaSearchRequest);
-        List<String> responseCoaIds = null;
+        JsonNode jsonNode = null;
         try {
-            responseCoaIds = JsonPath.read(response, MasterDataConstants.COA_IDS_JSON_PATH);
+            List<Object> chartOfAccounts = JsonPath.read(response, MasterDataConstants.COA_JSON_PATH);
+            jsonNode = objectMapper.convertValue(chartOfAccounts, JsonNode.class);
         } catch (Exception e) {
-            throw new CustomException(MasterDataConstants.JSONPATH_ERROR, "Failed to parse coa response for coaIds");
+            throw new CustomException(MasterDataConstants.JSONPATH_ERROR, "Failed to parse coa response for coaCodes");
         }
-        return responseCoaIds;
+        return jsonNode;
     }
 
-    private Map<String, Object> createSearchCoaRequest(RequestHeader requestHeader, Set<String> coaIds, String tenantId) {
+    private Map<String, Object> createSearchCoaRequest(RequestHeader requestHeader, Set<String> coaCodes, String tenantId) {
         if (StringUtils.isNotBlank(tenantId)) {
             Map<String, Object> coaSearchRequest = new HashMap<>();
             Map<String, Object> criteria = new HashMap<>();
-            criteria.put("Ids", coaIds);
+            criteria.put("coaCodes", coaCodes);
             criteria.put("tenantId", tenantId);
 
             coaSearchRequest.put("requestHeader", requestHeader);
