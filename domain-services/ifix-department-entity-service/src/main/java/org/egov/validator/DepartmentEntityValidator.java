@@ -6,7 +6,6 @@ import org.egov.repository.DepartmentEntityRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentEntityConstant;
 import org.egov.util.DepartmentHierarchyUtil;
-import org.egov.util.GovernmentUtil;
 import org.egov.web.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,9 +16,6 @@ import java.util.Map;
 
 @Component
 public class DepartmentEntityValidator {
-
-    @Autowired
-    private GovernmentUtil governmentUtil;
 
     @Autowired
     DepartmentEntityRepository departmentEntityRepository;
@@ -53,11 +49,6 @@ public class DepartmentEntityValidator {
             } else if (departmentEntity.getTenantId().length() < 2 || departmentEntity.getTenantId().length() > 64) {
                 errorMap.put(DepartmentEntityConstant.TENANT_ID, "Tenant id length is invalid. " +
                         "Length range [2-64]");
-            } else {
-                List<String> governments = governmentUtil.getGovernmentFromGovernmentService(departmentEntity.getTenantId(), requestHeader);
-                if (governments.isEmpty())
-                    errorMap.put(DepartmentEntityConstant.INVALID_TENANT_ID, "Tenant id : " + departmentEntity.getTenantId()
-                            + " doesn't exist in the system");
             }
 
             if (StringUtils.isEmpty(departmentEntity.getCode())) {

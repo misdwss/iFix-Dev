@@ -7,7 +7,6 @@ import org.egov.repository.DepartmentHierarchyLevelRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentEntityConstant;
 import org.egov.util.DepartmentUtil;
-import org.egov.util.GovernmentUtil;
 import org.egov.web.models.DepartmentHierarchyLevel;
 import org.egov.web.models.DepartmentHierarchyLevelRequest;
 import org.egov.web.models.DepartmentHierarchyLevelSearchCriteria;
@@ -22,9 +21,6 @@ import java.util.Map;
 @Component
 @Slf4j
 public class DepartmentHierarchyLevelValidator {
-
-    @Autowired
-    private GovernmentUtil governmentUtil;
 
     @Autowired
     private DepartmentUtil departmentUtil;
@@ -50,20 +46,13 @@ public class DepartmentHierarchyLevelValidator {
         }
 
         if (StringUtils.isBlank(departmentHierarchyLevel.getTenantId())) {
-            errorMap.put(DepartmentEntityConstant.TENANT_ID, "Government Id (Tenant id) is missing");
+            errorMap.put(DepartmentEntityConstant.TENANT_ID, "Tenant id is missing");
         }
         if (StringUtils.isBlank(departmentHierarchyLevel.getDepartmentId())) {
             errorMap.put(DepartmentEntityConstant.DEPARTMENT_ID, "Department id is missing");
         }
         if (StringUtils.isBlank(departmentHierarchyLevel.getLabel())) {
             errorMap.put(DepartmentEntityConstant.DEPARTMENT_LABEL, "Department label is missing");
-        }
-
-        if (StringUtils.isNotBlank(departmentHierarchyLevel.getTenantId())) {
-            List<String> governments = governmentUtil.getGovernmentFromGovernmentService(departmentHierarchyLevel.getTenantId(), requestHeader);
-            if (governments.isEmpty())
-                errorMap.put(DepartmentEntityConstant.INVALID_TENANT_ID, "Tenant id : " + departmentHierarchyLevel.getTenantId()
-                        + " doesn't exist in the system");
         }
 
         if (StringUtils.isNotBlank(departmentHierarchyLevel.getDepartmentId()) && StringUtils.isNotBlank(departmentHierarchyLevel.getTenantId())) {
@@ -110,12 +99,6 @@ public class DepartmentHierarchyLevelValidator {
             errorMap.put(DepartmentEntityConstant.TENANT_ID, "Government Id (Tenant id) is missing");
         }
 
-        if (StringUtils.isNotBlank(searchCriteria.getTenantId())) {
-            List<String> governments = governmentUtil.getGovernmentFromGovernmentService(searchCriteria.getTenantId(), requestHeader);
-            if (governments.isEmpty())
-                errorMap.put(DepartmentEntityConstant.INVALID_TENANT_ID, "Tenant id : " + searchCriteria.getTenantId()
-                        + " doesn't exist in the system");
-        }
         if (!errorMap.isEmpty()) {
             throw new CustomException(errorMap);
         }
