@@ -28,6 +28,5 @@ public class FiscalEventRequest {
     @JsonProperty("fiscalEvent")
     private List<FiscalEvent> fiscalEvent = null;
 
-
 }
 

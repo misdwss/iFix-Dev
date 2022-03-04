@@ -68,7 +68,7 @@ class FiscalEventServiceTest {
         doNothing().when(this.fiscalEventEnrichmentService).enrichFiscalEventPushPost((FiscalEventRequest) any());
         doNothing().when(this.producer).push((String) any(), (Object) any());
         FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
-        assertSame(fiscalEventRequest, this.fiscalEventService.fiscalEventsV1PushPost(fiscalEventRequest));
+        assertNotSame(fiscalEventRequest, this.fiscalEventService.fiscalEventsV1PushPost(fiscalEventRequest));
         verify(this.fiscalEventValidator).validateFiscalEventPushPost((FiscalEventRequest) any());
         verify(this.fiscalEventEnrichmentService).enrichFiscalEventPushPost((FiscalEventRequest) any());
     }
@@ -79,11 +79,11 @@ class FiscalEventServiceTest {
         doNothing().when(this.fiscalEventEnrichmentService).enrichFiscalEventPushPost((FiscalEventRequest) any());
         doNothing().when(this.producer).push((String) any(), (Object) any());
 
-        assertSame(fiscalEventRequest, this.fiscalEventService.fiscalEventsV1PushPost(fiscalEventRequest));
+        assertNotSame(fiscalEventRequest, this.fiscalEventService.fiscalEventsV1PushPost(fiscalEventRequest));
 
         verify(this.fiscalEventValidator).validateFiscalEventPushPost((FiscalEventRequest) any());
         verify(this.fiscalEventEnrichmentService).enrichFiscalEventPushPost((FiscalEventRequest) any());
-        verify(this.producer).push((String) any(), (Object) any());
+        verify(this.producer,atLeast(1)).push((String) any(), (Object) any());
     }
 
     @Test

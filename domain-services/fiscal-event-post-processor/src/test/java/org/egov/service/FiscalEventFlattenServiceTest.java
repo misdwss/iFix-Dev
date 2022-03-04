@@ -55,20 +55,22 @@ class FiscalEventFlattenServiceTest {
                 "Group Head", "Group Head Name", "Object Head", "Object Head Name");
 
         fiscalEventLineItemUnbundledList
-                .add(new FiscalEventLineItemUnbundled("1.0.2", "42", "42", "42", government,
-                        "Event Type", 1L, 1L, "42", "42", "42", amount, coa, 1L, 1L, new AuditDetails()));
+                .add(new FiscalEventLineItemUnbundled("2.0.0", "42", "42", "42", government,
+                        "Event Type", 1L, 1L, "42", "42", "42", amount, coa, 1L, 1L, new AuditDetails(), new Object()));
         List<String> actualFlattenData = this.fiscalEventFlattenService.getFlattenData(fiscalEventLineItemUnbundledList);
         assertEquals(1, actualFlattenData.size());
         assertEquals(
-                "{\"version\":\"1.0.2\",\"id\":\"42\",\"eventId\":\"42\",\"tenantId\":\"42\",\"government.id\":\"42\",\"government.name\":"
+                "{\"version\":\"2.0.0\",\"id\":\"42\",\"eventId\":\"42\",\"tenantId\":\"42\",\"government" +
+                        ".id\":\"42\",\"government.name\":"
                         + "\"Name\",\"eventType\":\"Event Type\",\"ingestionTime"
-                        + "\":1,\"eventTime\":1,\"referenceId\":\"42\",\"parentEventId\":\"42\",\"parentReferenceId\":\"42\",\"amount\":1,\"coa.id"
+                        + "\":1,\"eventTime\":1,\"referenceId\":\"42\",\"linkedEventId\":\"42\"," +
+                        "\"linkedReferenceId\":\"42\",\"amount\":1,\"coa.id"
                         + "\":\"42\",\"coa.coaCode\":\"Coa Code\",\"coa.majorHead\":\"Major Head\",\"coa.majorHeadName\":\"Major Head"
                         + " Name\",\"coa.majorHeadType\":\"Major Head Type\",\"coa.subMajorHead\":\"Sub Major Head\",\"coa.subMajorHeadName\":\"Sub"
                         + " Major Head Name\",\"coa.minorHead\":\"Minor Head\",\"coa.minorHeadName\":\"Minor Head Name\",\"coa.subHead\":\"Sub"
                         + " Head\",\"coa.subHeadName\":\"Sub Head Name\",\"coa.groupHead\":\"Group Head\",\"coa.groupHeadName\":\"Group Head"
                         + " Name\",\"coa.objectHead\":\"Object Head\",\"coa.objectHeadName\":\"Object Head Name\",\"fromBillingPeriod\":1,"
-                        + "\"toBillingPeriod\":1,\"auditDetails\":{}}",
+                        + "\"toBillingPeriod\":1,\"auditDetails\":{},\"attributes\":{}}",
                 actualFlattenData.get(0));
     }
 }

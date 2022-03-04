@@ -54,13 +54,14 @@ public class FiscalEventUnbundleService {
         fiscalEventLineItemUnbundled.setEventTime(fiscalEventDeReferenced.getEventTime());
         fiscalEventLineItemUnbundled.setEventType(fiscalEventDeReferenced.getEventType());
         fiscalEventLineItemUnbundled.setGovernment(fiscalEventDeReferenced.getGovernment());
-        fiscalEventLineItemUnbundled.setParentEventId(fiscalEventDeReferenced.getLinkedEventId());
-        fiscalEventLineItemUnbundled.setParentReferenceId(fiscalEventDeReferenced.getLinkedReferenceId());
+        fiscalEventLineItemUnbundled.setLinkedEventId(fiscalEventDeReferenced.getLinkedEventId());
+        fiscalEventLineItemUnbundled.setLinkedReferenceId(fiscalEventDeReferenced.getLinkedReferenceId());
         fiscalEventLineItemUnbundled.setReferenceId(fiscalEventDeReferenced.getReferenceId());
         fiscalEventLineItemUnbundled.setTenantId(fiscalEventDeReferenced.getTenantId());
         fiscalEventLineItemUnbundled.setVersion(fiscalEventDeReferenced.getVersion());
 
         fiscalEventLineItemUnbundled.setAuditDetails(fiscalEventDeReferenced.getAuditDetails());
+        fiscalEventLineItemUnbundled.setAttributes(fiscalEventDeReferenced.getAttributes());
 
         return fiscalEventLineItemUnbundled;
     }

@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.0.0 - 2022-03-03
+- Removed code related to project, department, department-entity and expenditure. These details will be stored as 
+  part of additional attributes.
+- Removed MongoDB Sink. `fiscal-event-service` will directly push data to MongoDB Sink topic. 
+- Refactored data models: parentEventId -> linkedEventId. 
+
 ## 1.0.5 - 2022-02-03
 - Sonar issues fix
 
