@@ -25,7 +25,7 @@ class MasterDataServiceConfigurationTest {
         assertEquals("localhost", masterDataServiceConfiguration.getIfixMasterExpenditureHost());
         assertEquals("Ifix Master Expenditure Context Path",
                 masterDataServiceConfiguration.getIfixMasterExpenditureContextPath());
-        assertEquals("localhost", masterDataServiceConfiguration.getIfixMasterDepartmenteHost());
+        assertEquals("localhost", masterDataServiceConfiguration.getIfixMasterDepartmentHost());
         assertEquals("Ifix Master Department Search Path",
                 masterDataServiceConfiguration.getIfixMasterDepartmentSearchPath());
         assertEquals("Ifix Master Department Context Path",

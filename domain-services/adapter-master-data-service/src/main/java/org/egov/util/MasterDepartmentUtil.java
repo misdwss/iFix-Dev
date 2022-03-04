@@ -63,7 +63,7 @@ public class MasterDepartmentUtil {
 
     private String createSearchDepartmentUrl() {
         StringBuilder uriBuilder = new StringBuilder();
-        uriBuilder.append(configuration.getIfixMasterDepartmenteHost())
+        uriBuilder.append(configuration.getIfixMasterDepartmentHost())
                 .append(configuration.getIfixMasterDepartmentContextPath())
                 .append(configuration.getIfixMasterDepartmentSearchPath());
         return uriBuilder.toString();
