@@ -28,10 +28,6 @@ public class ExpenditureValidator {
 
             RequestHeader requestHeader = expenditureSearchRequest.getRequestHeader();
 
-            if (requestHeader.getUserInfo() == null || StringUtils.isEmpty(requestHeader.getUserInfo().getUuid())) {
-                throw new CustomException(MasterDataConstants.USER_INFO, "User information is missing");
-            }
-
             ExpenditureSearchCriteria criteria = expenditureSearchRequest.getCriteria();
 
             if (StringUtils.isEmpty(criteria.getTenantId())) {
