@@ -35,16 +35,13 @@ public class MasterDataEnricher {
                 departmentEntityFetcher.getDepartmentEntityDetailsFromCode(departmentEntityCode);
 
         String departmentUuid = departmentEntityDetails.get("departmentId").getAsString();
-        departmentUuid = "af0739e0-dd6d-46dc-94fc-93e514e654fb";
         departmentEntityDetails.remove("departmentId");
 
         // 2 - Get Project Details (based on department entity uuid)
         String departmentEntityUuid = departmentEntityDetails.get("id").getAsString();
-        departmentEntityUuid = "21bea728-623d-44d2-89ee-5fba7e0d4ae9";
         JsonObject projectDetails = projectFetcher.getProjectDetailsOfDepartmentEntity(departmentEntityUuid);
 
         String expenditureUuid = projectDetails.get("expenditureId").getAsString();
-        expenditureUuid = "3d132c43-f366-423e-9080-28aead9adec2";
         projectDetails.remove("expenditureId");
 
         // 3 - Get Expenditure Details (based on expenditure uuid extracted from project details)

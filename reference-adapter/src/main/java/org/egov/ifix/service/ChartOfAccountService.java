@@ -12,4 +12,6 @@ public interface ChartOfAccountService {
     String getResolvedChartOfAccount(String clientCoaCode, JsonObject jsonObject);
 
     Optional<CoaMappingDTO> getMappedCoaIdByClientCoaCode(CoaMappingDTO coaMappingDTO);
+
+    String getResolvedChartOfAccountCode(String clientCoaCode);
 }

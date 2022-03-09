@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.exception.HttpCustomException;
-import org.egov.ifix.models.*;
+import org.egov.ifix.models.Project;
+import org.egov.ifix.models.ProjectRequest;
+import org.egov.ifix.models.ProjectResponse;
+import org.egov.ifix.models.ProjectSearchCriteria;
 import org.egov.ifix.persistance.ProjectMapRepository;
 import org.egov.ifix.service.AuthTokenService;
 import org.egov.ifix.utils.ApplicationConfiguration;
@@ -12,7 +15,6 @@ import org.egov.ifix.utils.DataWrapper;
 import org.egov.ifix.utils.RequestHeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.egov.ifix.utils.EventConstants.*;
+import static org.egov.ifix.utils.EventConstants.PROJECT_CODE;
 
 /**
  * @author mani This will be responsible for providing right Project from web or
@@ -53,8 +55,8 @@ public class ProjectRepository {
     @Autowired
     private ProjectMapRepository projectMapRepository;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private DataWrapper dataWrapper;
@@ -115,6 +117,8 @@ public class ProjectRepository {
      * @param errorMessage
      */
     private void wrapErrorModelAndPushKafkaTopic(String attributeValue, String errorMessage) {
+//TODO: Error handling stream.
+/*
         Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(NA,
                 PROJECT_CODE_DATA_NAME, CODE, attributeValue, NON_RECOVERABLE_ERROR,
                 HttpStatus.BAD_REQUEST.toString(), errorMessage);
@@ -122,6 +126,7 @@ public class ProjectRepository {
         if (errorDataModelOptional.isPresent()) {
             kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
         }
+*/
     }
 
 }

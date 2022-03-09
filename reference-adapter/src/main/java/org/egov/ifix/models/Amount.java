@@ -32,8 +32,8 @@ public class Amount {
     @JsonProperty("amount")
     private BigDecimal amount = null;
 
-    @JsonProperty("coaId")
-    private String coaId = null;
+    @JsonProperty("coaCode")
+    private String coaCode = null;
 
     @JsonProperty("fromBillingPeriod")
     private Long fromBillingPeriod = null;

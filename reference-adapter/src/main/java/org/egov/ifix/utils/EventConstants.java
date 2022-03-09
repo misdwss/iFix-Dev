@@ -47,4 +47,5 @@ public class EventConstants {
     public static final String REQUEST_HEADER = "requestHeader";
     public static final String MSG_ID = "msgId";
     public static final String VERSION = "version";
+    public static final String DEPARTMENT_ENTITY_CODE = "DEPARTMENT_ENTITY_CODE";
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static org.egov.ifix.utils.EventConstants.PROJECT_CODE;
+import static org.egov.ifix.utils.EventConstants.*;
 
 @Component
 @Slf4j
@@ -36,7 +36,14 @@ public class ProjectFetcher {
         Object response = serviceRequestRepository.fetchResult(createProjectSearchUrl(), searchRequest);
         JsonNode responseJson = objectMapper.convertValue(response, JsonNode.class);
 
-        JsonNode projectDetails = responseJson.get("project").get(0);
+        JsonNode projectNode = responseJson.get("project");
+
+        if (projectNode != null && projectNode.size() > 1) {
+            throw new HttpCustomException(PROJECT_ID, "Multiple project found for single department entity code",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        JsonNode projectDetails = projectNode.get(0);
 
         ObjectNode project = objectMapper.createObjectNode();
         project.put("id", projectDetails.get("id").asText());
