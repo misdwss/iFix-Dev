@@ -6,7 +6,6 @@ import org.egov.ifix.cache.AdapterCache;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.models.ChartOfAccount;
 import org.egov.ifix.models.CoaMappingDTO;
-import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.persistance.ChartOfAccountMap;
 import org.egov.ifix.persistance.ChartOfAccountMapRepository;
 import org.egov.ifix.repository.ChartOfAccountRepository;
@@ -15,12 +14,13 @@ import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.DataWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
-import static org.egov.ifix.utils.EventConstants.*;
+import static org.egov.ifix.utils.EventConstants.COA_CODE;
+import static org.egov.ifix.utils.EventConstants.LOG_INFO_PREFIX;
 
 /**
  * @author mani
@@ -43,16 +43,46 @@ public class ChartOfAccountServiceImpl implements ChartOfAccountService {
     private AdapterCache<ChartOfAccount> coaCache;
 
     @Autowired
+    private AdapterCache<String> coaCodeCache;
+
+    @Autowired
     private DataWrapper dataWrapper;
 
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private ChartOfAccountMapRepository chartOfAccountMapRepository;
+
+
+    /**
+     * @param clientCoaCode
+     * @return
+     */
+    @Override
+    public String getResolvedChartOfAccountCode(String clientCoaCode) {
+        String cachedCoaCode = coaCodeCache.getValue(clientCoaCode);
+
+        if (StringUtils.isEmpty(cachedCoaCode)) {
+            ChartOfAccountMap coaMapping = chartOfAccountMapRepository.findByClientCode(clientCoaCode);
+
+            if (coaMapping != null && !StringUtils.isEmpty(coaMapping.getIFixCoaCode())) {
+                coaCodeCache.putValue(clientCoaCode, coaMapping.getIFixCoaCode());
+
+                cachedCoaCode = coaMapping.getIFixCoaCode();
+            } else {
+                throw new HttpCustomException(COA_CODE, "Unable to find iFix COA code by client coa code",
+                        HttpStatus.BAD_REQUEST);
+            }
+        }else {
+            log.info(LOG_INFO_PREFIX + "got coa from Cache" + cachedCoaCode);
+        }
+
+        return cachedCoaCode;
+    }
 
     /**
      * @param clientCoaCode
@@ -69,6 +99,8 @@ public class ChartOfAccountServiceImpl implements ChartOfAccountService {
             if (coaOptional.isPresent()) {
                 coaCache.putValue(clientCoaCode, coaOptional.get());
             } else {
+//TODO: Error handling stream.
+/*
                 Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(NA,
                         COA_CODE_DATA_NAME, CLIENT_COA_CODE, clientCoaCode, NON_RECOVERABLE_ERROR,
                         HttpStatus.INTERNAL_SERVER_ERROR.toString(),
@@ -77,6 +109,7 @@ public class ChartOfAccountServiceImpl implements ChartOfAccountService {
                 if (errorDataModelOptional.isPresent()) {
                     kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
                 }
+*/
                 throw new HttpCustomException(COA_CODE, "Unable to find COA by client coa code", HttpStatus.BAD_REQUEST);
             }
         } else {

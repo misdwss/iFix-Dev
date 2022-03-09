@@ -51,9 +51,6 @@ public class DemandEventMapper implements EventMapper {
         log.info(EventConstants.LOG_INFO_PREFIX + "Transforming DEMAND Fiscal Event");
 
         List<FiscalEvent> fiscalEventList = new ArrayList<>();
-        String clientProjectCode = data.getAsJsonObject(EventConstants.EVENT).get(EventConstants.PROJECT_ID)
-                .getAsString();
-        String iFixProjectId = projectService.getResolvedProjectId(clientProjectCode, data);
         JsonArray entityJA = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
 
         entityJA.forEach(entityJE -> {
@@ -66,11 +63,10 @@ public class DemandEventMapper implements EventMapper {
                         .tenantId(applicationConfiguration.getTenantId())
                         .eventType(getEventType())
                         .eventTime(Instant.now().toEpochMilli())
-                        .referenceId(demandJO.get(CONSUMER_CODE).getAsString())
+                        .referenceId(demandJO.get(ID).getAsString())
                         .parentEventId(null)
                         .parentReferenceId(null)
-                        .amountDetails(getAmountDetails(demandJO, data))
-                        .projectId(iFixProjectId).build();
+                        .amountDetails(getAmountDetails(demandJO, data)).build();
 
                 fiscalEventList.add(fiscalEvent);
             });
@@ -100,7 +96,7 @@ public class DemandEventMapper implements EventMapper {
 
             Amount amount = Amount.builder()
                     .amount(demandDetailsJO.get(BILL_DEMAND_CLIENT_COA_AMOUNT).getAsBigDecimal())
-                    .coaId(chartOfAccountService.getResolvedChartOfAccount(coaCode, data))
+                    .coaCode(chartOfAccountService.getResolvedChartOfAccountCode(coaCode))
                     .fromBillingPeriod(taxPeriodFrom)
                     .toBillingPeriod(taxPeriodTo).build();
 

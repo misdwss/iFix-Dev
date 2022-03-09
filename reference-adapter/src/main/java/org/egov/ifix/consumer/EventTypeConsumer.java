@@ -1,5 +1,9 @@
 package org.egov.ifix.consumer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +11,6 @@ import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.mapper.EventMapper;
 import org.egov.ifix.master.MasterDataEnricher;
-import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
 import org.egov.ifix.models.FiscalEventRequest;
 import org.egov.ifix.models.FiscalEventResponse;
@@ -22,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
@@ -55,8 +57,8 @@ public class EventTypeConsumer {
     @Autowired
     private ProjectServiceImpl projectService;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
@@ -90,10 +92,12 @@ public class EventTypeConsumer {
             JsonObject additionalAttributes = masterDataEnricher.getMasterDataForProjectCode(
                     eventJsonObject.get(PROJECT_ID).getAsString());
 
+            JsonNode attributeJsonNode = new ObjectMapper().readTree(additionalAttributes.toString());
+
             EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());
 
             List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
-            fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(additionalAttributes));
+            fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(attributeJsonNode));
 
             fiscalEventRequest.setFiscalEvent(fiscalEvents);
 
@@ -147,6 +151,8 @@ public class EventTypeConsumer {
                 eventPostingDetailList = composeEventPostingDetail(fiscalEventRequest.getFiscalEvent(), eventId,
                         HttpStatus.BAD_REQUEST, record, e.getMessage());
 
+//TODO: Error handling stream.
+/*
                 Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(record,
                         FISCAL_EVENT_DATA_NAME, EVENT_TYPE, eventType, RECOVERABLE_ERROR,
                         HttpStatus.BAD_REQUEST.toString(), e.getMessage());
@@ -154,12 +160,15 @@ public class EventTypeConsumer {
                 if (errorDataModelOptional.isPresent()) {
                     kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
                 }
+*/
+
             } catch (Exception e) {
                 log.error(LOG_ERROR_PREFIX + NON_RECOVERABLE_ERROR + e.getMessage(), e);
 
                 eventPostingDetailList = composeEventPostingDetail(fiscalEventRequest.getFiscalEvent(), eventId,
                         HttpStatus.INTERNAL_SERVER_ERROR, record, e.getMessage());
-
+//TODO: Error handling stream.
+/*
                 Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(record,
                         FISCAL_EVENT_DATA_NAME, EVENT_TYPE, eventType, RECOVERABLE_ERROR,
                         HttpStatus.BAD_REQUEST.toString(), e.getMessage());
@@ -167,6 +176,7 @@ public class EventTypeConsumer {
                 if (errorDataModelOptional.isPresent()) {
                     kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
                 }
+*/
             }
 
             eventPostingDetailRepository.saveAll(eventPostingDetailList);
@@ -199,6 +209,9 @@ public class EventTypeConsumer {
                 log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR +
                         "4 or 5 Series exception while sending request to Fiscal Event Service");
 
+//TODO: Error handling stream.
+/*
+
                 Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(record,
                         FISCAL_EVENT_DATA_NAME, EVENT_TYPE, eventType, RECOVERABLE_ERROR,
                         HttpStatus.BAD_REQUEST.toString(),
@@ -207,6 +220,7 @@ public class EventTypeConsumer {
                 if (errorDataModelOptional.isPresent()) {
                     kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), eventPostingDetailList);
                 }
+*/
 
             } else if (HttpStatus.Series.SUCCESSFUL.equals(fiscalEventResponseEntity.getStatusCode().series())) {
                 List<FiscalEvent> respondedFiscalEvents = fiscalEventResponseEntity.getBody().getFiscalEvent();
@@ -223,6 +237,8 @@ public class EventTypeConsumer {
 
                     log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR +
                             "Unable to receive Fiscal Event list in response");
+//TODO: Error handling stream.
+/*
 
                     Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(record,
                             FISCAL_EVENT_DATA_NAME, EVENT_TYPE, eventType, RECOVERABLE_ERROR,
@@ -232,6 +248,8 @@ public class EventTypeConsumer {
                     if (errorDataModelOptional.isPresent()) {
                         kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), eventPostingDetailList);
                     }
+*/
+
                 }
             }
 

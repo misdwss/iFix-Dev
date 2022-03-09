@@ -48,8 +48,6 @@ public class PaymentEventMapper implements EventMapper {
         log.info(LOG_INFO_PREFIX + "Transforming PAYMENT Fiscal Event");
 
         List<FiscalEvent> fiscalEventList = new ArrayList<>();
-        String clientProjectCode = data.getAsJsonObject(EVENT).get(PROJECT_ID).getAsString();
-        String iFixProjectId = projectService.getResolvedProjectId(clientProjectCode, data);
         JsonArray entityJA = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
 
         entityJA.forEach(entityJE -> {
@@ -61,8 +59,7 @@ public class PaymentEventMapper implements EventMapper {
                     .eventTime(Instant.now().toEpochMilli())
                     .referenceId(paymentJO.get(ID).getAsString())
                     .parentEventId(null).parentReferenceId(null)
-                    .amountDetails(getAmounts(paymentJO, data))
-                    .projectId(iFixProjectId).build();
+                    .amountDetails(getAmounts(paymentJO, data)).build();
 
             fiscalEventList.add(fiscalEvent);
         });
@@ -95,7 +92,7 @@ public class PaymentEventMapper implements EventMapper {
 
                     Amount amount = Amount.builder()
                             .amount(billAccountDetailsJO.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal())
-                            .coaId(chartOfAccountService.getResolvedChartOfAccount(coaCode, data))
+                            .coaCode(chartOfAccountService.getResolvedChartOfAccountCode(coaCode))
                             .fromBillingPeriod(taxPeriodFrom)
                             .toBillingPeriod(taxPeriodTo).build();
 
