@@ -36,18 +36,6 @@ public class FiscalEventDeReferenced {
     @JsonProperty("government")
     private Government government = null;
 
-    @JsonProperty("department")
-    private Department department = null;
-
-    @JsonProperty("departmentEntity")
-    private DepartmentEntity departmentEntity = null;
-
-    @JsonProperty("expenditure")
-    private Expenditure expenditure = null;
-
-    @JsonProperty("project")
-    private Project project = null;
-
     @JsonProperty("eventType")
     private String eventType = null;
 
@@ -60,11 +48,11 @@ public class FiscalEventDeReferenced {
     @JsonProperty("referenceId")
     private String referenceId = null;
 
-    @JsonProperty("parentEventId")
-    private String parentEventId = null;
+    @JsonProperty("linkedEventId")
+    private String linkedEventId = null;
 
-    @JsonProperty("parentReferenceId")
-    private String parentReferenceId = null;
+    @JsonProperty("linkedReferenceId")
+    private String linkedReferenceId = null;
 
     @JsonProperty("amountDetails")
     @Valid

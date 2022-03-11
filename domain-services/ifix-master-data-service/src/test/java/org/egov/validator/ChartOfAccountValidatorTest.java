@@ -1,7 +1,6 @@
 package org.egov.validator;
 
 import com.google.gson.Gson;
-import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.TestDataFormatter;
@@ -9,9 +8,6 @@ import org.egov.repository.ChartOfAccountRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.CoaUtil;
 import org.egov.web.models.*;
-import org.egov.web.models.COARequest;
-import org.egov.web.models.ChartOfAccount;
-import org.egov.web.models.Government;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,21 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -82,8 +71,10 @@ class ChartOfAccountValidatorTest {
     @Test
     void testValidateCreatePostWithEmptyRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
+        ChartOfAccount chartOfAccount = new ChartOfAccount();
+        COARequest coaRequest = new COARequest(requestHeader, chartOfAccount);
         assertThrows(CustomException.class,
-                () -> this.chartOfAccountValidator.validateCreatePost(new COARequest(requestHeader, new ChartOfAccount())));
+                () -> this.chartOfAccountValidator.validateCreatePost(coaRequest));
     }
 
     @Test
@@ -259,20 +250,24 @@ class ChartOfAccountValidatorTest {
     void testValidateCoaCodeWithExistingCoaCode() {
         List<ChartOfAccount> chartOfAccountList = coaSearchResponse.getChartOfAccounts();
         when(this.chartOfAccountRepository.search((COASearchCriteria) any())).thenReturn(chartOfAccountList);
-        assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateCoaCode(new COASearchCriteria()));
+        COASearchCriteria searchCriteria = new COASearchCriteria();
+        assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateCoaCode(searchCriteria));
         verify(this.chartOfAccountRepository).search((COASearchCriteria) any());
     }
 
     @Test
     void testValidateSearchPostWithDefaultCOASearchRequest() {
-        assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(new COASearchRequest()));
+        COASearchRequest coaSearchRequest = new COASearchRequest();
+        assertThrows(CustomException.class, () -> this.chartOfAccountValidator.validateSearchPost(coaSearchRequest));
     }
 
     @Test
     void testValidateSearchPostWithDefaultHeader() {
         RequestHeader requestHeader = new RequestHeader();
+        COASearchCriteria coaSearchCriteria = new COASearchCriteria();
+        COASearchRequest coaSearchRequest = new COASearchRequest(requestHeader, coaSearchCriteria);
         assertThrows(CustomException.class, () -> this.chartOfAccountValidator
-                .validateSearchPost(new COASearchRequest(requestHeader, new COASearchCriteria())));
+                .validateSearchPost(coaSearchRequest));
     }
 
     @Test
@@ -340,7 +335,9 @@ class ChartOfAccountValidatorTest {
     @Test
     void testValidateSearchPostWithCoaCodeLength() {
         COASearchCriteria coaSearchCriteria = coaSearchRequest.getCriteria();
-        coaSearchCriteria.setCoaCode("mh-smh-mh-sh-gh-ohqeqwuhewiiwerooierpopeooorpeoweo[wq[pe[o[ewiepoepropoepwoepowopopowpopowo");
+        List<String> coaCodes = new ArrayList<>();
+        coaCodes.add("mh-smh-mh-sh-gh-ohqeqwuhewiiwerooierpopeooorpeoweo[wq[pe[o[ewiepoepropoepwoepowopopowpopowo");
+        coaSearchCriteria.setCoaCodes(coaCodes);
         RequestHeader requestHeader = mock(RequestHeader.class);
         COASearchRequest coaSearchRequest = mock(COASearchRequest.class);
         when(coaSearchRequest.getRequestHeader()).thenReturn(requestHeader);

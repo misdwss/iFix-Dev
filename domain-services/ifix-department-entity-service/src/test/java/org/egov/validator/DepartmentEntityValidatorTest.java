@@ -5,7 +5,6 @@ import org.egov.config.TestDataFormatter;
 import org.egov.repository.DepartmentEntityRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentHierarchyUtil;
-import org.egov.util.GovernmentUtil;
 import org.egov.web.models.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,6 @@ class DepartmentEntityValidatorTest {
 
     @MockBean
     private DepartmentHierarchyUtil departmentHierarchyUtil;
-
-    @MockBean
-    private GovernmentUtil governmentUtil;
 
     @Autowired
     private TestDataFormatter testDataFormatter;
@@ -195,10 +191,6 @@ class DepartmentEntityValidatorTest {
 
     @Test
     void testValidateDepartmentEntityRequestWithEmptyHierarchyLevels() {
-        List<String> governments = new ArrayList<>();
-        governments.add("pb");
-        doReturn(governments).when(governmentUtil)
-                .getGovernmentFromGovernmentService((String) any(), any());
         doReturn(new ArrayList<DepartmentHierarchyLevel>()).when(departmentHierarchyUtil)
                 .validateHierarchyLevelMetaData((String) any(), (Integer) any(), (String) any());
         doReturn(createDepartmentEntityResponse.getDepartmentEntity()).when(this.departmentEntityRepository)
@@ -219,10 +211,6 @@ class DepartmentEntityValidatorTest {
     @Test
     void testValidateDepartmentEntityRequestWithInvalidDeptNameLength() {
         departmentEntityRequest.getDepartmentEntity().setName("");
-        List<String> governments = new ArrayList<>();
-        governments.add("pb");
-        doReturn(governments).when(governmentUtil)
-                .getGovernmentFromGovernmentService((String) any(), any());
         doReturn(createDepartmentEntityResponse.getDepartmentEntity()).when(this.departmentEntityRepository)
                 .searchChildDepartment((List<String>) any(), (Integer) any());
         assertThrows(CustomException.class,
@@ -232,10 +220,6 @@ class DepartmentEntityValidatorTest {
     @Test
     void testValidateDepartmentEntityRequestWithInvalidDeptCodeLength() {
         departmentEntityRequest.getDepartmentEntity().setCode("");
-        List<String> governments = new ArrayList<>();
-        governments.add("pb");
-        doReturn(governments).when(governmentUtil)
-                .getGovernmentFromGovernmentService((String) any(), any());
         doReturn(createDepartmentEntityResponse.getDepartmentEntity()).when(this.departmentEntityRepository)
                 .searchChildDepartment((List<String>) any(), (Integer) any());
         assertThrows(CustomException.class,

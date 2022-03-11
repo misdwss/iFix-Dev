@@ -90,7 +90,7 @@ class ChartOfAccountRepositoryTest {
 
         List<ChartOfAccount> chartOfAccountActual = mongoTemplate.find(searchQuery, ChartOfAccount.class);
         assertNotNull(chartOfAccountActual);
-        assertTrue(chartOfAccountActual.size() == 0);
+        assertEquals(0, chartOfAccountActual.size());
 
     }
 }

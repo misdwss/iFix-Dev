@@ -37,8 +37,8 @@ class FiscalEventDereferenceEnrichmentServiceTest {
         FiscalEventDeReferenced fiscalEventDeReferenced = new FiscalEventDeReferenced();
         this.fiscalEventDereferenceEnrichmentService.enrich(fiscalEventRequest, fiscalEventDeReferenced);
         assertNotNull(fiscalEventDeReferenced.getReferenceId());
-        assertNull(fiscalEventDeReferenced.getParentReferenceId());
-        assertNull(fiscalEventDeReferenced.getParentEventId());
+        assertNull(fiscalEventDeReferenced.getLinkedReferenceId());
+        assertNull(fiscalEventDeReferenced.getLinkedEventId());
         assertNotNull(fiscalEventDeReferenced.getIngestionTime());
         assertNotNull(fiscalEventDeReferenced.getId());
         assertNotNull(fiscalEventDeReferenced.getEventTime());

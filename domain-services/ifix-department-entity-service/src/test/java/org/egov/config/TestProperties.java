@@ -37,9 +37,6 @@ public class TestProperties {
     @Value("${dept.hierarchy.search.response.data}")
     private String deptHierarchySearchResponse;
 
-    @Value("${gov.search.response.data}")
-    private String govSearchResponseData;
-
     @Value("${project.search.response.data}")
     private String projectSearchResponseData;
 

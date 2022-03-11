@@ -21,7 +21,6 @@ public class FiscalEventMapperUtil {
 
     public static final String AUDIT_DETAILS = "auditDetails";
     public static final String AMOUNT_DETAILS = "amountDetails";
-    public static final String PROJECT = "project";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,8 +49,8 @@ public class FiscalEventMapperUtil {
                 .eventType(node.get("eventType") != null ? FiscalEvent.EventTypeEnum.valueOf(node.get("eventType").asText()) : null)
                 .eventTime(node.get("eventTime") != null ? node.get("eventTime").asLong() : null)
                 .referenceId(node.get("referenceId") != null ? node.get("referenceId").asText() : null)
-                .parentReferenceId(node.get("parentReferenceId") != null ? node.get("parentReferenceId").asText() : null)
-                .parentEventId(node.get("parentEventId") != null ? node.get("parentEventId").asText() : null)
+                .linkedReferenceId(node.get("linkedReferenceId") != null ? node.get("linkedReferenceId").asText() : null)
+                .linkedEventId(node.get("linkedEventId") != null ? node.get("linkedEventId").asText() : null)
                 .ingestionTime(node.get("ingestionTime") != null ? node.get("ingestionTime").asLong() : null)
                 .attributes(node.get("attributes"))
                 .build();
@@ -83,10 +82,6 @@ public class FiscalEventMapperUtil {
                 amountDetails.add(amount);
             }
             fiscalEvent.setAmountDetails(amountDetails);
-        }
-        //project
-        if (node.get(PROJECT) != null && node.get(PROJECT).get("id") != null) {
-            fiscalEvent.setProjectId(node.get(PROJECT).get("id").asText());
         }
         return fiscalEvent;
     }

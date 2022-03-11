@@ -118,12 +118,6 @@ public class TestDataFormatter {
         return invalidGovernmentResponse;
     }
 
-    public JsonNode getProjectSearchResponse() throws IOException {
-        JsonNode projectSearchResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getProjectSearchResponseData()));
-        return projectSearchResponse;
-    }
-
     public JsonNode getCOASearchResponse() throws IOException {
         JsonNode coaSearchResponse =
                 new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getCoaSearchResponseData()));

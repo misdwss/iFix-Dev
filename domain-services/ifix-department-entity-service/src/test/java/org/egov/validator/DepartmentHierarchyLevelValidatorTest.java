@@ -6,9 +6,7 @@ import org.egov.config.TestDataFormatter;
 import org.egov.repository.DepartmentHierarchyLevelRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentUtil;
-import org.egov.util.GovernmentUtil;
 import org.egov.web.models.*;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -38,9 +36,6 @@ class DepartmentHierarchyLevelValidatorTest {
 
     @Mock
     private DepartmentUtil departmentUtil;
-
-    @Mock
-    private GovernmentUtil governmentUtil;
 
     @Autowired
     private TestDataFormatter testDataFormatter;
@@ -110,42 +105,19 @@ class DepartmentHierarchyLevelValidatorTest {
 
     @Test
     void testValidateHierarchyLevelCreatePostWithEmptyGovernmentAndDepartmentSearchResult() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
 
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(hierarchyLevelRequest));
-        verify(this.governmentUtil).getGovernmentFromGovernmentService((String) any(), (RequestHeader) any());
         verify(this.departmentUtil).getDepartmentFromDepartmentService((String) any(), (String) any(),
                 (RequestHeader) any());
     }
 
     @Test
     void testValidateHierarchyLevelCreatePostWithEmptyDepartmentSearchResult() {
-        ArrayList<String> stringList = new ArrayList<>();
-        stringList.add("pb");
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(stringList);
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
-        assertThrows(CustomException.class,
-                () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(hierarchyLevelRequest));
-        verify(this.governmentUtil).getGovernmentFromGovernmentService((String) any(), (RequestHeader) any());
-        verify(this.departmentUtil).getDepartmentFromDepartmentService((String) any(), (String) any(),
-                (RequestHeader) any());
-    }
-
-    @Test
-    void testValidateHierarchyLevelCreatePostWithEmptyGovernmentSearchResult() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
-
-        ArrayList<String> stringList = new ArrayList<>();
-        stringList.add("b32f0cc1-f4b1-4503-95d6-fdf04d0ea2d4");
-        when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
-                .thenReturn(stringList);
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(hierarchyLevelRequest));
         verify(this.departmentUtil).getDepartmentFromDepartmentService((String) any(), (String) any(),
@@ -154,8 +126,6 @@ class DepartmentHierarchyLevelValidatorTest {
 
     @Test
     void testValidateHierarchyLevelCreatePostWithNullTenant() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
         hierarchyLevelRequest.getDepartmentHierarchyLevel().setTenantId(null);
@@ -165,8 +135,6 @@ class DepartmentHierarchyLevelValidatorTest {
 
     @Test
     void testValidateHierarchyLevelCreatePostWithEmptyTenantId() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
         hierarchyLevelRequest.getDepartmentHierarchyLevel().setTenantId("");
@@ -195,31 +163,13 @@ class DepartmentHierarchyLevelValidatorTest {
     }
 
     @Test
-    void testValidateHierarchyLevelSearchPostWithEmptyTenantIdSearchResult() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
-
-        assertThrows(CustomException.class, () -> this.departmentHierarchyLevelValidator
-                .validateHierarchyLevelSearchPost(hierarchyLevelSearchRequest));
-        verify(this.governmentUtil).getGovernmentFromGovernmentService((String) any(), (RequestHeader) any());
-    }
-
-    @Test
     void testValidateHierarchyLevelSearchPostWithTenantIdSearchResult() {
-        ArrayList<String> stringList = new ArrayList<>();
-        stringList.add("pb");
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(stringList);
         this.departmentHierarchyLevelValidator.validateHierarchyLevelSearchPost(hierarchyLevelSearchRequest);
-        verify(this.governmentUtil).getGovernmentFromGovernmentService((String) any(), (RequestHeader) any());
     }
 
 
     @Test
     void testValidateHierarchyLevelSearchPostWithEmptyTenantId() {
-        when(this.governmentUtil.getGovernmentFromGovernmentService((String) any(), (RequestHeader) any()))
-                .thenReturn(new ArrayList<>());
-
         hierarchyLevelSearchRequest.getCriteria().setTenantId("");
         assertThrows(CustomException.class, () -> this.departmentHierarchyLevelValidator
                 .validateHierarchyLevelSearchPost(hierarchyLevelSearchRequest));

@@ -20,16 +20,11 @@ import java.util.*;
 @Slf4j
 public class FiscalEventValidator {
 
-
-    public static final String PROJECT = "project";
     @Autowired
     private CoaUtil coaUtil;
 
     @Autowired
     TenantUtil tenantUtil;
-
-    @Autowired
-    ProjectUtil projectUtil;
 
     @Autowired
     private FiscalEventRepository eventRepository;
@@ -39,6 +34,9 @@ public class FiscalEventValidator {
 
     @Autowired
     private FiscalEventMapperUtil mapperUtil;
+
+    @Autowired
+    private FiscalEventUtil fiscalEventUtil;
 
     /**
      * Validate the fiscal Event request
@@ -61,13 +59,13 @@ public class FiscalEventValidator {
             for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
                 boolean isMissing = false;
                 if (StringUtils.isBlank(fiscalEvent.getReferenceId())) {
-                    errorMap.put(MasterDataConstants.REFERENCE_ID, "Reference id is missing for project Id : " + fiscalEvent.getProjectId());
+                    errorMap.put(MasterDataConstants.REFERENCE_ID, "Reference id is missing for event type  : " + (fiscalEvent.getEventType() != null ? fiscalEvent.getEventType().name() : null));
                     isMissing = true;
                 }
                 if (fiscalEvent.getEventType() == null
                         || !EnumUtils.isValidEnum(FiscalEvent.EventTypeEnum.class, fiscalEvent.getEventType().name())) {
 
-                    errorMap.put(MasterDataConstants.EVENT_TYPE, "Fiscal event type is missing for project Id : " + fiscalEvent.getProjectId());
+                    errorMap.put(MasterDataConstants.EVENT_TYPE, "Fiscal event type is missing");
                     isMissing = true;
                 }
                 if (isMissing) {
@@ -76,7 +74,6 @@ public class FiscalEventValidator {
             }
             validateReqHeader(fiscalEventRequest.getRequestHeader());
             validateTenantId(fiscalEventRequest, errorMap);
-            validateProjectId(fiscalEventRequest, errorMap);
             validateFiscalEventAmountDetails(fiscalEventRequest, errorMap);
             validateParentEventId(fiscalEventRequest, errorMap);
 
@@ -97,8 +94,8 @@ public class FiscalEventValidator {
             Set<String> parentEventIds = new HashSet<>();
             String tenantId = fiscalEventRequest.getFiscalEvent().get(0).getTenantId();
             for (FiscalEvent fiscalEvent : fiscalEvents) {
-                if (StringUtils.isNotBlank(fiscalEvent.getParentEventId())) {
-                    parentEventIds.add(fiscalEvent.getParentEventId());
+                if (StringUtils.isNotBlank(fiscalEvent.getLinkedEventId())) {
+                    parentEventIds.add(fiscalEvent.getLinkedEventId());
                 }
             }
             if (!parentEventIds.isEmpty() && StringUtils.isNotBlank(tenantId)) {
@@ -109,15 +106,15 @@ public class FiscalEventValidator {
 
                 List<Object> fiscalEventList = eventRepository.searchFiscalEvent(criteria);
                 if (fiscalEventList == null || fiscalEventList.isEmpty()) {
-                    errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Parent event id(s) : " + parentEventIds + " doesn't exist in the system.");
+                    errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Linked event id(s) : " + parentEventIds + " doesn't exist in the system.");
                 } else if (!fiscalEventList.isEmpty() && (fiscalEventList.size() != parentEventIds.size())) {
                     List<FiscalEvent> dbFiscalEvents = mapperUtil.mapDereferencedFiscalEventToFiscalEvent(fiscalEventList);
                     Set<String> missingParentEventIds = new HashSet<>();
                     for (String parentEventId : parentEventIds) {
                         boolean isExist = false;
                         for (FiscalEvent fiscalEvent : dbFiscalEvents) {
-                            if (fiscalEvent != null && StringUtils.isNotBlank(fiscalEvent.getParentEventId())
-                                    && fiscalEvent.getParentEventId().equals(parentEventId)) {
+                            if (fiscalEvent != null && StringUtils.isNotBlank(fiscalEvent.getLinkedEventId())
+                                    && fiscalEvent.getLinkedEventId().equals(parentEventId)) {
                                 isExist = true;
                                 break;
                             }
@@ -127,7 +124,7 @@ public class FiscalEventValidator {
                         }
                     }
                     if (!missingParentEventIds.isEmpty()) {
-                        errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Parent event id(s) : " + missingParentEventIds + " doesn't exist in the system.");
+                        errorMap.put(MasterDataConstants.PARENT_EVENT_ID, "Linked event id(s) : " + missingParentEventIds + " doesn't exist in the system.");
                     }
                 }
             }
@@ -173,28 +170,46 @@ public class FiscalEventValidator {
                 allAmountDetails.addAll(amountDetails);
             }
 
-            Set<String> coaIds = new HashSet<>();
+            Set<String> coaCodes = new HashSet<>();
             for (Amount amount : allAmountDetails) {
                 if (amount.getAmount() == null /*|| amount.getAmount().compareTo(BigDecimal.ZERO)==0*/)
-                    errorMap.put("AMOUNT", "Amount is missing in request for coaId : " + amount.getCoaId());
-                if (StringUtils.isNotBlank(amount.getCoaId()))
-                    coaIds.add(amount.getCoaId());
-                else
-                    throw new CustomException("COA_ID", "COA id is missing in the request data");
+                    errorMap.put("AMOUNT", "Amount is missing in request for coaCode : " + amount.getCoaCode());
+                if (StringUtils.isNotBlank(amount.getCoaCode()))
+                    coaCodes.add(amount.getCoaCode());
+                else {
+                    errorMap.put("COA_CODE", "COA Code is missing in the request data");
+                    throw new CustomException(errorMap);
+                }
             }
 
-            List<String> responseCoaIds = coaUtil.getCOAIdsFromCOAService(requestHeader, coaIds, tenantId);
+            JsonNode jsonNode = coaUtil.fetchCoaDetailsByCoaCodes(requestHeader, coaCodes, tenantId);
 
-            List<String> errorCoaIds = new ArrayList<>();
-            for (String coaId : coaIds) {
-                if (!responseCoaIds.contains(coaId))
-                    errorCoaIds.add(coaId);
+            List<String> errorCoaCodes = new ArrayList<>();
+            for (String coaCode : coaCodes) {
+                boolean isPresent = false;
+
+                if (jsonNode != null) {
+                    for (JsonNode chartOfAccountJN : jsonNode) {
+                        String coaCd = chartOfAccountJN.get("coaCode").asText();
+                        if (StringUtils.isNotBlank(coaCd) && coaCode.equals(coaCd.trim())) {
+                            isPresent = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!isPresent) {
+                    errorCoaCodes.add(coaCode);
+                }
             }
 
-            if (!errorCoaIds.isEmpty()) {
-                errorMap.put("COA_ID_INVALID", "This chart of account id : " + errorCoaIds + " is invalid " +
-                        "(or) Combination of tenant id with this chart of account id doesn't exist");
+            if (!errorCoaCodes.isEmpty()) {
+                errorMap.put("COA_CODE_INVALID", "This chart of account Code : " + errorCoaCodes + " is invalid " +
+                        "(or) Combination of tenant id with this chart of account code doesn't exist");
+                return;
             }
+
+            fiscalEventUtil.enrichCoaDetails(fiscalEventRequest, jsonNode);
         }
 
     }
@@ -224,74 +239,6 @@ public class FiscalEventValidator {
         }
         if (!isValidTenant) {
             errorMap.put(MasterDataConstants.TENANT_ID, "Tenant id doesn't exist in the system");
-        }
-    }
-
-    /**
-     * @param fiscalEventRequest
-     */
-    public void validateProjectId(FiscalEventRequest fiscalEventRequest, Map<String, String> errorMap) {
-        Set<String> projectIds = new HashSet<>();
-
-        if (fiscalEventRequest != null && fiscalEventRequest.getFiscalEvent() != null
-                && !fiscalEventRequest.getFiscalEvent().isEmpty()
-                && StringUtils.isNotBlank(fiscalEventRequest.getFiscalEvent().get(0).getTenantId())) {
-            for (FiscalEvent fiscalEvent : fiscalEventRequest.getFiscalEvent()) {
-                if (StringUtils.isNotBlank(fiscalEvent.getProjectId())) {
-                    projectIds.add(fiscalEvent.getProjectId());
-                }
-            }
-        }
-
-        Optional<JsonNode> optionalJsonNode = projectUtil.validateProjectId(fiscalEventRequest.getRequestHeader(), projectIds,
-                fiscalEventRequest.getFiscalEvent().get(0).getTenantId());
-
-        if (!optionalJsonNode.isPresent()) {
-            errorMap.put(MasterDataConstants.PROJECT_ID, "Project ids don't exist in the system");
-        } else if (projectIds.size() != optionalJsonNode.get().get(PROJECT).size()) {
-
-            JsonNode projectListNode = optionalJsonNode.get().get(PROJECT);
-            List<String> missingProjectIds = new ArrayList<>();
-
-            for (String projectId : projectIds) {
-                boolean isExist = false;
-                if (projectListNode != null && !projectListNode.isEmpty()) {
-                    for (JsonNode projectNode : projectListNode) {
-                        if (projectNode.get("id") != null && projectNode.get("id").asText().equals(projectId)) {
-                            isExist = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isExist) {
-                    missingProjectIds.add(projectId);
-                }
-            }
-
-            if (!missingProjectIds.isEmpty()) {
-                errorMap.put(MasterDataConstants.PROJECT_ID, "Project id(s) : " + missingProjectIds + " don't exist in the system");
-            }
-        } else{
-            JsonNode jsonNode = optionalJsonNode.get();
-            JsonNode projectListNode = jsonNode.get(PROJECT);
-
-            if (projectListNode != null && !projectListNode.isEmpty()) {
-
-                for (JsonNode projectNode : projectListNode) {
-                    if (projectNode.get("expenditureId") == null) {
-                        errorMap.put(MasterDataConstants.PROJECT_ID_EXPENDITURE_ID, "Expenditure details is missing in project for project id : " + projectNode.get("id"));
-                        break;
-                    }
-
-                    if (projectNode.get("departmentEntity") == null
-                            || projectNode.get("departmentEntity").get("departmentId") == null) {
-                        errorMap.put(MasterDataConstants.PROJECT_ID_DEPARTMENT_ENTITY_ID, "Department entity details doesn't exist in the projectfor project id : " + projectNode.get("id"));
-                        break;
-                    }
-                }
-            } else {
-                errorMap.put(MasterDataConstants.PROJECT_ID, "Project doesn't exist in the system");
-            }
         }
     }
 

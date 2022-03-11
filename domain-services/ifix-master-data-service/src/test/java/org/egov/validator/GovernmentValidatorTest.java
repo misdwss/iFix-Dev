@@ -61,8 +61,10 @@ class GovernmentValidatorTest {
     @Test
     void testValidateGovernmentRequestDataUserInfoException() {
         RequestHeader requestHeader = new RequestHeader();
+        Government government = new Government();
+        GovernmentRequest governmentRequest = new GovernmentRequest(requestHeader, government);
         assertThrows(CustomException.class, () -> governmentValidator
-                        .validateGovernmentRequestData(new GovernmentRequest(requestHeader, new Government())),
+                        .validateGovernmentRequestData(governmentRequest),
                 "User information is missing");
     }
 
@@ -109,8 +111,9 @@ class GovernmentValidatorTest {
 
     @Test
     void testValidateGovernmentSearchRequestDataPayloadException() {
+        GovernmentSearchRequest governmentSearchRequest = new GovernmentSearchRequest();
         assertThrows(CustomException.class,
-                () -> governmentValidator.validateGovernmentSearchRequestData(new GovernmentSearchRequest()));
+                () -> governmentValidator.validateGovernmentSearchRequestData(governmentSearchRequest));
         assertThrows(CustomException.class, () -> governmentValidator.validateGovernmentSearchRequestData(null),
                 "Request payload is missing some value");
     }
@@ -118,15 +121,17 @@ class GovernmentValidatorTest {
     @Test
     void testValidateGovernmentSearchRequestData2() {
         RequestHeader requestHeader = new RequestHeader();
-        assertThrows(CustomException.class, () -> governmentValidator.validateGovernmentSearchRequestData(
-                new GovernmentSearchRequest(requestHeader, new GovernmentSearchCriteria())));
+        GovernmentSearchCriteria searchCriteria = new GovernmentSearchCriteria();
+        GovernmentSearchRequest governmentSearchRequest = new GovernmentSearchRequest(requestHeader, searchCriteria);
+        assertThrows(CustomException.class, () -> governmentValidator.validateGovernmentSearchRequestData(governmentSearchRequest));
     }
 
     @Test
     void testValidateGovernmentSearchRequestDataWithNullCriteria() {
         RequestHeader requestHeader = new RequestHeader();
+        GovernmentSearchRequest governmentSearchRequest = new GovernmentSearchRequest(requestHeader, null);
         assertThrows(CustomException.class, () -> governmentValidator.validateGovernmentSearchRequestData(
-                new GovernmentSearchRequest(requestHeader, null)));
+                governmentSearchRequest));
     }
 }
 

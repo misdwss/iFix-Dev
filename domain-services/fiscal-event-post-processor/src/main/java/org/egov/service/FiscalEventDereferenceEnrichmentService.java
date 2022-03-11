@@ -19,8 +19,8 @@ public class FiscalEventDereferenceEnrichmentService {
         fiscalEventDeReferenced.setIngestionTime(fiscalEvent.getIngestionTime());
         fiscalEventDeReferenced.setEventTime(fiscalEvent.getEventTime());
         fiscalEventDeReferenced.setEventType(fiscalEvent.getEventType().name());
-        fiscalEventDeReferenced.setParentReferenceId(fiscalEvent.getParentReferenceId());
-        fiscalEventDeReferenced.setParentEventId(fiscalEvent.getParentEventId());
+        fiscalEventDeReferenced.setLinkedReferenceId(fiscalEvent.getLinkedReferenceId());
+        fiscalEventDeReferenced.setLinkedEventId(fiscalEvent.getLinkedEventId());
         fiscalEventDeReferenced.setReferenceId(fiscalEvent.getReferenceId());
         fiscalEventDeReferenced.setAttributes(fiscalEvent.getAttributes());
         fiscalEventDeReferenced.setVersion(MasterDataConstants.FISCAL_EVENT_VERSION);
