@@ -1,11 +1,8 @@
 package org.egov.ifix.master;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.master.fetcher.DepartmentEntityFetcher;
 import org.egov.ifix.master.fetcher.DepartmentFetcher;
@@ -26,6 +23,8 @@ public class MasterDataEnricher {
     ExpenditureFetcher expenditureFetcher;
     @Autowired
     DepartmentFetcher departmentFetcher;
+    @Autowired
+    ObjectMapper objectMapper;
 
     public final ObjectNode getMasterDataForProjectCode(String departmentEntityCode) {
         // 1 - Get Department Entity Details (based on departmentEntityCode)
@@ -37,7 +36,7 @@ public class MasterDataEnricher {
         departmentEntityDetails.remove("departmentId");
 
         // 2 - Get Project Details (based on department entity uuid)
-        String departmentEntityUuid = departmentEntityDetails.get("id").textValue();
+        String departmentEntityUuid = departmentEntityDetails.get("id").asText();
         ObjectNode projectDetails = projectFetcher.getProjectDetailsOfDepartmentEntity(departmentEntityUuid);
 
         String expenditureUuid = projectDetails.get("expenditureId").asText();
@@ -50,7 +49,7 @@ public class MasterDataEnricher {
         ObjectNode departmentDetails = departmentFetcher.getDepartmentDetails(departmentUuid);
 
         // 5 - Add all these details to a json object
-        ObjectNode additionalAttributes = new ObjectMapper().createObjectNode();
+        ObjectNode additionalAttributes = objectMapper.createObjectNode();
         additionalAttributes.set("departmentEntity", departmentEntityDetails);
         additionalAttributes.set("project", projectDetails);
         additionalAttributes.set("expenditure", expenditureDetails);

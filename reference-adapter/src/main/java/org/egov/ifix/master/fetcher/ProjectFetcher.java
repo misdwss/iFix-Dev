@@ -2,10 +2,7 @@ package org.egov.ifix.master.fetcher;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.utils.ApplicationConfiguration;
@@ -14,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
-import static org.egov.ifix.utils.EventConstants.*;
+import static org.egov.ifix.utils.EventConstants.PROJECT_ID;
 
 @Component
 @Slf4j

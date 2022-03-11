@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.ServiceRequestRepository;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import static org.egov.ifix.utils.EventConstants.DEPARTMENT_ENTITY_CODE;
-import static org.egov.ifix.utils.EventConstants.PROJECT_CODE;
 
 @Component
 public class DepartmentEntityFetcher {
@@ -44,9 +41,7 @@ public class DepartmentEntityFetcher {
         ObjectNode departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
         departmentEntity.set("ancestry", createAncestryArrayFor(departmentEntityDetails));
 
-
         return departmentEntity;
-//        return JsonParser.parseString(departmentEntity.toString()).getAsJsonObject();
     }
 
     private JsonNode createDepartmentEntitySearchRequest(String tenantId,
