@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.ServiceRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class ExpenditureFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getExpenditureDetails(String expenditureUuid) {
+    public ObjectNode getExpenditureDetails(String expenditureUuid) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createExpenditureSearchRequest(tenantId, expenditureUuid);
 
@@ -35,7 +33,7 @@ public class ExpenditureFetcher {
         expenditure.put("name", expenditureDetails.get("name").asText());
         expenditure.put("type", expenditureDetails.get("type").asText());
 
-        return JsonParser.parseString(expenditure.toString()).getAsJsonObject();
+        return expenditure;
     }
 
     private JsonNode createExpenditureSearchRequest(String tenantId, String expenditureUuid) {

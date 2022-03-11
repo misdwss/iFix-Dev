@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.ServiceRequestRepository;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import static org.egov.ifix.utils.EventConstants.DEPARTMENT_ENTITY_CODE;
-import static org.egov.ifix.utils.EventConstants.PROJECT_CODE;
 
 @Component
 public class DepartmentEntityFetcher {
@@ -26,7 +23,7 @@ public class DepartmentEntityFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getDepartmentEntityDetailsFromCode(String code) {
+    public ObjectNode getDepartmentEntityDetailsFromCode(String code) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createDepartmentEntitySearchRequest(tenantId, code);
         Object response = serviceRequestRepository.fetchResult(createDepartmentEntitySearchUrl(), searchRequest);
@@ -44,7 +41,7 @@ public class DepartmentEntityFetcher {
         ObjectNode departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
         departmentEntity.set("ancestry", createAncestryArrayFor(departmentEntityDetails));
 
-        return JsonParser.parseString(departmentEntity.toString()).getAsJsonObject();
+        return departmentEntity;
     }
 
     private JsonNode createDepartmentEntitySearchRequest(String tenantId,
