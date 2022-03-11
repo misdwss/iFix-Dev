@@ -63,7 +63,7 @@ class MasterDepartmentUtilTest {
 
         departmentList = departmentResponse.getDepartment();
 
-        doReturn(new String()).when(configuration).getIfixMasterDepartmenteHost();
+        doReturn(new String()).when(configuration).getIfixMasterDepartmentHost();
         doReturn(new String()).when(configuration).getIfixMasterDepartmentContextPath();
         doReturn(new String()).when(configuration).getIfixMasterDepartmentSearchPath();
 

@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.ifix.exception.HttpCustomException;
-import org.egov.ifix.models.*;
+import org.egov.ifix.models.COASearchCriteria;
+import org.egov.ifix.models.ChartOfAccount;
+import org.egov.ifix.models.ChartOfAccountRequest;
+import org.egov.ifix.models.ChartOfAccountResponse;
 import org.egov.ifix.persistance.ChartOfAccountMap;
 import org.egov.ifix.persistance.ChartOfAccountMapRepository;
 import org.egov.ifix.service.AuthTokenService;
@@ -16,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,7 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.egov.ifix.utils.EventConstants.*;
+import static org.egov.ifix.utils.EventConstants.CLIENT_COA_CODE;
+import static org.egov.ifix.utils.EventConstants.COA_CODE;
 
 /**
  * @author mani
@@ -54,8 +57,8 @@ public class ChartOfAccountRepository {
     @Autowired
     private DataWrapper dataWrapper;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
 
 
     /**
@@ -137,6 +140,8 @@ public class ChartOfAccountRepository {
      * @param errorMessage
      */
     private void wrapErrorModelAndPushKafkaTopic(String attributeName, String attributeValue, String errorMessage) {
+//TODO: Error handling stream.
+/*
         Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(NA,
                 COA_CODE_DATA_NAME, attributeName, attributeValue, NON_RECOVERABLE_ERROR,
                 HttpStatus.BAD_REQUEST.toString(), errorMessage);
@@ -144,6 +149,7 @@ public class ChartOfAccountRepository {
         if (errorDataModelOptional.isPresent()) {
             kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
         }
+*/
     }
 
 

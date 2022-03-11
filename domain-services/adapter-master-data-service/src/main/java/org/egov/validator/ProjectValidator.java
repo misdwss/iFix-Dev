@@ -36,10 +36,6 @@ public class ProjectValidator {
 
             RequestHeader requestHeader = projectSearchRequest.getRequestHeader();
 
-            if (requestHeader.getUserInfo() == null || StringUtils.isEmpty(requestHeader.getUserInfo().getUuid())) {
-                throw new CustomException(MasterDataConstants.USER_INFO, "User information is missing");
-            }
-
             ProjectSearchCriteria projectSearchCriteria = projectSearchRequest.getCriteria();
 
             if (projectSearchCriteria == null) {

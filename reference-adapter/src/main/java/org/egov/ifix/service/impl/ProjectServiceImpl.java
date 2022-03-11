@@ -12,12 +12,12 @@ import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.DataWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static org.egov.ifix.utils.EventConstants.*;
+import static org.egov.ifix.utils.EventConstants.LOG_INFO_PREFIX;
+import static org.egov.ifix.utils.EventConstants.PROJECT_CODE;
 
 /**
  * @author mani
@@ -46,8 +46,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ApplicationConfiguration applicationConfiguration;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * @param projectCode
@@ -67,6 +67,8 @@ public class ProjectServiceImpl implements ProjectService {
                 projectCache.putValue(projectCode, projectOptional.get());
                 project = projectOptional.get();
             } else {
+//TODO: Error handling stream.
+/*
                 Optional<ErrorDataModel> errorDataModelOptional = dataWrapper.getErrorDataModel(NA,
                         PROJECT_CODE_DATA_NAME, CLIENT_PROJECT_CODE, projectCode, NON_RECOVERABLE_ERROR,
                         HttpStatus.INTERNAL_SERVER_ERROR.toString(),
@@ -75,6 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
                 if (errorDataModelOptional.isPresent()) {
                     kafkaTemplate.send(applicationConfiguration.getErrorTopicName(), errorDataModelOptional.get());
                 }
+*/
                 throw new HttpCustomException(PROJECT_CODE, "Unable to find project by client project code",
                         HttpStatus.BAD_REQUEST);
             }
