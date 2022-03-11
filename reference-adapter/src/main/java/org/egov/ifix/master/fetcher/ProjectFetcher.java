@@ -29,7 +29,7 @@ public class ProjectFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getProjectDetailsOfDepartmentEntity(String departmentEntityUuid) {
+    public ObjectNode getProjectDetailsOfDepartmentEntity(String departmentEntityUuid) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createProjectSearchRequest(tenantId, departmentEntityUuid);
 
@@ -51,7 +51,7 @@ public class ProjectFetcher {
         project.put("name", projectDetails.get("name").asText());
         project.put("expenditureId", projectDetails.get("expenditureId").asText());
 
-        return JsonParser.parseString(project.toString()).getAsJsonObject();
+        return project;
     }
 
     private JsonNode createProjectSearchRequest(String tenantId, String departmentEntityUuid) {

@@ -26,7 +26,7 @@ public class DepartmentEntityFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getDepartmentEntityDetailsFromCode(String code) {
+    public ObjectNode getDepartmentEntityDetailsFromCode(String code) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createDepartmentEntitySearchRequest(tenantId, code);
         Object response = serviceRequestRepository.fetchResult(createDepartmentEntitySearchUrl(), searchRequest);
@@ -44,7 +44,9 @@ public class DepartmentEntityFetcher {
         ObjectNode departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
         departmentEntity.set("ancestry", createAncestryArrayFor(departmentEntityDetails));
 
-        return JsonParser.parseString(departmentEntity.toString()).getAsJsonObject();
+
+        return departmentEntity;
+//        return JsonParser.parseString(departmentEntity.toString()).getAsJsonObject();
     }
 
     private JsonNode createDepartmentEntitySearchRequest(String tenantId,

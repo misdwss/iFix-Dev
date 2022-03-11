@@ -1,8 +1,5 @@
 package org.egov.ifix.consumer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -89,15 +86,13 @@ public class EventTypeConsumer {
             RequestHeader header = requestHeaderUtil.populateRequestHeader(jsonObject, new RequestHeader());
             fiscalEventRequest.setRequestHeader(header);
 
-            JsonObject additionalAttributes = masterDataEnricher.getMasterDataForProjectCode(
+            ObjectNode additionalAttributes = masterDataEnricher.getMasterDataForProjectCode(
                     eventJsonObject.get(PROJECT_ID).getAsString());
-
-            JsonNode attributeJsonNode = new ObjectMapper().readTree(additionalAttributes.toString());
 
             EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());
 
             List<FiscalEvent> fiscalEvents = eventMapper.transformData(jsonObject);
-            fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(attributeJsonNode));
+            fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(additionalAttributes));
 
             fiscalEventRequest.setFiscalEvent(fiscalEvents);
 

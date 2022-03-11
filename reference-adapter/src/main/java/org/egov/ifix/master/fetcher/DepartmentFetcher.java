@@ -4,15 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.ServiceRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -25,7 +21,7 @@ public class DepartmentFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getDepartmentDetails(String departmentUuid) {
+    public ObjectNode getDepartmentDetails(String departmentUuid) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createDepartmentSearchRequest(tenantId, departmentUuid);
 
@@ -38,7 +34,7 @@ public class DepartmentFetcher {
         department.put("code", departmentDetails.get("code").asText());
         department.put("name", departmentDetails.get("name").asText());
 
-        return JsonParser.parseString(department.toString()).getAsJsonObject();
+        return department;
     }
 
     private JsonNode createDepartmentSearchRequest(String tenantId, String departmentUuid) {

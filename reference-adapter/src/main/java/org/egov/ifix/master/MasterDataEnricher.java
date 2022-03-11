@@ -2,6 +2,8 @@ package org.egov.ifix.master;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
@@ -25,37 +27,34 @@ public class MasterDataEnricher {
     @Autowired
     DepartmentFetcher departmentFetcher;
 
-    public final JsonObject getMasterDataForProjectCode(String departmentEntityCode) {
-
-        log.info("------------Master Data Enricher-----------------------");
-
+    public final ObjectNode getMasterDataForProjectCode(String departmentEntityCode) {
         // 1 - Get Department Entity Details (based on departmentEntityCode)
 
-        JsonObject departmentEntityDetails =
+        ObjectNode departmentEntityDetails =
                 departmentEntityFetcher.getDepartmentEntityDetailsFromCode(departmentEntityCode);
 
-        String departmentUuid = departmentEntityDetails.get("departmentId").getAsString();
+        String departmentUuid = departmentEntityDetails.get("departmentId").asText();
         departmentEntityDetails.remove("departmentId");
 
         // 2 - Get Project Details (based on department entity uuid)
-        String departmentEntityUuid = departmentEntityDetails.get("id").getAsString();
-        JsonObject projectDetails = projectFetcher.getProjectDetailsOfDepartmentEntity(departmentEntityUuid);
+        String departmentEntityUuid = departmentEntityDetails.get("id").textValue();
+        ObjectNode projectDetails = projectFetcher.getProjectDetailsOfDepartmentEntity(departmentEntityUuid);
 
-        String expenditureUuid = projectDetails.get("expenditureId").getAsString();
+        String expenditureUuid = projectDetails.get("expenditureId").asText();
         projectDetails.remove("expenditureId");
 
         // 3 - Get Expenditure Details (based on expenditure uuid extracted from project details)
-        JsonObject expenditureDetails = expenditureFetcher.getExpenditureDetails(expenditureUuid);
+        ObjectNode expenditureDetails = expenditureFetcher.getExpenditureDetails(expenditureUuid);
 
         // 4 - Get Department Details (based on department uuid extracted from department entity details)
-        JsonObject departmentDetails = departmentFetcher.getDepartmentDetails(departmentUuid);
+        ObjectNode departmentDetails = departmentFetcher.getDepartmentDetails(departmentUuid);
 
         // 5 - Add all these details to a json object
-        JsonObject additionalAttributes = new JsonObject();
-        additionalAttributes.add("departmentEntity", departmentEntityDetails);
-        additionalAttributes.add("project", projectDetails);
-        additionalAttributes.add("expenditure", expenditureDetails);
-        additionalAttributes.add("department", departmentDetails);
+        ObjectNode additionalAttributes = new ObjectMapper().createObjectNode();
+        additionalAttributes.set("departmentEntity", departmentEntityDetails);
+        additionalAttributes.set("project", projectDetails);
+        additionalAttributes.set("expenditure", expenditureDetails);
+        additionalAttributes.set("department", departmentDetails);
 
         return additionalAttributes;
     }

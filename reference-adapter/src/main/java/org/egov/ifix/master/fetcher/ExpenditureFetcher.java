@@ -21,7 +21,7 @@ public class ExpenditureFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
-    public JsonObject getExpenditureDetails(String expenditureUuid) {
+    public ObjectNode getExpenditureDetails(String expenditureUuid) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createExpenditureSearchRequest(tenantId, expenditureUuid);
 
@@ -35,7 +35,7 @@ public class ExpenditureFetcher {
         expenditure.put("name", expenditureDetails.get("name").asText());
         expenditure.put("type", expenditureDetails.get("type").asText());
 
-        return JsonParser.parseString(expenditure.toString()).getAsJsonObject();
+        return expenditure;
     }
 
     private JsonNode createExpenditureSearchRequest(String tenantId, String expenditureUuid) {
