@@ -75,6 +75,27 @@ public class BillEventMapper implements EventMapper {
     }
 
     /**
+     * @param data
+     * @return
+     */
+    @Override
+    public List<String> getReferenceIdList(JsonObject data) {
+        List<String> referenceIdList = new ArrayList<>();
+        JsonArray entityJsonArray = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
+
+        entityJsonArray.forEach(jsonElement -> {
+            JsonArray demandJsonArray = jsonElement.getAsJsonObject().getAsJsonArray(DEMANDS);
+
+            demandJsonArray.forEach(demandJsonElement -> {
+                JsonObject demandJsonObject = demandJsonElement.getAsJsonObject();
+                referenceIdList.add(demandJsonObject.get(ID).getAsString());
+            });
+        });
+
+        return referenceIdList;
+    }
+
+    /**
      * @param demand
      * @param data
      * @return
