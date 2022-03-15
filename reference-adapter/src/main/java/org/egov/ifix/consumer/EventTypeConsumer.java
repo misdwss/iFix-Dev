@@ -18,6 +18,7 @@ import org.egov.ifix.service.impl.ProjectServiceImpl;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.DataWrapper;
 import org.egov.ifix.utils.RequestHeaderUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,11 +121,12 @@ public class EventTypeConsumer {
             errorDetail.setRecord(record);
 
             for (String referenceId : referenceIdList) {
-                errorDetail.setReferenceId(referenceId);
-                eventPostingDetailRepository.save(errorDetail);
+                EventPostingDetail cloneDetails = new EventPostingDetail();
+                BeanUtils.copyProperties(errorDetail, cloneDetails);
+
+                cloneDetails.setReferenceId(referenceId);
+                eventPostingDetailRepository.save(cloneDetails);
             }
-
-
         }
     }
 
