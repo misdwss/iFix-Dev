@@ -70,6 +70,23 @@ public class PaymentEventMapper implements EventMapper {
     }
 
     /**
+     * @param data
+     * @return
+     */
+    @Override
+    public List<String> getReferenceIdList(JsonObject data) {
+        List<String> referenceIdList = new ArrayList<>();
+        JsonArray entityJsonArray = data.getAsJsonObject(EVENT).getAsJsonArray(ENTITY);
+
+        entityJsonArray.forEach(entityJsonElement -> {
+            JsonObject paymentJsonObject = entityJsonElement.getAsJsonObject().getAsJsonObject(PAYMENT);
+            referenceIdList.add(paymentJsonObject.get(ID).getAsString());
+        });
+
+        return referenceIdList;
+    }
+
+    /**
      * @param payment
      * @param data
      * @return

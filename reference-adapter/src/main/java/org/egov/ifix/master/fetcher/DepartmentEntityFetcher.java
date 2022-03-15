@@ -31,7 +31,10 @@ public class DepartmentEntityFetcher {
 
         JsonNode departmentEntityNode = responseJson.get("departmentEntity");
 
-        if (departmentEntityNode != null && departmentEntityNode.size() > 1) {
+        if (departmentEntityNode == null || departmentEntityNode.size() == 0) {
+            throw new HttpCustomException(DEPARTMENT_ENTITY_CODE, "Unable to find department entity by code: " + code,
+                    HttpStatus.BAD_REQUEST);
+        }else if (departmentEntityNode != null && departmentEntityNode.size() > 1) {
             throw new HttpCustomException(DEPARTMENT_ENTITY_CODE, "Multiple department entity found",
                     HttpStatus.BAD_REQUEST);
         }

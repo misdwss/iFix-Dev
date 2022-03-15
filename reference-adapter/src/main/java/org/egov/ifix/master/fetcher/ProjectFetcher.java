@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
+import static org.egov.ifix.utils.EventConstants.DEPARTMENT_ENTITY_CODE;
 import static org.egov.ifix.utils.EventConstants.PROJECT_ID;
 
 @Component
@@ -33,11 +36,15 @@ public class ProjectFetcher {
 
         JsonNode projectNode = responseJson.get("project");
 
-        if (projectNode != null && projectNode.size() > 1) {
+        if (projectNode == null || projectNode.size() == 0) {
+            throw new HttpCustomException(DEPARTMENT_ENTITY_CODE, "Unable to find project by department entity id: "
+                    + departmentEntityUuid, HttpStatus.BAD_REQUEST);
+        }else if (projectNode != null && projectNode.size() > 1) {
             throw new HttpCustomException(PROJECT_ID, "Multiple project found for single department entity code",
                     HttpStatus.BAD_REQUEST);
         }
 
+//        TODO: error message
         JsonNode projectDetails = projectNode.get(0);
 
         ObjectNode project = objectMapper.createObjectNode();

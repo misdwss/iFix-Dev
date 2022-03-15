@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,12 +72,13 @@ public class EventTypeConsumer {
     /**
      * @param record
      */
+    @Transactional
     private void processFiscalEvent(String record) {
         log.info(LOG_INFO_PREFIX + "Transforming and collecting fiscal event");
 
         validateEventRequest(record);
         FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
-        List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
+
 
         JsonObject jsonObject = JsonParser.parseString(record).getAsJsonObject();
         JsonObject eventJsonObject = jsonObject.getAsJsonObject(EVENT);
@@ -103,16 +105,25 @@ public class EventTypeConsumer {
             log.error(LOG_ERROR_PREFIX + NON_RECOVERABLE_ERROR +
                     "Exception while transforming and collecting fiscal data. ", e);
 
-            EventPostingDetail errorDetail = new EventPostingDetail();
-            errorDetail.setEventId(eventJsonObject.get(ID).getAsString());
-            errorDetail.setTenantId(eventJsonObject.get(TENANT_ID).getAsString());
-            errorDetail.setEventType(eventJsonObject.get(EVENT_TYPE).getAsString());
-            errorDetail.setCreatedDate(new Date());
-            errorDetail.setLastModifiedDate(new Date());
-            errorDetail.setStatus(NA);
-            errorDetail.setError("Internal Fiscal Event Conversion/Transformation error : " + e.getMessage());
-            errorDetail.setRecord(record);
-            eventPostingDetailRepository.save(errorDetail);
+            EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());
+            List<String> referenceIdList = eventMapper.getReferenceIdList(jsonObject);
+            List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
+
+            for (String referenceId : referenceIdList) {
+                EventPostingDetail errorDetail = new EventPostingDetail();
+                errorDetail.setEventId(eventJsonObject.get(ID).getAsString());
+                errorDetail.setTenantId(eventJsonObject.get(TENANT_ID).getAsString());
+                errorDetail.setEventType(eventJsonObject.get(EVENT_TYPE).getAsString());
+                errorDetail.setCreatedDate(new Date());
+                errorDetail.setLastModifiedDate(new Date());
+                errorDetail.setStatus(NA);
+                errorDetail.setError("Internal Fiscal Event Conversion/Transformation error : " + e.getMessage());
+                errorDetail.setRecord(record);
+                errorDetail.setReferenceId(referenceId);
+                eventPostingDetailRepository.save(errorDetail);
+            }
+
+
         }
     }
 
@@ -271,7 +282,7 @@ public class EventTypeConsumer {
                         EventPostingDetail eventPostingDetail = new EventPostingDetail();
                         eventPostingDetail.setEventId(eventId);
                         eventPostingDetail.setTenantId(fiscalEvent.getTenantId());
-                        eventPostingDetail.setReferenceId(fiscalEvent.getParentReferenceId());
+                        eventPostingDetail.setReferenceId(fiscalEvent.getReferenceId());
                         eventPostingDetail.setEventType(fiscalEvent.getEventType());
                         eventPostingDetail.setCreatedDate(new Date());
                         eventPostingDetail.setLastModifiedDate(new Date());
