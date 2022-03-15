@@ -109,16 +109,17 @@ public class EventTypeConsumer {
             List<String> referenceIdList = eventMapper.getReferenceIdList(jsonObject);
             List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
 
+            EventPostingDetail errorDetail = new EventPostingDetail();
+            errorDetail.setEventId(eventJsonObject.get(ID).getAsString());
+            errorDetail.setTenantId(eventJsonObject.get(TENANT_ID).getAsString());
+            errorDetail.setEventType(eventJsonObject.get(EVENT_TYPE).getAsString());
+            errorDetail.setCreatedDate(new Date());
+            errorDetail.setLastModifiedDate(new Date());
+            errorDetail.setStatus(NA);
+            errorDetail.setError("Internal Fiscal Event Conversion/Transformation error : " + e.getMessage());
+            errorDetail.setRecord(record);
+
             for (String referenceId : referenceIdList) {
-                EventPostingDetail errorDetail = new EventPostingDetail();
-                errorDetail.setEventId(eventJsonObject.get(ID).getAsString());
-                errorDetail.setTenantId(eventJsonObject.get(TENANT_ID).getAsString());
-                errorDetail.setEventType(eventJsonObject.get(EVENT_TYPE).getAsString());
-                errorDetail.setCreatedDate(new Date());
-                errorDetail.setLastModifiedDate(new Date());
-                errorDetail.setStatus(NA);
-                errorDetail.setError("Internal Fiscal Event Conversion/Transformation error : " + e.getMessage());
-                errorDetail.setRecord(record);
                 errorDetail.setReferenceId(referenceId);
                 eventPostingDetailRepository.save(errorDetail);
             }

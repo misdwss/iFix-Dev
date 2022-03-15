@@ -121,7 +121,4 @@ public class BillEventMapper implements EventMapper {
         });
         return amountList;
     }
-
-
-
 }
