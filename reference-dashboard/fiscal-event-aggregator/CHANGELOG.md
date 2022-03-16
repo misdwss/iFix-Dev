@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.0.0 - 2022-03-16
+- All the new adapter master data comes under 'attributes' 
+
 ## 1.0.2 - 2022-02-04
 - Sonar issues fix
 

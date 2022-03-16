@@ -37,7 +37,7 @@ import java.util.Map;
 @Slf4j
 public class DruidDataQueryProcessor {
 
-    public static final String PROJECT_ID = "project.id";
+    public static final String PROJECT_ID = "attributes.project.id";
     public static final String EVENT_TYPE = "eventType";
     public static final String AMOUNT = "amount";
     public static final String COA_ID = "coa.id";
@@ -215,34 +215,34 @@ public class DruidDataQueryProcessor {
         List<DruidDimension> druidDimensions = new ArrayList<>();
         druidDimensions.add(new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING));
 
-        druidDimensions.add(new DefaultDimension("department.code", "department.code", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("department.id", "department.id", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("department.name", "department.name", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.department.code", "attributes.department.code", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.department.id", "attributes.department.id", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.department.name", "attributes.department.name", OutputType.STRING));
 
-        druidDimensions.add(new DefaultDimension("expenditure.code", "expenditure.code", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("expenditure.id", "expenditure.id", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("expenditure.name", "expenditure.name", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("expenditure.type", "expenditure.type", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.expenditure.code", "attributes.expenditure.code", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.expenditure.id", "attributes.expenditure.id", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.expenditure.name", "attributes.expenditure.name", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.expenditure.type", "attributes.expenditure.type", OutputType.STRING));
 
         druidDimensions.add(new DefaultDimension("tenantId", "tenantId", OutputType.STRING));
         druidDimensions.add(new DefaultDimension("government.id", "government.id", OutputType.STRING));
         druidDimensions.add(new DefaultDimension("government.name", "government.name", OutputType.STRING));
 
-        druidDimensions.add(new DefaultDimension("departmentEntity.id", "departmentEntity.id", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("departmentEntity.code", "departmentEntity.code", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("departmentEntity.name", "departmentEntity.name", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("departmentEntity.hierarchyLevel", "departmentEntity.hierarchyLevel", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.departmentEntity.id", "attributes.departmentEntity.id", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.departmentEntity.code", "attributes.departmentEntity.code", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.departmentEntity.name", "attributes.departmentEntity.name", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.departmentEntity.hierarchyLevel", "attributes.departmentEntity.hierarchyLevel", OutputType.STRING));
 
-        druidDimensions.add(new DefaultDimension("project.code", "project.code", OutputType.STRING));
-        druidDimensions.add(new DefaultDimension("project.name", "project.name", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.project.code", "attributes.project.code", OutputType.STRING));
+        druidDimensions.add(new DefaultDimension("attributes.project.name", "attributes.project.name", OutputType.STRING));
 
         int hierarchyLevel = FiscalEventAggregateConstants.DEFAULT_HIERARCHY_LEVEL;
 
         for (int i = 0; i <= hierarchyLevel; i++) {
-            druidDimensions.add(new DefaultDimension("departmentEntity.ancestry[" + i + "].code", "departmentEntity.ancestry[" + i + "].code", OutputType.STRING));
-            druidDimensions.add(new DefaultDimension("departmentEntity.ancestry[" + i + "].hierarchyLevel", "departmentEntity.ancestry[" + i + "].hierarchyLevel", OutputType.STRING));
-            druidDimensions.add(new DefaultDimension("departmentEntity.ancestry[" + i + "].id", "departmentEntity.ancestry[" + i + "].id", OutputType.STRING));
-            druidDimensions.add(new DefaultDimension("departmentEntity.ancestry[" + i + "].name", "departmentEntity.ancestry[" + i + "].name", OutputType.STRING));
+            druidDimensions.add(new DefaultDimension("attributes.departmentEntity.ancestry[" + i + "].code", "attributes.departmentEntity.ancestry[" + i + "].code", OutputType.STRING));
+            druidDimensions.add(new DefaultDimension("attributes.departmentEntity.ancestry[" + i + "].hierarchyLevel", "attributes.departmentEntity.ancestry[" + i + "].hierarchyLevel", OutputType.STRING));
+            druidDimensions.add(new DefaultDimension("attributes.departmentEntity.ancestry[" + i + "].id", "attributes.departmentEntity.ancestry[" + i + "].id", OutputType.STRING));
+            druidDimensions.add(new DefaultDimension("attributes.departmentEntity.ancestry[" + i + "].name", "attributes.departmentEntity.ancestry[" + i + "].name", OutputType.STRING));
         }
 
 //        List<DruidAggregator> aggregators = new ArrayList<>();

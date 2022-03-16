@@ -18,7 +18,7 @@ import java.util.*;
 public class FiscalEventAggregateUtil {
 
     public static final String EVENT = "event";
-    public static final String PROJECT_ID = "project.id";
+    public static final String PROJECT_ID = "attributes.project.id";
     public static final String COA_ID = "coa.id";
     public static final String AMOUNT = "amount";
     @Autowired
@@ -152,129 +152,129 @@ public class FiscalEventAggregateUtil {
         if (projectNodeMap.containsKey(projectId)) {
             JsonNode projectEventNode = projectNodeMap.get(projectId);
             if (projectEventNode != null && !projectEventNode.isEmpty()) {
-                eventAggregate.setDepartment_code(projectEventNode.get("department.code") != null
-                        ? projectEventNode.get("department.code").asText() : null);
-                eventAggregate.setDepartment_id(projectEventNode.get("department.id") != null
-                        ? projectEventNode.get("department.id").asText() : null);
-                eventAggregate.setDepartment_name(projectEventNode.get("department.name") != null
-                        ? projectEventNode.get("department.name").asText() : null);
+                eventAggregate.setDepartment_code(projectEventNode.get("attributes.department.code") != null
+                        ? projectEventNode.get("attributes.department.code").asText() : null);
+                eventAggregate.setDepartment_id(projectEventNode.get("attributes.department.id") != null
+                        ? projectEventNode.get("attributes.department.id").asText() : null);
+                eventAggregate.setDepartment_name(projectEventNode.get("attributes.department.name") != null
+                        ? projectEventNode.get("attributes.department.name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_code(projectEventNode.get("departmentEntity.code") != null
-                        ? projectEventNode.get("departmentEntity.code").asText() : null);
-                eventAggregate.setDepartmentEntity_hierarchyLevel(projectEventNode.get("departmentEntity.hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_id(projectEventNode.get("departmentEntity.id") != null
-                        ? projectEventNode.get("departmentEntity.id").asText() : null);
-                eventAggregate.setDepartmentEntity_name(projectEventNode.get("departmentEntity.name") != null
-                        ? projectEventNode.get("departmentEntity.name").asText() : null);
+                eventAggregate.setDepartmentEntity_code(projectEventNode.get("attributes.departmentEntity.code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.code").asText() : null);
+                eventAggregate.setDepartmentEntity_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_id(projectEventNode.get("attributes.departmentEntity.id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.id").asText() : null);
+                eventAggregate.setDepartmentEntity_name(projectEventNode.get("attributes.departmentEntity.name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_0_code(projectEventNode.get("departmentEntity.ancestry[0].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[0].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_0_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[0].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[0].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_0_id(projectEventNode.get("departmentEntity.ancestry[0].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[0].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_0_name(projectEventNode.get("departmentEntity.ancestry[0].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[0].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_0_code(projectEventNode.get("attributes.departmentEntity.ancestry[0].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[0].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_0_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[0].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[0].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_0_id(projectEventNode.get("attributes.departmentEntity.ancestry[0].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[0].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_0_name(projectEventNode.get("attributes.departmentEntity.ancestry[0].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[0].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_1_code(projectEventNode.get("departmentEntity.ancestry[1].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[1].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_1_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[1].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[1].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_1_id(projectEventNode.get("departmentEntity.ancestry[1].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[1].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_1_name(projectEventNode.get("departmentEntity.ancestry[1].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[1].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_1_code(projectEventNode.get("attributes.departmentEntity.ancestry[1].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[1].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_1_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[1].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[1].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_1_id(projectEventNode.get("attributes.departmentEntity.ancestry[1].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[1].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_1_name(projectEventNode.get("attributes.departmentEntity.ancestry[1].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[1].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_2_code(projectEventNode.get("departmentEntity.ancestry[2].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[2].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_2_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[2].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[2].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_2_id(projectEventNode.get("departmentEntity.ancestry[2].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[2].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_2_name(projectEventNode.get("departmentEntity.ancestry[2].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[2].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_2_code(projectEventNode.get("attributes.departmentEntity.ancestry[2].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[2].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_2_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[2].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[2].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_2_id(projectEventNode.get("attributes.departmentEntity.ancestry[2].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[2].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_2_name(projectEventNode.get("attributes.departmentEntity.ancestry[2].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[2].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_3_code(projectEventNode.get("departmentEntity.ancestry[3].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[3].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_3_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[3].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[3].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_3_id(projectEventNode.get("departmentEntity.ancestry[3].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[3].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_3_name(projectEventNode.get("departmentEntity.ancestry[3].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[3].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_3_code(projectEventNode.get("attributes.departmentEntity.ancestry[3].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[3].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_3_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[3].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[3].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_3_id(projectEventNode.get("attributes.departmentEntity.ancestry[3].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[3].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_3_name(projectEventNode.get("attributes.departmentEntity.ancestry[3].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[3].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_4_code(projectEventNode.get("departmentEntity.ancestry[4].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[4].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_4_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[4].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[4].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_4_id(projectEventNode.get("departmentEntity.ancestry[4].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[4].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_4_name(projectEventNode.get("departmentEntity.ancestry[4].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[4].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_4_code(projectEventNode.get("attributes.departmentEntity.ancestry[4].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[4].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_4_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[4].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[4].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_4_id(projectEventNode.get("attributes.departmentEntity.ancestry[4].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[4].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_4_name(projectEventNode.get("attributes.departmentEntity.ancestry[4].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[4].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_5_code(projectEventNode.get("departmentEntity.ancestry[5].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[5].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_5_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[5].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[5].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_5_id(projectEventNode.get("departmentEntity.ancestry[5].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[5].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_5_name(projectEventNode.get("departmentEntity.ancestry[5].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[5].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_5_code(projectEventNode.get("attributes.departmentEntity.ancestry[5].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[5].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_5_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[5].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[5].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_5_id(projectEventNode.get("attributes.departmentEntity.ancestry[5].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[5].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_5_name(projectEventNode.get("attributes.departmentEntity.ancestry[5].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[5].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_6_code(projectEventNode.get("departmentEntity.ancestry[6].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[6].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_6_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[6].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[6].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_6_id(projectEventNode.get("departmentEntity.ancestry[6].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[6].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_6_name(projectEventNode.get("departmentEntity.ancestry[6].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[6].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_6_code(projectEventNode.get("attributes.departmentEntity.ancestry[6].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[6].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_6_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[6].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[6].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_6_id(projectEventNode.get("attributes.departmentEntity.ancestry[6].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[6].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_6_name(projectEventNode.get("attributes.departmentEntity.ancestry[6].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[6].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_7_code(projectEventNode.get("departmentEntity.ancestry[7].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[7].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_7_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[7].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[7].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_7_id(projectEventNode.get("departmentEntity.ancestry[7].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[7].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_7_name(projectEventNode.get("departmentEntity.ancestry[7].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[7].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_7_code(projectEventNode.get("attributes.departmentEntity.ancestry[7].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[7].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_7_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[7].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[7].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_7_id(projectEventNode.get("attributes.departmentEntity.ancestry[7].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[7].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_7_name(projectEventNode.get("attributes.departmentEntity.ancestry[7].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[7].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_8_code(projectEventNode.get("departmentEntity.ancestry[8].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[8].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_8_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[8].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[8].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_8_id(projectEventNode.get("departmentEntity.ancestry[8].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[8].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_8_name(projectEventNode.get("departmentEntity.ancestry[8].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[8].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_8_code(projectEventNode.get("attributes.departmentEntity.ancestry[8].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[8].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_8_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[8].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[8].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_8_id(projectEventNode.get("attributes.departmentEntity.ancestry[8].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[8].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_8_name(projectEventNode.get("attributes.departmentEntity.ancestry[8].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[8].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_9_code(projectEventNode.get("departmentEntity.ancestry[9].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[9].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_9_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[9].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[9].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_9_id(projectEventNode.get("departmentEntity.ancestry[9].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[9].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_9_name(projectEventNode.get("departmentEntity.ancestry[9].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[9].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_9_code(projectEventNode.get("attributes.departmentEntity.ancestry[9].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[9].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_9_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[9].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[9].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_9_id(projectEventNode.get("attributes.departmentEntity.ancestry[9].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[9].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_9_name(projectEventNode.get("attributes.departmentEntity.ancestry[9].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[9].name").asText() : null);
 
-                eventAggregate.setDepartmentEntity_ancestry_10_code(projectEventNode.get("departmentEntity.ancestry[10].code") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[10].code").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_10_hierarchyLevel(projectEventNode.get("departmentEntity.ancestry[10].hierarchyLevel") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[10].hierarchyLevel").asInt() : null);
-                eventAggregate.setDepartmentEntity_ancestry_10_id(projectEventNode.get("departmentEntity.ancestry[10].id") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[10].id").asText() : null);
-                eventAggregate.setDepartmentEntity_ancestry_10_name(projectEventNode.get("departmentEntity.ancestry[10].name") != null
-                        ? projectEventNode.get("departmentEntity.ancestry[10].name").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_10_code(projectEventNode.get("attributes.departmentEntity.ancestry[10].code") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[10].code").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_10_hierarchyLevel(projectEventNode.get("attributes.departmentEntity.ancestry[10].hierarchyLevel") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[10].hierarchyLevel").asInt() : null);
+                eventAggregate.setDepartmentEntity_ancestry_10_id(projectEventNode.get("attributes.departmentEntity.ancestry[10].id") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[10].id").asText() : null);
+                eventAggregate.setDepartmentEntity_ancestry_10_name(projectEventNode.get("attributes.departmentEntity.ancestry[10].name") != null
+                        ? projectEventNode.get("attributes.departmentEntity.ancestry[10].name").asText() : null);
 
-                eventAggregate.setExpenditure_code(projectEventNode.get("expenditure.code") != null
-                        ? projectEventNode.get("expenditure.code").asText() : null);
-                eventAggregate.setExpenditure_id(projectEventNode.get("expenditure.id") != null
-                        ? projectEventNode.get("expenditure.id").asText() : null);
-                eventAggregate.setExpenditure_name(projectEventNode.get("expenditure.name") != null
-                        ? projectEventNode.get("expenditure.name").asText() : null);
-                eventAggregate.setExpenditure_type(projectEventNode.get("expenditure.type") != null
-                        ? projectEventNode.get("expenditure.type").asText() : null);
+                eventAggregate.setExpenditure_code(projectEventNode.get("attributes.expenditure.code") != null
+                        ? projectEventNode.get("attributes.expenditure.code").asText() : null);
+                eventAggregate.setExpenditure_id(projectEventNode.get("attributes.expenditure.id") != null
+                        ? projectEventNode.get("attributes.expenditure.id").asText() : null);
+                eventAggregate.setExpenditure_name(projectEventNode.get("attributes.expenditure.name") != null
+                        ? projectEventNode.get("attributes.expenditure.name").asText() : null);
+                eventAggregate.setExpenditure_type(projectEventNode.get("attributes.expenditure.type") != null
+                        ? projectEventNode.get("attributes.expenditure.type").asText() : null);
 
                 eventAggregate.setGovernment_id(projectEventNode.get("government.id") != null
                         ? projectEventNode.get("government.id").asText() : null);
@@ -284,10 +284,10 @@ public class FiscalEventAggregateUtil {
                 eventAggregate.setTenantId(projectEventNode.get("tenantId") != null
                         ? projectEventNode.get("tenantId").asText() : null);
 
-                eventAggregate.setProject_code(projectEventNode.get("project.code") != null
-                        ? projectEventNode.get("project.code").asText() : null);
-                eventAggregate.setProject_name(projectEventNode.get("project.name") != null
-                        ? projectEventNode.get("project.name").asText() : null);
+                eventAggregate.setProject_code(projectEventNode.get("attributes.project.code") != null
+                        ? projectEventNode.get("attributes.project.code").asText() : null);
+                eventAggregate.setProject_name(projectEventNode.get("attributes.project.name") != null
+                        ? projectEventNode.get("attributes.project.name").asText() : null);
 
 //                eventAggregate.setVer(projectEventNode.get("version") != null
 //                        ? projectEventNode.get("version").asText() : null);

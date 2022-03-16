@@ -8,7 +8,7 @@ public class FiscalEventAggregateConstants {
     public static final String CURRENT_FISCAL_YEAR = "CURRENT_FISCAL_YEAR";
     public static final String PREVIOUS_FISCAL_YEAR = "PREVIOUS_FISCAL_YEAR";
     public static final int DEFAULT_HIERARCHY_LEVEL = 10;
-    public static final String VER = "1.0.0";
+    public static final String VER = "2.0.0";
 
     public static final String EVENT_TYPE_DEMAND = "Demand";
     public static final String EVENT_TYPE_RECEIPT = "Receipt";
