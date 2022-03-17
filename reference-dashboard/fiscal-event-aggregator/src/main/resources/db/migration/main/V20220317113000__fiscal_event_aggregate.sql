@@ -1,94 +1,74 @@
-DROP TABLE IF EXISTS fiscal_event_aggregated;
+ALTER TABLE fiscal_event_aggregated RENAME department_id TO attributes_department_id;
+ALTER TABLE fiscal_event_aggregated RENAME department_code TO attributes_department_code;
+ALTER TABLE fiscal_event_aggregated RENAME department_name TO attributes_department_name;
 
-CREATE TABLE fiscal_event_aggregated(
-  ver TEXT,
-  id SERIAL,
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_code TO attributes_departmentEntity_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_hierarchyLevel TO attributes_departmentEntity_hierarchyLevel;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_id TO attributes_departmentEntity_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_name TO attributes_departmentEntity_name;
 
-  sumAmount DECIMAL,
-  count bigint,
-  fiscalPeriod TEXT,
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_0_id TO attributes_departmentEntity_ancestry_0_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_0_code TO attributes_departmentEntity_ancestry_0_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_0_name TO attributes_departmentEntity_ancestry_0_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_0_hierarchyLevel TO attributes_departmentEntity_ancestry_0_hierarchyLevel;
 
-  type TEXT,
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_1_id TO attributes_departmentEntity_ancestry_1_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_1_code TO attributes_departmentEntity_ancestry_1_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_1_name TO attributes_departmentEntity_ancestry_1_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_1_hierarchyLevel TO attributes_departmentEntity_ancestry_1_hierarchyLevel;
 
-  attributes_project_id TEXT,
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_2_id TO attributes_departmentEntity_ancestry_2_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_2_code TO attributes_departmentEntity_ancestry_2_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_2_name TO attributes_departmentEntity_ancestry_2_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_2_hierarchyLevel TO attributes_departmentEntity_ancestry_2_hierarchyLevel;
 
-  tenantId TEXT,
-  government_id TEXT,
-  government_name TEXT,
-  attributes_department_id  TEXT,
-  attributes_department_code TEXT,
-  attributes_department_name TEXT,
-  attributes_departmentEntity_code TEXT,
-  attributes_departmentEntity_hierarchyLevel integer,
-  attributes_departmentEntity_id TEXT,
-  attributes_departmentEntity_name TEXT,
-  attributes_departmentEntity_ancestry_0_id TEXT,
-  attributes_departmentEntity_ancestry_0_code TEXT,
-  attributes_departmentEntity_ancestry_0_name TEXT,
-  attributes_departmentEntity_ancestry_0_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_1_id TEXT,
-  attributes_departmentEntity_ancestry_1_code TEXT,
-  attributes_departmentEntity_ancestry_1_name TEXT,
-  attributes_departmentEntity_ancestry_1_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_2_id TEXT,
-  attributes_departmentEntity_ancestry_2_code TEXT,
-  attributes_departmentEntity_ancestry_2_name TEXT,
-  attributes_departmentEntity_ancestry_2_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_3_id TEXT,
-  attributes_departmentEntity_ancestry_3_code TEXT,
-  attributes_departmentEntity_ancestry_3_name TEXT,
-  attributes_departmentEntity_ancestry_3_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_4_id TEXT,
-  attributes_departmentEntity_ancestry_4_code TEXT,
-  attributes_departmentEntity_ancestry_4_name TEXT,
-  attributes_departmentEntity_ancestry_4_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_5_id TEXT,
-  attributes_departmentEntity_ancestry_5_code TEXT,
-  attributes_departmentEntity_ancestry_5_name TEXT,
-  attributes_departmentEntity_ancestry_5_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_6_id TEXT,
-  attributes_departmentEntity_ancestry_6_code TEXT,
-  attributes_departmentEntity_ancestry_6_name TEXT,
-  attributes_departmentEntity_ancestry_6_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_7_id TEXT,
-  attributes_departmentEntity_ancestry_7_code TEXT,
-  attributes_departmentEntity_ancestry_7_name TEXT,
-  attributes_departmentEntity_ancestry_7_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_8_id TEXT,
-  attributes_departmentEntity_ancestry_8_code TEXT,
-  attributes_departmentEntity_ancestry_8_name TEXT,
-  attributes_departmentEntity_ancestry_8_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_9_id TEXT,
-  attributes_departmentEntity_ancestry_9_code TEXT,
-  attributes_departmentEntity_ancestry_9_name TEXT,
-  attributes_departmentEntity_ancestry_9_hierarchyLevel integer,
-  attributes_departmentEntity_ancestry_10_id TEXT,
-  attributes_departmentEntity_ancestry_10_code TEXT,
-  attributes_departmentEntity_ancestry_10_name TEXT,
-  attributes_departmentEntity_ancestry_10_hierarchyLevel integer,
-  attributes_expenditure_id TEXT,
-  attributes_expenditure_code TEXT,
-  attributes_expenditure_name TEXT,
-  attributes_expenditure_type TEXT,
-  attributes_project_code TEXT,
-  attributes_project_name TEXT,
 
-  coa_id TEXT,
-  coa_coaCode TEXT,
-  coa_majorHead TEXT,
-  coa_majorHeadName TEXT,
-  coa_majorHeadType TEXT,
-  coa_subMajorHead TEXT,
-  coa_subMajorHeadName TEXT,
-  coa_minorHead TEXT,
-  coa_minorHeadName TEXT,
-  coa_subHead TEXT,
-  coa_subHeadName TEXT,
-  coa_groupHead TEXT,
-  coa_groupHeadName TEXT,
-  coa_objectHead TEXT,
-  coa_objectHeadName TEXT,
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_3_id TO attributes_departmentEntity_ancestry_3_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_3_code TO attributes_departmentEntity_ancestry_3_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_3_name TO attributes_departmentEntity_ancestry_3_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_3_hierarchyLevel TO attributes_departmentEntity_ancestry_3_hierarchyLevel;
 
-  unique(attributes_project_id,coa_id,fiscalPeriod,type),
-  PRIMARY KEY (id)
-);
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_4_id TO attributes_departmentEntity_ancestry_4_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_4_code TO attributes_departmentEntity_ancestry_4_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_4_name TO attributes_departmentEntity_ancestry_4_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_4_hierarchyLevel TO attributes_departmentEntity_ancestry_4_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_5_id TO attributes_departmentEntity_ancestry_5_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_5_code TO attributes_departmentEntity_ancestry_5_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_5_name TO attributes_departmentEntity_ancestry_5_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_5_hierarchyLevel TO attributes_departmentEntity_ancestry_5_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_6_id TO attributes_departmentEntity_ancestry_6_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_6_code TO attributes_departmentEntity_ancestry_6_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_6_name TO attributes_departmentEntity_ancestry_6_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_6_hierarchyLevel TO attributes_departmentEntity_ancestry_6_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_7_id TO attributes_departmentEntity_ancestry_7_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_7_code TO attributes_departmentEntity_ancestry_7_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_7_name TO attributes_departmentEntity_ancestry_7_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_7_hierarchyLevel TO attributes_departmentEntity_ancestry_7_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_8_id TO attributes_departmentEntity_ancestry_8_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_8_code TO attributes_departmentEntity_ancestry_8_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_8_name TO attributes_departmentEntity_ancestry_8_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_8_hierarchyLevel TO attributes_departmentEntity_ancestry_8_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_9_id TO attributes_departmentEntity_ancestry_9_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_9_code TO attributes_departmentEntity_ancestry_9_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_9_name TO attributes_departmentEntity_ancestry_9_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_9_hierarchyLevel TO attributes_departmentEntity_ancestry_9_hierarchyLevel;
+
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_10_id TO attributes_departmentEntity_ancestry_10_id;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_10_code TO attributes_departmentEntity_ancestry_10_code;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_10_name TO attributes_departmentEntity_ancestry_10_name;
+ALTER TABLE fiscal_event_aggregated RENAME departmentEntity_ancestry_10_hierarchyLevel TO attributes_departmentEntity_ancestry_10_hierarchyLevel;
+
+
+ALTER TABLE fiscal_event_aggregated RENAME expenditure_id TO attributes_expenditure_id;
+ALTER TABLE fiscal_event_aggregated RENAME expenditure_code TO attributes_expenditure_code;
+ALTER TABLE fiscal_event_aggregated RENAME expenditure_name TO attributes_expenditure_name;
+ALTER TABLE fiscal_event_aggregated RENAME expenditure_type TO attributes_expenditure_type;
+
+ALTER TABLE fiscal_event_aggregated RENAME project_code TO attributes_project_code;
+ALTER TABLE fiscal_event_aggregated RENAME project_name TO attributes_project_name;
+ALTER TABLE fiscal_event_aggregated RENAME project_id TO attributes_project_id;
