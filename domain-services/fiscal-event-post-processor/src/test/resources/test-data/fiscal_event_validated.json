@@ -20,13 +20,12 @@
   "fiscalEvent": {
     "id": "d4628124-9576-4d43-8805-fc49cb81fc1d",
     "tenantId": "pb",
-    "projectId": "5455881a-1748-4c07-bc44-18dc911beb14",
     "eventType": "Bill",
     "ingestionTime": 1636559260541,
     "eventTime": 1629286294000,
     "referenceId": "013e9c56-8207-4dac-9f4d-f1e20bd824e7",
-    "parentEventId": null,
-    "parentReferenceId": null,
+    "linkedEventId": null,
+    "linkedReferenceId": null,
     "amountDetails": [
       {
         "id": "124784c9-bd37-4db9-a00f-ba40ed79faed",

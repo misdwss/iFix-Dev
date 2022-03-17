@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.0.0 - 2022-02-25
+- Removed the project.
+- added the coaCode in 'amountDetails' attribute in place of 'coaId' while publishing fiscal event(s).
+
+## 1.1.2 - 2022-02-01
+- Sonar issues fix
+
 ## 1.1.1 - 2022-01-19
 - Upgraded the log4j version to 2.17.1 for vulnerability fix
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.egov</groupId>
     <artifactId>fiscal-event-aggregator</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>2.0.0</version>
     <name>fiscal-event-aggregator</name>
     <description>Aggregate the fiscal event post processed data</description>
     <properties>
@@ -53,6 +53,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

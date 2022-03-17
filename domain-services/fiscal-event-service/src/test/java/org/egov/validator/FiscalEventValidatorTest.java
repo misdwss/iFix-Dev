@@ -1,11 +1,6 @@
 package org.egov.validator;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.google.gson.Gson;
-import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.FiscalEventConfiguration;
@@ -14,7 +9,6 @@ import org.egov.repository.FiscalEventRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.CoaUtil;
 import org.egov.util.FiscalEventMapperUtil;
-import org.egov.util.ProjectUtil;
 import org.egov.util.TenantUtil;
 import org.egov.web.models.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,9 +46,6 @@ class FiscalEventValidatorTest {
 
     @InjectMocks
     private FiscalEventValidator fiscalEventValidator;
-
-    @Mock
-    private ProjectUtil projectUtil;
 
     @Mock
     private FiscalEventConfiguration fiscalEventConfiguration;
@@ -82,8 +72,9 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPostWithDefaultFiscalEventRequest() {
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventPushPost(new FiscalEventRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
         assertThrows(CustomException.class, () -> this.fiscalEventValidator.validateFiscalEventPushPost(null));
     }
 
@@ -93,8 +84,9 @@ class FiscalEventValidatorTest {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         fiscalEvents.add(new FiscalEvent());
         when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, fiscalEvents);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, fiscalEvents)));
+                .validateFiscalEventPushPost(fiscalEventRequest));
     }
 
     @Test
@@ -139,16 +131,19 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventPushPost() {
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventPushPost(new FiscalEventRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
         assertThrows(CustomException.class, () -> this.fiscalEventValidator.validateFiscalEventPushPost(null));
     }
 
     @Test
     void testValidateFiscalEventPushPost2() {
         RequestHeader requestHeader = new RequestHeader();
+        ArrayList<FiscalEvent> fiscalEvents = new ArrayList<FiscalEvent>();
+        FiscalEventRequest fiscalEventRequest = new FiscalEventRequest(requestHeader, fiscalEvents);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventPushPost(new FiscalEventRequest(requestHeader, new ArrayList<FiscalEvent>())));
+                .validateFiscalEventPushPost(fiscalEventRequest));
     }
 
     @Test
@@ -216,8 +211,7 @@ class FiscalEventValidatorTest {
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
         ArrayList<Amount> amountDetails = new ArrayList<Amount>();
-        fiscalEventList.add(new FiscalEvent("42", "42", "myproject", FiscalEvent.EventTypeEnum.Sanction, 1L, 1L, "42", "42",
-                "42", amountDetails, new AuditDetails(), "Attributes"));
+        fiscalEventList.add(new FiscalEvent());
         FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
         when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
         when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
@@ -253,7 +247,6 @@ class FiscalEventValidatorTest {
     void testValidateFiscalEventPushPost9() {
         when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
-        when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
         when(fiscalEvent.getReferenceId()).thenReturn("42");
 
@@ -267,8 +260,7 @@ class FiscalEventValidatorTest {
         verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
-        verify(fiscalEvent).getEventType();
-        verify(fiscalEvent).getProjectId();
+        verify(fiscalEvent,atLeast(1)).getEventType();
         verify(fiscalEvent).getReferenceId();
     }
 
@@ -276,7 +268,6 @@ class FiscalEventValidatorTest {
     void testValidateFiscalEventPushPost10() {
         when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
-        when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
         when(fiscalEvent.getReferenceId()).thenReturn(null);
 
@@ -290,8 +281,7 @@ class FiscalEventValidatorTest {
         verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
-        verify(fiscalEvent).getEventType();
-        verify(fiscalEvent, atLeast(1)).getProjectId();
+        verify(fiscalEvent,atLeast(1)).getEventType();
         verify(fiscalEvent).getReferenceId();
     }
 
@@ -299,7 +289,6 @@ class FiscalEventValidatorTest {
     void testValidateFiscalEventPushPost11() {
         when(this.fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn(null);
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
-        when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
         when(fiscalEvent.getReferenceId()).thenReturn("42");
 
@@ -314,8 +303,7 @@ class FiscalEventValidatorTest {
         verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
-        verify(fiscalEvent).getEventType();
-        verify(fiscalEvent).getProjectId();
+        verify(fiscalEvent,atLeast(1)).getEventType();
         verify(fiscalEvent).getReferenceId();
     }
 
@@ -325,7 +313,6 @@ class FiscalEventValidatorTest {
         RequestHeader requestHeader = mock(RequestHeader.class);
         when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
         FiscalEvent fiscalEvent = mock(FiscalEvent.class);
-        when(fiscalEvent.getProjectId()).thenReturn("myproject");
         when(fiscalEvent.getEventType()).thenReturn(null);
         when(fiscalEvent.getReferenceId()).thenReturn("42");
 
@@ -339,18 +326,9 @@ class FiscalEventValidatorTest {
         verify(this.fiscalEventConfiguration).getFiscalEventPushReqMaxSize();
         verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
         verify(fiscalEventRequest, atLeast(1)).getRequestHeader();
-        verify(fiscalEvent).getEventType();
-        verify(fiscalEvent).getProjectId();
+        verify(fiscalEvent,atLeast(1)).getEventType();
         verify(fiscalEvent).getReferenceId();
         verify(requestHeader, atLeast(1)).getUserInfo();
-    }
-
-    @Test
-    void testValidateFiscalEventPushPostMissingProjectId() {
-        fiscalEventRequest.getFiscalEvent().get(0).setProjectId(null);
-        when(fiscalEventConfiguration.getFiscalEventPushReqMaxSize()).thenReturn("10");
-        assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventPushPost(fiscalEventRequest));
     }
 
     @Test
@@ -396,155 +374,21 @@ class FiscalEventValidatorTest {
         verify(fiscalEventRequest1).getRequestHeader();
     }
 
-    @Test
-    void testValidateProjectId() {
-        ArrayNode arrayNode = mock(ArrayNode.class);
-        when(arrayNode.get((String) any())).thenReturn(DoubleNode.valueOf(10.0));
-        Optional<JsonNode> ofResult = Optional.<JsonNode>of(arrayNode);
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(ofResult);
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        fiscalEventList.add(new FiscalEvent());
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        HashMap<String, String> stringStringMap = new HashMap<String, String>(1);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, stringStringMap);
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(arrayNode, atLeast(1)).get((String) any());
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-        assertEquals(1, stringStringMap.size());
-    }
-
-    @Test
-    void testValidateProjectIdWithDefaultFiscalEvent() {
-        ArrayNode arrayNode = mock(ArrayNode.class);
-        when(arrayNode.get((String) any())).thenReturn(new ArrayNode(new JsonNodeFactory(true)));
-        Optional<JsonNode> ofResult = Optional.<JsonNode>of(arrayNode);
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(ofResult);
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        fiscalEventList.add(new FiscalEvent());
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        HashMap<String, String> stringStringMap = new HashMap<String, String>(1);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, stringStringMap);
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(arrayNode, atLeast(1)).get((String) any());
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-        assertEquals(1, stringStringMap.size());
-    }
-
-    @Test
-    void testValidateProjectIdWithNonEmptyResultFromService() {
-        ArrayNode arrayNode = mock(ArrayNode.class);
-        when(arrayNode.size()).thenReturn(3);
-        ArrayNode arrayNode1 = mock(ArrayNode.class);
-        when(arrayNode1.get((String) any())).thenReturn(arrayNode);
-        Optional<JsonNode> ofResult = Optional.<JsonNode>of(arrayNode1);
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(ofResult);
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        fiscalEventList.add(new FiscalEvent());
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, new HashMap<String, String>(1));
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(arrayNode1, atLeast(1)).get((String) any());
-        verify(arrayNode).size();
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-    }
-
-    @Test
-    void testValidateProjectIdWithEmptyResultFromService() {
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(Optional.<JsonNode>empty());
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        fiscalEventList.add(new FiscalEvent());
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        HashMap<String, String> stringStringMap = new HashMap<String, String>(1);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, stringStringMap);
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-        assertEquals(1, stringStringMap.size());
-    }
-
-    @Test
-    void testValidateProjectIdWithResultFromServiceAndFiscalEvent() {
-        ArrayNode arrayNode = mock(ArrayNode.class);
-        when(arrayNode.size()).thenReturn(3);
-        ArrayNode arrayNode1 = mock(ArrayNode.class);
-        when(arrayNode1.get((String) any())).thenReturn(arrayNode);
-        Optional<JsonNode> ofResult = Optional.<JsonNode>of(arrayNode1);
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(ofResult);
-
-        FiscalEvent fiscalEvent = new FiscalEvent();
-        fiscalEvent.setTenantId("pb");
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        fiscalEventList.add(fiscalEvent);
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, new HashMap<String, String>(1));
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(arrayNode1, atLeast(1)).get((String) any());
-        verify(arrayNode).size();
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-    }
-
-    @Test
-    void testValidateProjectIdWithDefaultRequestHeader() {
-        ArrayNode arrayNode = mock(ArrayNode.class);
-        when(arrayNode.isEmpty()).thenReturn(true);
-        when(arrayNode.size()).thenReturn(3);
-        ArrayNode arrayNode1 = mock(ArrayNode.class);
-        when(arrayNode1.get((String) any())).thenReturn(arrayNode);
-        Optional<JsonNode> ofResult = Optional.<JsonNode>of(arrayNode1);
-        when(this.projectUtil.validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any()))
-                .thenReturn(ofResult);
-
-        ArrayList<FiscalEvent> fiscalEventList = new ArrayList<FiscalEvent>();
-        ArrayList<Amount> amountDetails = new ArrayList<Amount>();
-        fiscalEventList.add(fiscalEventRequest.getFiscalEvent().get(0));
-        FiscalEventRequest fiscalEventRequest = mock(FiscalEventRequest.class);
-        when(fiscalEventRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(fiscalEventRequest.getFiscalEvent()).thenReturn(fiscalEventList);
-        HashMap<String, String> stringStringMap = new HashMap<String, String>(1);
-        this.fiscalEventValidator.validateProjectId(fiscalEventRequest, stringStringMap);
-        verify(this.projectUtil).validateProjectId((RequestHeader) any(), (java.util.Set<String>) any(), (String) any());
-        verify(arrayNode1, atLeast(1)).get((String) any());
-        verify(arrayNode).size();
-        verify(fiscalEventRequest, atLeast(1)).getFiscalEvent();
-        verify(fiscalEventRequest).getRequestHeader();
-    }
-
     //search validation
     @Test
     void testValidateFiscalEventSearchPostWithNullHeader() {
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(new FiscalEventGetRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
     void testValidateFiscalEventSearchPostWithNullUserInfo() {
         RequestHeader requestHeader = new RequestHeader();
+        Criteria criteria = new Criteria();
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest(requestHeader, criteria);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventSearchPost(new FiscalEventGetRequest(requestHeader, new Criteria())));
+                .validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
@@ -587,15 +431,18 @@ class FiscalEventValidatorTest {
 
     @Test
     void testValidateFiscalEventSearchPostWithReqHeader() {
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest();
         assertThrows(CustomException.class,
-                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(new FiscalEventGetRequest()));
+                () -> this.fiscalEventValidator.validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test
     void testValidateFiscalEventSearchPostWithRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
+        Criteria criteria = new Criteria();
+        FiscalEventGetRequest fiscalEventGetRequest = new FiscalEventGetRequest(requestHeader, criteria);
         assertThrows(CustomException.class, () -> this.fiscalEventValidator
-                .validateFiscalEventSearchPost(new FiscalEventGetRequest(requestHeader, new Criteria())));
+                .validateFiscalEventSearchPost(fiscalEventGetRequest));
     }
 
     @Test

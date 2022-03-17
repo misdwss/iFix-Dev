@@ -12,4 +12,6 @@ public interface EventMapper {
 	
 	public List<FiscalEvent> transformData(JsonObject data);
 
+	List<String> getReferenceIdList(JsonObject data);
+
 }

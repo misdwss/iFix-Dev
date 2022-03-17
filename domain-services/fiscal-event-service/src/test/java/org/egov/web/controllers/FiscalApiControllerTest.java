@@ -73,7 +73,7 @@ public class FiscalApiControllerTest {
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
                 .createResponseHeaderFromRequestHeader(fiscalEventRequest.getRequestHeader(), true);
 
-        mockMvc.perform(post("/events/v1/_push")
+        mockMvc.perform(post("/events/v1/_publish")
                         .accept(MediaType.APPLICATION_JSON).content(fiscalEventPushData)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted());
@@ -86,7 +86,7 @@ public class FiscalApiControllerTest {
 
     @Test
     public void fiscalEventsV1PushPostFailure() throws Exception {
-        mockMvc.perform(post("/events/v1/_push").contentType(MediaType
+        mockMvc.perform(post("/events/v1/_publish").contentType(MediaType
                         .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }

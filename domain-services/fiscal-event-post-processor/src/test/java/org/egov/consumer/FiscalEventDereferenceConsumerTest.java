@@ -3,10 +3,10 @@ package org.egov.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egov.config.FiscalEventPostProcessorConfig;
 import org.egov.config.TestDataFormatter;
+import org.egov.models.FiscalEventDeReferenced;
+import org.egov.models.FiscalEventRequest;
 import org.egov.producer.Producer;
 import org.egov.service.FiscalEventDereferenceService;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.egov.web.models.FiscalEventRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -53,8 +53,9 @@ class FiscalEventDereferenceConsumerTest {
     @Test
     void testListenWithInvalidFiscalEventData() throws IllegalArgumentException {
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenThrow(new RuntimeException("foo"));
+        HashMap<String, Object> hMap = new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                () -> this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "Topic"));
+                () -> this.fiscalEventDereferenceConsumer.listen(hMap, "Topic"));
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
     }
 
@@ -64,14 +65,12 @@ class FiscalEventDereferenceConsumerTest {
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenReturn(fiscalEventRequest);
         when(this.fiscalEventPostProcessorConfig.getFiscalEventDereferenceTopic())
                 .thenReturn("Fiscal Event Dereference Topic");
-        when(this.fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink()).thenReturn("Fiscal Event Mongo Db Sink");
         when(this.fiscalEventDereferenceService.dereference((FiscalEventRequest) any()))
                 .thenReturn(new FiscalEventDeReferenced());
         this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "fiscal-event-request-validated");
         verify(this.producer, atLeast(1)).push((String) any(), (Object) any());
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
         verify(this.fiscalEventPostProcessorConfig).getFiscalEventDereferenceTopic();
-        verify(this.fiscalEventPostProcessorConfig).getFiscalEventMongoDbSink();
         verify(this.fiscalEventDereferenceService).dereference((FiscalEventRequest) any());
     }
 
@@ -80,15 +79,13 @@ class FiscalEventDereferenceConsumerTest {
         doNothing().when(this.producer).push((String) any(), (Object) any());
         when(this.objectMapper.convertValue((Object) any(), (Class<Object>) any())).thenReturn(fiscalEventRequest);
         when(this.fiscalEventPostProcessorConfig.getFiscalEventDereferenceTopic()).thenThrow(new RuntimeException("foo"));
-        when(this.fiscalEventPostProcessorConfig.getFiscalEventMongoDbSink()).thenReturn("Fiscal Event Mongo Db Sink");
         when(this.fiscalEventDereferenceService.dereference((FiscalEventRequest) any()))
                 .thenReturn(new FiscalEventDeReferenced());
+        HashMap<String, Object> hMap = new HashMap<String, Object>(1);
         assertThrows(RuntimeException.class,
-                () -> this.fiscalEventDereferenceConsumer.listen(new HashMap<String, Object>(1), "Topic"));
-        verify(this.producer).push((String) any(), (Object) any());
+                () -> this.fiscalEventDereferenceConsumer.listen(hMap, "Topic"));
         verify(this.objectMapper).convertValue((Object) any(), (Class<Object>) any());
         verify(this.fiscalEventPostProcessorConfig).getFiscalEventDereferenceTopic();
-        verify(this.fiscalEventPostProcessorConfig).getFiscalEventMongoDbSink();
         verify(this.fiscalEventDereferenceService).dereference((FiscalEventRequest) any());
     }
 }

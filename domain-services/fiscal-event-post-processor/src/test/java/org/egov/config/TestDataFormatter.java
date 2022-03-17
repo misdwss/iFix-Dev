@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.egov.web.models.FiscalEventDeReferenced;
-import org.egov.web.models.FiscalEventRequest;
+import org.egov.models.FiscalEventDeReferenced;
+import org.egov.models.FiscalEventRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -82,33 +82,10 @@ public class TestDataFormatter {
         return invalidGovernmentResponse;
     }
 
-    public JsonNode getProjectSearchResponse() throws IOException {
-        JsonNode projectSearchResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getProjectSearchResponseData()));
-        return projectSearchResponse;
-    }
-
     public JsonNode getCOASearchResponse() throws IOException {
         JsonNode coaSearchResponse =
                 new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getCoaSearchResponseData()));
         return coaSearchResponse;
     }
 
-    public JsonNode getDepartmentSearchResponse() throws IOException {
-        JsonNode departmentSearchResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getDepartmentSearchResponseData()));
-        return departmentSearchResponse;
-    }
-
-    public JsonNode getExpenditureSearchResponse() throws IOException {
-        JsonNode expenditureSearchResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getExpenditureSearchResponseData()));
-        return expenditureSearchResponse;
-    }
-
-    public JsonNode getDeptEntitySearchResponse() throws IOException {
-        JsonNode deptEntitySearchResponse =
-                new ObjectMapper().readTree(getFileFromClassLoaderResource(testProperties.getDeptEntitySearchResponseData()));
-        return (deptEntitySearchResponse.get("project").get(0).get("departmentEntity"));
-    }
 }
