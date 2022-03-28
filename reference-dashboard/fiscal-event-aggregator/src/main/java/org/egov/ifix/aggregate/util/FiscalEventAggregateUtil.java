@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.time.Year;
 import java.util.*;
 
+import static org.egov.ifix.aggregate.util.FiscalEventAggregateConstants.GP_ID;
+
 @Slf4j
 @Component
 public class FiscalEventAggregateUtil {
@@ -30,6 +32,8 @@ public class FiscalEventAggregateUtil {
     /**
      * @param distinctProjectResponses
      * @return
+     * As part of ifix 2.0 changes - lowest unique entity is 'attributes.departmentEntity.ancestry[6].id'
+     * that is Gram Panchayat
      */
     public Map<String, JsonNode> getProjectDetailsMap(List<Object> distinctProjectResponses) {
         JsonNode responseJsonNode = objectMapper.convertValue(distinctProjectResponses, JsonNode.class);
@@ -39,8 +43,8 @@ public class FiscalEventAggregateUtil {
             JsonNode node = nodeIterator.next();
             if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
                 JsonNode eventNode = node.get(EVENT);
-                if (eventNode.get(PROJECT_ID) != null) {
-                    projectNodeMap.put(eventNode.get(PROJECT_ID).asText(), eventNode);
+                if (eventNode.get(GP_ID) != null) {
+                    projectNodeMap.put(eventNode.get(GP_ID).asText(), eventNode);
                 }
             }
         }
@@ -86,11 +90,11 @@ public class FiscalEventAggregateUtil {
 
                 BigDecimal amount = eventNode.get(AMOUNT) != null ? eventNode.get(AMOUNT).decimalValue() : null;
                 BigInteger count = eventNode.get("Count") != null ? eventNode.get("Count").bigIntegerValue() : null;
-                String projectId = eventNode.get(PROJECT_ID) != null ? eventNode.get(PROJECT_ID).asText() : null;
+                String projectId = eventNode.get(GP_ID) != null ? eventNode.get(GP_ID).asText() : null;//this is GP id from ifix 2.0
                 String coaId = eventNode.get(COA_ID) != null ? eventNode.get(COA_ID).asText() : null;
                 String eventType = eventNode.get("eventType") != null ? eventNode.get("eventType").asText() : null;
 
-                eventAggregate.setAttributes_project_id(projectId);
+               // eventAggregate.setAttributes_project_id(projectId);
                 eventAggregate.setSumAmount(amount);
                 eventAggregate.setCount(count);
                 eventAggregate.setCoa_id(coaId);
@@ -148,6 +152,13 @@ public class FiscalEventAggregateUtil {
         }
     }
 
+    /**
+     *
+     * @param projectNodeMap
+     * @param eventAggregate
+     * @param projectId- From ifix 2.0 changes. project Id is 'attributes.departmentEntity.ancestry[6].id',
+     * since 'attributes.departmentEntity.ancestry[6].id' is the lowest in hierarchy and unique id (Gram panchayat)
+     */
     private void setProjectDetailsToFiscalEventAggregate(Map<String, JsonNode> projectNodeMap, FiscalEventAggregate eventAggregate, String projectId) {
         if (projectNodeMap.containsKey(projectId)) {
             JsonNode projectEventNode = projectNodeMap.get(projectId);
@@ -289,12 +300,22 @@ public class FiscalEventAggregateUtil {
                 eventAggregate.setAttributes_project_name(projectEventNode.get("attributes.project.name") != null
                         ? projectEventNode.get("attributes.project.name").asText() : null);
 
+                eventAggregate.setAttributes_project_id(projectEventNode.get("attributes.project.id") != null
+                        ? projectEventNode.get("attributes.project.id").asText() : null);
 //                eventAggregate.setVer(projectEventNode.get("version") != null
 //                        ? projectEventNode.get("version").asText() : null);
             }
         }
     }
 
+    /**
+     *
+     * @param eventTypeResponses
+     * @return
+     *
+     * As part of ifix 2.0 changes - lowest unique entity is 'attributes.departmentEntity.ancestry[6].id'
+     * that is Gram Panchayat
+     */
     public Map<String, JsonNode> getEventTypeMap(List<Object> eventTypeResponses) {
         if (eventTypeResponses == null || eventTypeResponses.isEmpty()) {
             return Collections.emptyMap();
@@ -306,8 +327,8 @@ public class FiscalEventAggregateUtil {
             JsonNode node = nodeIterator.next();
             if (node != null && !node.isEmpty() && node.get(EVENT) != null) {
                 JsonNode eventNode = node.get(EVENT);
-                if (eventNode.get(PROJECT_ID) != null) {
-                    projectNodeMap.put(eventNode.get(PROJECT_ID).asText(), eventNode);
+                if (eventNode.get(GP_ID) != null) {
+                    projectNodeMap.put(eventNode.get(GP_ID).asText(), eventNode);
                 }
             }
         }
@@ -364,7 +385,7 @@ public class FiscalEventAggregateUtil {
                 pendingEventAggregate.setVer(FiscalEventAggregateConstants.VER);
                 String fiscalPeriod = createFiscalPeriodFrom(fiscalYear);
                 pendingEventAggregate.setFiscalPeriod(fiscalPeriod);
-                pendingEventAggregate.setAttributes_project_id(pid);
+                //pendingEventAggregate.setAttributes_project_id(pid);
                 pendingEventAggregate.setCount(null);
                 pendingEventAggregate.setSumAmount(pendingAmountMap.get(pid));
                 pendingEventAggregate.setType(pendingEventType);

@@ -72,3 +72,6 @@ ALTER TABLE fiscal_event_aggregated RENAME expenditure_type TO attributes_expend
 ALTER TABLE fiscal_event_aggregated RENAME project_code TO attributes_project_code;
 ALTER TABLE fiscal_event_aggregated RENAME project_name TO attributes_project_name;
 ALTER TABLE fiscal_event_aggregated RENAME project_id TO attributes_project_id;
+
+ALTER TABLE fiscal_event_aggregated DROP CONSTRAINT IF EXISTS fiscal_event_aggregated_project_id_coa_id_fiscalperiod_type_key;
+ALTER TABLE fiscal_event_aggregated ADD CONSTRAINT attributes_departmentEntity_ancestry_6_id_coa_id_fiscalPeriod_type_key UNIQUE (attributes_departmentEntity_ancestry_6_id,coa_id,fiscalPeriod,type);

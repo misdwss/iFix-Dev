@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.egov.ifix.aggregate.util.FiscalEventAggregateConstants.GP_ID;
+
 @Component
 @Slf4j
 public class DruidDataQueryProcessor {
@@ -63,9 +65,11 @@ public class DruidDataQueryProcessor {
         for (String fyKey : fiscalYearMap.keySet()) {
             int fiscalYear = fiscalYearMap.get(fyKey);
 
-            DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(fiscalYear);
+            //DruidQuery groupByQuery = getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(fiscalYear);
+            DruidQuery groupByQuery = getDruidQueryForGroupbyGPIdAndCoaIdAndEventType(fiscalYear,GP_ID);
             DruidQuery distinctProjectQuery = getDruidQueryForProjectDetails(fiscalYear);
             DruidQuery distinctCoaIdQuery = getDruidQueryForCoaDetails(fiscalYear);
+            //department entity 6--> id
             DruidQuery demandEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_DEMAND, fiscalYear);
             DruidQuery receiptEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_RECEIPT, fiscalYear);
             DruidQuery billEventTypeQuery = getDruidQueryForProjectIdAndSumAmountBy(FiscalEventAggregateConstants.EVENT_TYPE_BILL, fiscalYear);
@@ -145,7 +149,8 @@ public class DruidDataQueryProcessor {
 
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
-        DruidDimension druidDimension = new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING);
+//        DruidDimension druidDimension = new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING);
+        DruidDimension druidDimension = new DefaultDimension(GP_ID, GP_ID, OutputType.STRING);
 
         SelectorFilter filter = new SelectorFilter(EVENT_TYPE, eventType);
 
@@ -203,6 +208,7 @@ public class DruidDataQueryProcessor {
     }
 
 
+    @Deprecated
     private DruidQuery getDruidQueryForProjectDetails(int fiscalYear) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
 
@@ -259,7 +265,37 @@ public class DruidDataQueryProcessor {
                 .build());
     }
 
-    private DruidGroupByQuery getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(int fiscalYear) {
+//    @Deprecated
+//    private DruidGroupByQuery getDruidQueryForGroupbyProjectIdAndCoaIdAndEventType(int fiscalYear) {
+//        TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
+//
+//        DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
+//        DateTime endTime = new DateTime(fiscalYear + 1, 03, 31, 0, 0, 0, DateTimeZone.UTC);
+//        Interval interval = new Interval(startTime, endTime);
+//
+//        Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
+//
+//        List<DruidDimension> druidDimensions = new ArrayList<>();
+//        druidDimensions.add(new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING));
+//        druidDimensions.add(new DefaultDimension(COA_ID, COA_ID, OutputType.STRING));
+//        druidDimensions.add(new DefaultDimension(EVENT_TYPE, EVENT_TYPE, OutputType.STRING));
+//
+//        List<DruidAggregator> aggregators = new ArrayList<>();
+//        aggregators.add(new CountAggregator("Count"));
+//        aggregators.add(new DoubleSumAggregator(AMOUNT, AMOUNT));
+//
+//        return (DruidGroupByQuery.builder()
+//                .dataSource(dataSource)
+//                .dimensions(druidDimensions)
+//                .granularity(granularity)
+//                .filter(null)
+//                .aggregators(aggregators)
+//                .intervals(Collections.singletonList(interval))
+//                .build());
+//    }
+
+
+    private DruidQuery getDruidQueryForGroupbyGPIdAndCoaIdAndEventType(int fiscalYear, String gpId) {
         TableDataSource dataSource = new TableDataSource(configProperties.getFiscalEventDataSource());
 
         DateTime startTime = new DateTime(fiscalYear, 04, 1, 0, 0, 0, DateTimeZone.UTC);
@@ -269,7 +305,7 @@ public class DruidDataQueryProcessor {
         Granularity granularity = new SimpleGranularity(PredefinedGranularity.ALL);
 
         List<DruidDimension> druidDimensions = new ArrayList<>();
-        druidDimensions.add(new DefaultDimension(PROJECT_ID, PROJECT_ID, OutputType.STRING));
+        druidDimensions.add(new DefaultDimension(gpId, gpId, OutputType.STRING));
         druidDimensions.add(new DefaultDimension(COA_ID, COA_ID, OutputType.STRING));
         druidDimensions.add(new DefaultDimension(EVENT_TYPE, EVENT_TYPE, OutputType.STRING));
 
@@ -286,4 +322,5 @@ public class DruidDataQueryProcessor {
                 .intervals(Collections.singletonList(interval))
                 .build());
     }
+
 }

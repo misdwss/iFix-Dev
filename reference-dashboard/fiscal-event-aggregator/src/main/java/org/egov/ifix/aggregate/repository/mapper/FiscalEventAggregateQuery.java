@@ -49,11 +49,11 @@ public class FiscalEventAggregateQuery {
             ":attributes_departmentEntity_ancestry_9_hierarchyLevel,:attributes_departmentEntity_ancestry_10_id,:attributes_departmentEntity_ancestry_10_code," +
             ":attributes_departmentEntity_ancestry_10_name,:attributes_departmentEntity_ancestry_10_hierarchyLevel," +
             ":attributes_departmentEntity_id,:attributes_departmentEntity_code,:attributes_departmentEntity_name,:attributes_departmentEntity_hierarchyLevel) " +
-            "ON CONFLICT(attributes_project_id,coa_id,type,fiscalPeriod) " +
+            "ON CONFLICT(attributes_departmentEntity_ancestry_6_id,coa_id,type,fiscalPeriod) " +
             "DO UPDATE " +
             "SET " +
             "ver=:ver,tenantId=:tenantId,government_id=:government_id,government_name=:government_name,sumAmount=:sumAmount,count=:count," +
-            "attributes_department_id=:attributes_department_id,attributes_department_code=:attributes_department_code,attributes_department_name=:attributes_department_name,attributes_departmentEntity_ancestry_0_id=:attributes_departmentEntity_ancestry_0_id," +
+            "attributes_project_id=:attributes_project_id,attributes_department_id=:attributes_department_id,attributes_department_code=:attributes_department_code,attributes_department_name=:attributes_department_name,attributes_departmentEntity_ancestry_0_id=:attributes_departmentEntity_ancestry_0_id," +
             "attributes_expenditure_id=:attributes_expenditure_id,attributes_expenditure_code=:attributes_expenditure_code,attributes_expenditure_name=:attributes_expenditure_name,attributes_expenditure_type=:attributes_expenditure_type," +
             "attributes_project_code=:attributes_project_code,attributes_project_name=:attributes_project_name," +
             "coa_coaCode=:coa_coaCode,coa_majorHead=:coa_majorHead,coa_majorHeadName=:coa_majorHeadName,coa_majorHeadType=:coa_majorHeadType,coa_subMajorHead=:coa_subMajorHead," +
