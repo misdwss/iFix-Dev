@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.0.1 - 2022-03-30
+- Change the unique key constraints from (project_id,coa_id,fiscalperiod,type) to (attributes_departmentEntity_ancestry_6_id,coa_id,fiscalperiod,type)
+
 ## 2.0.0 - 2022-03-16
 - All the new adapter master data comes under 'attributes' 
 
