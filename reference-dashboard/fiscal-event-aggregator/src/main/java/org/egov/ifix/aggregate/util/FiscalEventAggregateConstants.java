@@ -17,4 +17,6 @@ public class FiscalEventAggregateConstants {
 
     public static final String EVENT_TYPE_PENDING_COLLECTION = "Pending_Collection";
     public static final String EVENT_TYPE_PENDING_PAYMENT = "Pending_Payment";
+
+    public static final String GP_ID = "attributes.departmentEntity.ancestry[6].id";
 }

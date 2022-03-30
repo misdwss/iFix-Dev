@@ -2,9 +2,9 @@
 
 Fiscal Event Aggregator is a java standalone application, which will be running as cron job to aggregate the fiscal event data from Druid data store to Postgres DB.It will pull all the fiscal event data as 
 
-1. Group by of project id, coa id and event type And sum of amounts.
-2. Pending collection(s) w.r.t distinct project id(s).
-3. Pending payment(s) w.r.t distinct project id(s).
+1. Group by of attributes_departmentEntity_ancestry_6_id, coa id and event type And sum of amounts.
+2. Pending collection(s) w.r.t distinct attributes_departmentEntity_ancestry_6_id(s).
+3. Pending payment(s) w.r.t distinct attributes_departmentEntity_ancestry_6_id(s).
 
 Aggregate these all data and push it to postgres DB.
 
