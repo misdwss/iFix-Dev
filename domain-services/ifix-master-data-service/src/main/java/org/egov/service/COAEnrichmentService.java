@@ -90,7 +90,6 @@ public class COAEnrichmentService {
     }
 
     public void enrichSearchPost(COASearchRequest coaSearchRequest) {
-        COASearchCriteria searchCriteria = coaSearchRequest.getCriteria();
         //TODO- fill if any default search criteria
     }
 }
