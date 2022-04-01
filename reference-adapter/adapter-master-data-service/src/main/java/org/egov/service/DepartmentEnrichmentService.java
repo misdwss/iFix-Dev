@@ -27,7 +27,6 @@ public class DepartmentEnrichmentService {
      * @param searchRequest
      */
     public void enrichSearchPost(DepartmentSearchRequest searchRequest) {
-        DepartmentSearchCriteria searchCriteria = searchRequest.getCriteria();
         //TODO- fill if any default search criteria
 
     }
