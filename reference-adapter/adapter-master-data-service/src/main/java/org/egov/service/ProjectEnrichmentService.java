@@ -3,14 +3,11 @@ package org.egov.service;
 import org.egov.common.contract.AuditDetails;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.util.MasterDataServiceUtil;
-import org.egov.web.models.DepartmentEntity;
 import org.egov.web.models.Project;
 import org.egov.web.models.ProjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Component
