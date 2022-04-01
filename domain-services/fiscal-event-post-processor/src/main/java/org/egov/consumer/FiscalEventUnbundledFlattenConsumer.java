@@ -39,10 +39,10 @@ public class FiscalEventUnbundledFlattenConsumer {
     private FiscalEventFlattenService flattenService;
 
     @KafkaListener(topics = {"${fiscal.event.kafka.dereferenced.topic}"})
-    public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+    public void listen(final HashMap<String, Object> recordMap, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         try {
-            FiscalEventDeReferenced fiscalEventDeReferenced = mapper.convertValue(record, FiscalEventDeReferenced.class);
+            FiscalEventDeReferenced fiscalEventDeReferenced = mapper.convertValue(recordMap, FiscalEventDeReferenced.class);
             List<FiscalEventLineItemUnbundled> fiscalEventLineItemUnbundledList = unbundleService.unbundle(fiscalEventDeReferenced);
 
             List<String> flattenJsonDataList = flattenService.getFlattenData(fiscalEventLineItemUnbundledList);

@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(FiscalApiController.class)
-public class FiscalApiControllerTest {
+class FiscalApiControllerTest {
 
     @Autowired
     private TestDataFormatter testDataFormatter;
@@ -66,7 +66,7 @@ public class FiscalApiControllerTest {
     }
 
     @Test
-    public void fiscalEventsV1PushPostSuccess() throws Exception {
+    void fiscalEventsV1PushPostSuccess() throws Exception {
         doReturn(fiscalEventRequest).when(fiscalEventService).fiscalEventsV1PushPost((FiscalEventRequest) any());
 
 
@@ -85,14 +85,14 @@ public class FiscalApiControllerTest {
     }
 
     @Test
-    public void fiscalEventsV1PushPostFailure() throws Exception {
+    void fiscalEventsV1PushPostFailure() throws Exception {
         mockMvc.perform(post("/events/v1/_publish").contentType(MediaType
                         .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void fiscalEventsV1SearchPostSuccess() throws Exception {
+    void fiscalEventsV1SearchPostSuccess() throws Exception {
         doReturn(fiscalEventSearchResponse.getFiscalEvent()).when(fiscalEventService)
                 .fiscalEventsV1SearchPost(fiscalEventGetRequest);
 
@@ -106,7 +106,7 @@ public class FiscalApiControllerTest {
     }
 
     @Test
-    public void fiscalEventsV1SearchPostFailure() throws Exception {
+    void fiscalEventsV1SearchPostFailure() throws Exception {
         mockMvc.perform(post("/events/v1/_search").contentType(MediaType
                         .APPLICATION_JSON_UTF8))
                 .andExpect(status().isBadRequest());

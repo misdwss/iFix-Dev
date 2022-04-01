@@ -108,7 +108,6 @@ public class EventTypeConsumer {
 
             EventMapper eventMapper = eventTypeMap.get(eventJsonObject.get(EVENT_TYPE).getAsString());
             List<String> referenceIdList = eventMapper.getReferenceIdList(jsonObject);
-            List<EventPostingDetail> eventPostingDetailList = new ArrayList<>();
 
             EventPostingDetail errorDetail = new EventPostingDetail();
             errorDetail.setEventId(eventJsonObject.get(ID).getAsString());

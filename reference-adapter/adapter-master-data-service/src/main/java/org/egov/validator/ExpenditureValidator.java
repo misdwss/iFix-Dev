@@ -26,8 +26,6 @@ public class ExpenditureValidator {
         if (expenditureSearchRequest != null || expenditureSearchRequest.getRequestHeader() == null
                 && expenditureSearchRequest.getCriteria() != null) {
 
-            RequestHeader requestHeader = expenditureSearchRequest.getRequestHeader();
-
             ExpenditureSearchCriteria criteria = expenditureSearchRequest.getCriteria();
 
             if (StringUtils.isEmpty(criteria.getTenantId())) {

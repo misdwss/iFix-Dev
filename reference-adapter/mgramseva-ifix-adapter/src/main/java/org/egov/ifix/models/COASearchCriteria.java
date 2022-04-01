@@ -1,6 +1,5 @@
 package org.egov.ifix.models;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

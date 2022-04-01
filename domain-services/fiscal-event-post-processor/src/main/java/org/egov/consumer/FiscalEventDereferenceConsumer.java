@@ -33,9 +33,9 @@ public class FiscalEventDereferenceConsumer {
     private ObjectMapper mapper;
 
     @KafkaListener(topics = {"${fiscal.event.kafka.push.topic}"})
-    public void listen(final HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+    public void listen(final HashMap<String, Object> recordMap, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
-            FiscalEventRequest fiscalEventRequest = mapper.convertValue(record, FiscalEventRequest.class);
+            FiscalEventRequest fiscalEventRequest = mapper.convertValue(recordMap, FiscalEventRequest.class);
             FiscalEventDeReferenced fiscalEventDeReferenced = dereferenceService.dereference(fiscalEventRequest);
             producer.push(processorConfig.getFiscalEventDereferenceTopic(), fiscalEventDeReferenced);
         } catch (Exception e) {

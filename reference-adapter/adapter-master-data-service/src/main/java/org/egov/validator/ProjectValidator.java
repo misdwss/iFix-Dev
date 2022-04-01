@@ -34,8 +34,6 @@ public class ProjectValidator {
         if (projectSearchRequest != null && projectSearchRequest.getRequestHeader() != null
                 && projectSearchRequest.getCriteria() != null) {
 
-            RequestHeader requestHeader = projectSearchRequest.getRequestHeader();
-
             ProjectSearchCriteria projectSearchCriteria = projectSearchRequest.getCriteria();
 
             if (projectSearchCriteria == null) {
