@@ -41,8 +41,7 @@ public class CoaUtil {
         Object response = searchRequestRepository.fetchResult(url, govtSearchRequest);
         if (response != null) {
             LinkedHashMap linkedHashMap = (LinkedHashMap) response;
-            List<Government> governments = (List<Government>) linkedHashMap.get("government");
-            return governments;
+            return (List<Government>) linkedHashMap.get("government");
         }
 
         return Collections.emptyList();
