@@ -91,7 +91,7 @@ class CoaUtilTest {
     }
 
     @Test
-    public void testGetCOAIdsFromCOAServiceWithInvalidResponse() {
+    void testGetCOAIdsFromCOAServiceWithInvalidResponse() {
         doReturn(objectMapper.createObjectNode()).when(serviceRequestRepository).fetchResult(any(), any());
         Set<String> coaCodes = new HashSet<>();
         String tenantId = fiscalEventRequest.getFiscalEvent().get(0).getTenantId();
@@ -106,7 +106,7 @@ class CoaUtilTest {
     }
 
     @Test
-    public void testGetCOAIdsFromCOAServiceWithValidResponse() {
+    void testGetCOAIdsFromCOAServiceWithValidResponse() {
         Map<String, Object> map = objectMapper.convertValue(validCOAResponse, new TypeReference<Map<String, Object>>() {
         });
         doReturn(map).when(serviceRequestRepository).fetchResult(any(), any());

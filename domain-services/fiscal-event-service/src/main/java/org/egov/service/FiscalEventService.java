@@ -145,8 +145,6 @@ public class FiscalEventService {
         if (dereferencedFiscalEvents == null || dereferencedFiscalEvents.isEmpty())
             return Collections.emptyList();
 
-        List<FiscalEvent> fiscalEvents = mapperUtil.mapDereferencedFiscalEventToFiscalEvent(dereferencedFiscalEvents);
-
-        return fiscalEvents;
+        return mapperUtil.mapDereferencedFiscalEventToFiscalEvent(dereferencedFiscalEvents);
     }
 }
