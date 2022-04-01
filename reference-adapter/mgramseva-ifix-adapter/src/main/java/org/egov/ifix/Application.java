@@ -39,9 +39,6 @@ public class Application {
 		Resource resource = resourceLoader.getResource(configFilePath);
 
 		Map<Object, Object> map = objectMapper.readValue(resource.getInputStream(), Map.class);
-
-		System.out.println(map.toString());
-
 	}
 
 	@Bean
