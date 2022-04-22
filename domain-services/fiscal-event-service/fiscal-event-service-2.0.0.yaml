@@ -74,6 +74,7 @@ components:
           type: string
           description: Version of the Data Model Definition
           example: 1.0.0
+          readOnly: true
         id:
           maxLength: 64
           minLength: 1
