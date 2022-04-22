@@ -112,6 +112,10 @@ components:
         - transactionTime
       type: object
       properties:
+        version:
+          type: string
+          description: Version of the Data Model Definition
+          example: 1.0.0
         id:
           maxLength: 64
           minLength: 1

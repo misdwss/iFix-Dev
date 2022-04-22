@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.egov.util.MasterDataConstants.FISCAL_EVENT_VERSION;
+
 @Service
 @Slf4j
 public class FiscalEventService {
@@ -56,7 +58,7 @@ public class FiscalEventService {
         FiscalEventRequest fiscalEventRequestCopy = new FiscalEventRequest();
         BeanUtils.copyProperties(fiscalEventRequest, fiscalEventRequestCopy);
         //nullify the coaCode before pushing to topics
-        nullifyCoaCode(fiscalEventRequest);
+        nullifyCoaCodeAndAddVersion(fiscalEventRequest);
 
         if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
             RequestHeader requestHeader = fiscalEventRequest.getRequestHeader();
@@ -72,11 +74,11 @@ public class FiscalEventService {
             }
         }
         //nullify coaId before sending the response
-        nullifyCoaIdCode(fiscalEventRequestCopy);
+        nullifyCoaIdCodeAndAddVersion(fiscalEventRequestCopy);
         return fiscalEventRequestCopy;
     }
 
-    private void nullifyCoaIdCode(FiscalEventRequest fiscalEventRequest) {
+    private void nullifyCoaIdCodeAndAddVersion(FiscalEventRequest fiscalEventRequest) {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
 
         if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
@@ -92,6 +94,7 @@ public class FiscalEventService {
                         amountCopy.setCoaId(null);
                         amounts.add(amountCopy);
                     }
+                    fiscalEventCopy.setVersion(FISCAL_EVENT_VERSION);
                     fiscalEventCopy.setAmountDetails(amounts);
                 }
                 fiscalEvents.add(fiscalEventCopy);
@@ -100,7 +103,7 @@ public class FiscalEventService {
         }
     }
 
-    private void nullifyCoaCode(FiscalEventRequest fiscalEventRequest) {
+    private void nullifyCoaCodeAndAddVersion(FiscalEventRequest fiscalEventRequest) {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
 
         if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
@@ -116,6 +119,7 @@ public class FiscalEventService {
                         amountCopy.setCoaCode(null);
                         amounts.add(amountCopy);
                     }
+                    fiscalEventCopy.setVersion(FISCAL_EVENT_VERSION);
                     fiscalEventCopy.setAmountDetails(amounts);
                 }
                 fiscalEvents.add(fiscalEventCopy);

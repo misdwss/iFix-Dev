@@ -23,7 +23,6 @@ public class Location {
     @JsonProperty("name")
     private String name = null;
 
-    //TODO
     @JsonProperty("child")
     @Valid
     private List<String> child = new ArrayList<>();

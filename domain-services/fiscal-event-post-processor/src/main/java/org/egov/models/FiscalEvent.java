@@ -60,6 +60,9 @@ public class FiscalEvent {
     @JsonProperty("attributes")
     private Object attributes = null;
 
+    @JsonProperty("version")
+    private String version = null;
+
 
     public enum EventTypeEnum {
         Sanction("Sanction"),
