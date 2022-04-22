@@ -2,7 +2,7 @@
 All notable changes to this module will be documented in this file.
 
 ## 2.0.1 - 2022-04-22
--Removed the version addition into Fiscal Events. It'll get the version of fiscal events from fiscal-event-service as part of consumer.
+- Removed the version addition into Fiscal Events. It'll get the version of fiscal events from fiscal-event-service as part of consumer.
 
 ## 2.0.0 - 2022-03-03
 - Removed code related to project, department, department-entity and expenditure. These details will be stored as 
