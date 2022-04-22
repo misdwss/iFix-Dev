@@ -2,7 +2,7 @@
 All notable changes to this module will be documented in this file.
 
 ## 2.0.1 - 2022-04-22
--Added the version to the Fiscal Events.
+- Added the version to the Fiscal Events.
 
 ## 2.0.0 - 2022-02-25
 - Removed the project.
