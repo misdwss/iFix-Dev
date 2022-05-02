@@ -2,7 +2,7 @@
 openapi: 3.0.0
 info:
   title: ifix-department-entity-service
-  version: 1.0.0
+  version: 1.1.0
 servers:
 - url: https://<server_address>/ifix-department-entity
   description: SwaggerHub API Auto Mocking
@@ -19,6 +19,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DepartmentEntityRequest'
+        required: true
+      responses:
+        "202":
+          description: Request has been accepted for processing
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/DepartmentEntityResponse'
+        "400":
+          description: Failed to process the request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /departmentEntity/v1/_update:
+    post:
+      tags:
+        - DepartmentEntity
+      summary: Update existing Department Entity on iFix for a tenant
+      description: Update existing Department Entity on iFix for a tenant
+      requestBody:
+        description: Details for the update Department Entity + RequestHeader (meta data of the API).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentEntityUpdateRequest'
         required: true
       responses:
         "202":
@@ -140,13 +172,6 @@ paths:
 components:
   schemas:
     DepartmentEntity:
-      required:
-      - children
-      - code
-      - hierarchyLevelId
-      - id
-      - name
-      - tenantId
       type: object
       properties:
         id:
@@ -154,7 +179,6 @@ components:
           minLength: 1
           type: string
           description: Unique system generated UUID
-          readOnly: true
         tenantId:
           maxLength: 64
           minLength: 1
@@ -193,9 +217,35 @@ components:
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
-        departmentEntity:
-          $ref: '#/components/schemas/DepartmentEntity'
+        DepartmentEntity:
+          properties:
+            id:
+              readOnly: true
+          allOf:
+          - $ref: '#/components/schemas/DepartmentEntity'
+          - required:
+            - children
+            - code
+            - hierarchyLevelId
+            - id
+            - name
+            - tenantId
+
       description: Department Entity request along with request metadata
+    DepartmentEntityUpdateRequest:
+      required:
+      - DepartmentEntity
+      - requestHeader
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        DepartmentEntity:
+          allOf:
+          - $ref: '#/components/schemas/DepartmentEntity'
+          - required:
+            - id
+            - tenantId
+      description: Department Entity Update request along with request metadata
     DepartmentEntityResponse:
       properties:
         responseHeader:
