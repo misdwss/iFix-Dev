@@ -2,6 +2,7 @@ package org.egov.validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestHeader;
+import org.egov.repository.ProjectRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentUtil;
 import org.egov.util.ExpenditureUtil;
@@ -13,10 +14,7 @@ import org.egov.web.models.ProjectSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ProjectValidator {
@@ -26,6 +24,9 @@ public class ProjectValidator {
 
     @Autowired
     private DepartmentUtil departmentUtil;
+
+    @Autowired
+    private ProjectRepository projectRepository;
 
     /**
      * @param projectSearchRequest
@@ -42,12 +43,12 @@ public class ProjectValidator {
                 throw new CustomException("INVALID_SEARCH_CRITERIA", "Search criteria is missing");
             }
             if (StringUtils.isEmpty(projectSearchCriteria.getTenantId())) {
-                throw new CustomException(MasterDataConstants.TENANT_ID, "Tenant id is missing in request data");
+                throw new CustomException(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_IS_MISSING_IN_REQUEST_DATA);
             }
 
             if (projectSearchCriteria.getTenantId().length() < 2 || projectSearchCriteria.getTenantId().length() > 64) {
-                throw new CustomException(MasterDataConstants.TENANT_ID, "Tenant id length is invalid. " +
-                        "Length range [2-64]");
+                throw new CustomException(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_LENGTH_IS_INVALID +
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (!StringUtils.isEmpty(projectSearchCriteria.getName())
@@ -59,20 +60,20 @@ public class ProjectValidator {
             if (!StringUtils.isEmpty(projectSearchCriteria.getCode())
                     && (projectSearchCriteria.getCode().length() < 2 || projectSearchCriteria.getCode().length() > 64)) {
                 throw new CustomException(MasterDataConstants.PROJECT_CODE, "Project code length is invalid. " +
-                        "Length range [2-64]");
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (!StringUtils.isEmpty(projectSearchCriteria.getExpenditureId())
                     && (projectSearchCriteria.getExpenditureId().length() < 2 || projectSearchCriteria.getExpenditureId().length() > 64)) {
                 throw new CustomException(MasterDataConstants.EXPENDITURE_ID, "Expenditure id length is invalid. " +
-                        "Length range [2-64]");
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (!StringUtils.isEmpty(projectSearchCriteria.getDepartmentEntityId())
                     && (projectSearchCriteria.getDepartmentEntityId().length() < 2
                     || projectSearchCriteria.getDepartmentEntityId().length() > 64)) {
                 throw new CustomException(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid."
-                        + "Length range [2-64]");
+                        + MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (!StringUtils.isEmpty(projectSearchCriteria.getLocationId())
@@ -80,7 +81,7 @@ public class ProjectValidator {
                     || projectSearchCriteria.getLocationId().length() > 64)) {
 
                 throw new CustomException(MasterDataConstants.LOCATION_ID, "Location id length is invalid. " +
-                        "Length range [2-64]");
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
         }
     }
@@ -101,10 +102,10 @@ public class ProjectValidator {
             Project project = projectRequest.getProject();
 
             if (StringUtils.isEmpty(project.getTenantId())) {
-                errorMap.put(MasterDataConstants.TENANT_ID, "Tenant id is missing in request data");
+                errorMap.put(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_IS_MISSING_IN_REQUEST_DATA);
             } else if (project.getTenantId().length() < 2 || project.getTenantId().length() > 64) {
-                errorMap.put(MasterDataConstants.TENANT_ID, "Tenant id length is invalid. " +
-                        "Length range [2-64]");
+                errorMap.put(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_LENGTH_IS_INVALID +
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (StringUtils.isEmpty(project.getCode())) {
@@ -137,7 +138,62 @@ public class ProjectValidator {
                     if (!StringUtils.isEmpty(departmentEntitytId)) {
                         if (departmentEntitytId.length() < 2 || departmentEntitytId.length() > 64) {
                             errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
-                                    "Length range [2-64]");
+                                    MasterDataConstants.LENGTH_RANGE_2_64);
+                        }
+                    }
+                }
+
+                if (!departmentUtil.validateDepartmentEntityIds(project.getTenantId(),
+                        project.getDepartmentEntityIds(), requestHeader)) {
+                    errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Some of the Department Entity ids : "
+                            + project.getDepartmentEntityIds() + " doesn't exist in the system");
+                }
+            }
+
+            if (!errorMap.isEmpty()) {
+                throw new CustomException(errorMap);
+            }
+        } else {
+            throw new CustomException(MasterDataConstants.REQUEST_PAYLOAD_MISSING,
+                    "Request payload is missing some value");
+        }
+    }
+
+    public void validateProjectUpdateRequest(ProjectRequest projectRequest) {
+        Map<String, String> errorMap = new HashMap<>();
+
+        if (projectRequest != null && projectRequest.getProject() != null && projectRequest.getRequestHeader() != null) {
+            RequestHeader requestHeader = projectRequest.getRequestHeader();
+
+            if (requestHeader.getUserInfo() == null || StringUtils.isEmpty(requestHeader.getUserInfo().getUuid())) {
+                errorMap.put(MasterDataConstants.USER_INFO, "User information is missing");
+            }
+
+            Project project = projectRequest.getProject();
+
+            if (StringUtils.isEmpty(project.getTenantId())) {
+                errorMap.put(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_IS_MISSING_IN_REQUEST_DATA);
+            } else if (project.getTenantId().length() < 2 || project.getTenantId().length() > 64) {
+                errorMap.put(MasterDataConstants.TENANT_ID, MasterDataConstants.TENANT_ID_LENGTH_IS_INVALID +
+                        MasterDataConstants.LENGTH_RANGE_2_64);
+            }
+
+            if (StringUtils.isBlank(project.getId())) {
+                errorMap.put(MasterDataConstants.ID, "Project id is missing in request data");
+            } else {
+                Optional<Project> optionalProject = projectRepository.findByProjectId(project.getId());
+                if (!optionalProject.isPresent()) {
+                    errorMap.put(MasterDataConstants.INVALID_ID, "Invalid project id");
+                }
+            }
+
+            if(project.getDepartmentEntityIds() != null && !project.getDepartmentEntityIds().isEmpty()) {
+                List<String> departmentEntitytIds = project.getDepartmentEntityIds();
+                for(String departmentEntitytId : departmentEntitytIds) {
+                    if (!StringUtils.isEmpty(departmentEntitytId)) {
+                        if (departmentEntitytId.length() < 2 || departmentEntitytId.length() > 64) {
+                            errorMap.put(MasterDataConstants.DEPARTMENT_ENTITY_ID, "Department Entity id length is invalid. " +
+                                    MasterDataConstants.LENGTH_RANGE_2_64);
                         }
                     }
                 }

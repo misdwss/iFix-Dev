@@ -4,9 +4,12 @@ import org.egov.config.TestDataFormatter;
 import org.egov.repository.ProjectRepository;
 import org.egov.validator.ProjectValidator;
 import org.egov.web.models.*;
+import org.egov.web.models.Project;
+import org.egov.web.models.ProjectRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -39,11 +50,13 @@ class ProjectServiceTest {
 
     private ProjectSearchRequest projectSearchRequest;
     private ProjectResponse projectResponse;
+    private ProjectRequest projectUpdateResquest;
 
     @BeforeAll
     public void init() throws IOException {
         projectSearchRequest = testDataFormatter.getProjectSearchRequestData();
         projectResponse = testDataFormatter.getProjectSearchReponseData();
+        projectUpdateResquest = testDataFormatter.getProjectUpdateRequestData();
     }
 
     @Test
@@ -86,6 +99,28 @@ class ProjectServiceTest {
         verify(this.projectValidator).validateProjectCreateRequest((ProjectRequest) any());
         verify(this.projectRepository).save((Project) any());
         verify(this.projectEnrichmentService).enrichProjectData((ProjectRequest) any());
+    }
+
+    @Test
+    void testUpdateProjectWithDefaultRequest() {
+        doNothing().when(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
+        doNothing().when(this.projectRepository).save((Project) any());
+        when(this.projectEnrichmentService.enrichUpdateProjectData((ProjectRequest) any())).thenReturn(new Project());
+        ProjectRequest projectRequest = new ProjectRequest();
+        assertSame(projectRequest, this.projectService.updateProject(projectRequest));
+        verify(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
+        verify(this.projectRepository).save((Project) any());
+        verify(this.projectEnrichmentService).enrichUpdateProjectData((ProjectRequest) any());
+    }
+
+    @Test
+    void testUpdateProjectWithUpdateRequest() {
+        doNothing().when(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
+        doNothing().when(this.projectRepository).save((Project) any());
+        when(this.projectEnrichmentService.enrichUpdateProjectData((ProjectRequest) any())).thenReturn(null);
+        assertSame(projectUpdateResquest, this.projectService.updateProject(projectUpdateResquest));
+        verify(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
+        verify(this.projectEnrichmentService).enrichUpdateProjectData((ProjectRequest) any());
     }
 }
 

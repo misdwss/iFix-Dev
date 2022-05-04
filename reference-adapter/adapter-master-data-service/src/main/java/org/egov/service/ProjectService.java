@@ -5,6 +5,7 @@ import org.egov.validator.ProjectValidator;
 import org.egov.web.models.Project;
 import org.egov.web.models.ProjectRequest;
 import org.egov.web.models.ProjectSearchRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,16 @@ public class ProjectService {
         projectEnrichmentService.enrichProjectData(projectRequest);
         projectRepository.save(projectRequest.getProject());
 
+        return projectRequest;
+    }
+
+    public ProjectRequest updateProject(ProjectRequest projectRequest) {
+        projectValidator.validateProjectUpdateRequest(projectRequest);
+        Project updatedProject = projectEnrichmentService.enrichUpdateProjectData(projectRequest);
+        if (updatedProject != null) {
+            projectRepository.save(updatedProject);
+        }
+        BeanUtils.copyProperties(updatedProject,projectRequest.getProject());
         return projectRequest;
     }
 }
