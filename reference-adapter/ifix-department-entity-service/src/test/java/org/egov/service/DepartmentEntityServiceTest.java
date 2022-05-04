@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -52,6 +53,8 @@ class DepartmentEntityServiceTest {
     private DepartmentEntity departmentEntity;
     private DepartmentEntitySearchRequest departmentEntitySearchRequest;
     private DepartmentEntityResponse searchDepartmentEntityResponse;
+    private DepartmentEntityRequest departmentEntityUpdateRequest;
+    private DepartmentEntity updateDepartmentEntity;
 
     @BeforeAll
     void init() throws IOException {
@@ -59,6 +62,9 @@ class DepartmentEntityServiceTest {
         departmentEntity = departmentEntityRequest.getDepartmentEntity();
         departmentEntitySearchRequest = testDataFormatter.getDeptEntitySearchRequestData();
         searchDepartmentEntityResponse = testDataFormatter.getDeptEntitySearchResponseData();
+
+        departmentEntityUpdateRequest = testDataFormatter.getDeptEntityUpdateRequestData();
+        updateDepartmentEntity = departmentEntityUpdateRequest.getDepartmentEntity();
     }
 
     @Test
@@ -226,6 +232,21 @@ class DepartmentEntityServiceTest {
         verify(this.departmentEntityAncestryUtil, atLeast(1))
                 .createDepartmentEntityAncestryFromDepartmentEntity((DepartmentEntity) any());
         verify(departmentEntityAncestry, atLeast(1)).getChildren();
+    }
+
+
+    @Test
+    void testUpdateDepartmentEntityWithDeptEntityRequest() {
+        doNothing().when(this.departmentEntityValidator)
+                .validateUpdateDepartmentEntityRequest((DepartmentEntityRequest) any());
+
+        Optional<DepartmentEntity> departmentEntityOptional = Optional.ofNullable(updateDepartmentEntity);
+
+        doReturn(departmentEntityOptional).when(departmentEntityRepository).findById(anyString());
+
+        doNothing().when(departmentEntityRepository).save(departmentEntity);
+
+        assertSame(departmentEntityUpdateRequest, this.departmentEntityService.updateDepartmentEntity(departmentEntityUpdateRequest));
     }
 }
 

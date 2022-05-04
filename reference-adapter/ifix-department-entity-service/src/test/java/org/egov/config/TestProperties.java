@@ -16,6 +16,9 @@ public class TestProperties {
     @Value("${dept.entity.create.request.data}")
     private String deptEntityCreateRequest;
 
+    @Value("${dept.entity.update.request.data}")
+    private String deptEntityUpdateRequest;
+
     @Value("${dept.entity.create.response.data}")
     private String deptEntityCreateResponse;
 

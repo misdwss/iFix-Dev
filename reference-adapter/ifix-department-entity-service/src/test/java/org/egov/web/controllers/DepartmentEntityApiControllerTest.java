@@ -110,4 +110,29 @@ public class DepartmentEntityApiControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void departmentEntityV1UpdatePostSuccess() throws Exception {
+        when(departmentEntityService.updateDepartmentEntity(any())).thenReturn(departmentEntityRequest);
+        doReturn(new ResponseHeader()).when(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(departmentEntityRequest.getRequestHeader(), true);
+
+        mockMvc.perform(post("/departmentEntity/v1/_update")
+                        .accept(MediaType.APPLICATION_JSON).content(departmentEntityCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(departmentEntityService, times(1)).updateDepartmentEntity(any());
+
+        verify(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(departmentEntityRequest.getRequestHeader(), true);
+    }
+
+    @Test
+    public void departmentEntityV1UpdatePostFailure() throws Exception {
+        mockMvc.perform(post("/departmentEntity/v1/_update")
+                        .accept(MediaType.APPLICATION_JSON).content("")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 }

@@ -61,4 +61,12 @@ public class DepartmentEntityRepository {
 
         return Collections.emptyList();
     }
+
+    /**
+     * @param id
+     * @return
+     */
+    public Optional<DepartmentEntity> findById(String id) {
+        return Optional.ofNullable(mongoTemplate.findById(id, DepartmentEntity.class));
+    }
 }
