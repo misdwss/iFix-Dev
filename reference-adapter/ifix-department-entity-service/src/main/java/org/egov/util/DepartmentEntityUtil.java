@@ -17,7 +17,7 @@ public class DepartmentEntityUtil {
      * @param isCreate
      * @return AuditDetails
      */
-    public AuditDetails enrichAuditDetails(String by, AuditDetails auditDetails, Boolean isCreate) {
+    public AuditDetails enrichAuditDetails(String by, AuditDetails auditDetails, boolean isCreate) {
         Long time = System.currentTimeMillis();
         if (isCreate)
             return AuditDetails.builder().createdBy(by).lastModifiedBy(by).createdTime(time).lastModifiedTime(time).build();
