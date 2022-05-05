@@ -27,7 +27,7 @@ public class ProjectEnrichmentService {
     /**
      * @param projectRequest
      */
-    public void enrichProjectData(ProjectRequest projectRequest) {
+    public void enrichCreateProjectData(ProjectRequest projectRequest) {
         Project project = projectRequest.getProject();
         RequestHeader requestHeader = projectRequest.getRequestHeader();
 
@@ -50,10 +50,10 @@ public class ProjectEnrichmentService {
         Project reqProject = projectRequest.getProject();
         RequestHeader requestHeader = projectRequest.getRequestHeader();
 
-        Optional<Project> optionalProject = projectRepository.findByProjectId(reqProject.getId());
+        Optional<Project> optionalExistingProject = projectRepository.findByProjectId(reqProject.getId());
 
-        if (optionalProject != null && optionalProject.isPresent()) {
-            Project existingProject = optionalProject.get();
+        if (optionalExistingProject.isPresent()) {
+            Project existingProject = optionalExistingProject.get();
             boolean isModified = false;
             if (StringUtils.isNotBlank(reqProject.getCode())) {
                 existingProject.setCode(reqProject.getCode());

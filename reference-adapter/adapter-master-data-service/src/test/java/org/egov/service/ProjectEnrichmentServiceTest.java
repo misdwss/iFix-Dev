@@ -72,7 +72,7 @@ class ProjectEnrichmentServiceTest {
                 (List<String>) any())).thenReturn(Collections.singletonList(new DepartmentEntity()));
         doReturn(auditDetails).when(masterDataServiceUtil).enrichAuditDetails(userId, auditDetails, false);
 
-        projectEnrichmentService.enrichProjectData(projectRequest);
+        projectEnrichmentService.enrichCreateProjectData(projectRequest);
 
         assertNotNull(projectRequest.getProject().getAuditDetails());
 
@@ -88,7 +88,7 @@ class ProjectEnrichmentServiceTest {
                 (List<String>) any())).thenReturn(Collections.singletonList(new DepartmentEntity()));
         doReturn(auditDetails).when(masterDataServiceUtil).enrichAuditDetails(userId, projectRequest.getProject().getAuditDetails(), true);
 
-        projectEnrichmentService.enrichProjectData(projectRequest);
+        projectEnrichmentService.enrichCreateProjectData(projectRequest);
 
         assertNotNull(projectRequest.getProject().getAuditDetails());
 

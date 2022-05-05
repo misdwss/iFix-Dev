@@ -39,7 +39,7 @@ public class ProjectService {
      */
     public ProjectRequest createProject(ProjectRequest projectRequest) {
         projectValidator.validateProjectCreateRequest(projectRequest);
-        projectEnrichmentService.enrichProjectData(projectRequest);
+        projectEnrichmentService.enrichCreateProjectData(projectRequest);
         projectRepository.save(projectRequest.getProject());
 
         return projectRequest;

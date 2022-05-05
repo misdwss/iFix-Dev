@@ -9,7 +9,6 @@ import org.egov.web.models.ProjectRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -92,13 +87,13 @@ class ProjectServiceTest {
     void testCreateProject() {
         doNothing().when(this.projectValidator).validateProjectCreateRequest((ProjectRequest) any());
         doNothing().when(this.projectRepository).save((Project) any());
-        doNothing().when(this.projectEnrichmentService).enrichProjectData((ProjectRequest) any());
+        doNothing().when(this.projectEnrichmentService).enrichCreateProjectData((ProjectRequest) any());
 
         ProjectRequest projectRequest = new ProjectRequest();
         assertSame(projectRequest, this.projectService.createProject(projectRequest));
         verify(this.projectValidator).validateProjectCreateRequest((ProjectRequest) any());
         verify(this.projectRepository).save((Project) any());
-        verify(this.projectEnrichmentService).enrichProjectData((ProjectRequest) any());
+        verify(this.projectEnrichmentService).enrichCreateProjectData((ProjectRequest) any());
     }
 
     @Test
@@ -107,6 +102,7 @@ class ProjectServiceTest {
         doNothing().when(this.projectRepository).save((Project) any());
         when(this.projectEnrichmentService.enrichUpdateProjectData((ProjectRequest) any())).thenReturn(new Project());
         ProjectRequest projectRequest = new ProjectRequest();
+        projectRequest.setProject(new Project());
         assertSame(projectRequest, this.projectService.updateProject(projectRequest));
         verify(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
         verify(this.projectRepository).save((Project) any());
@@ -117,8 +113,8 @@ class ProjectServiceTest {
     void testUpdateProjectWithUpdateRequest() {
         doNothing().when(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
         doNothing().when(this.projectRepository).save((Project) any());
-        when(this.projectEnrichmentService.enrichUpdateProjectData((ProjectRequest) any())).thenReturn(null);
-        assertSame(projectUpdateResquest, this.projectService.updateProject(projectUpdateResquest));
+        when(this.projectEnrichmentService.enrichUpdateProjectData((ProjectRequest) any())).thenReturn(projectUpdateResquest.getProject());
+        assertNotNull(this.projectService.updateProject(projectUpdateResquest));
         verify(this.projectValidator).validateProjectUpdateRequest((ProjectRequest) any());
         verify(this.projectEnrichmentService).enrichUpdateProjectData((ProjectRequest) any());
     }
