@@ -57,6 +57,7 @@ public class DepartmentEntityService {
         return departmentEntityList;
     }
 
+
     public DepartmentEntityAncestry createAncestryFor(DepartmentEntity departmentEntity) {
         int hierarchyCount = ifixDepartmentEntityConfig.getMaximumSupportedDepartmentHierarchy();
         DepartmentEntityAncestry ancestry =

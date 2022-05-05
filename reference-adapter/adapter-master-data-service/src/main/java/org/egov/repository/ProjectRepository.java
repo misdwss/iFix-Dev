@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ProjectRepository {
@@ -31,5 +32,9 @@ public class ProjectRepository {
      */
     public void save(Project project) {
         mongoTemplate.save(project);
+    }
+
+    public Optional<Project> findByProjectId(String id) {
+        return Optional.ofNullable(mongoTemplate.findById(id, Project.class));
     }
 }

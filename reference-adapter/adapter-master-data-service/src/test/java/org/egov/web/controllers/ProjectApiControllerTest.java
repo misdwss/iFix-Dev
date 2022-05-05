@@ -45,6 +45,7 @@ public class ProjectApiControllerTest {
     private MockMvc mockMvc;
     private String projectCreateData;
     private ProjectRequest projectRequest;
+    private ProjectRequest projectUpdateRequest;
     private ProjectResponse projectSearchResponse;
     private ProjectSearchRequest projectSearchRequest;
 
@@ -52,6 +53,7 @@ public class ProjectApiControllerTest {
     @BeforeAll
     void init() throws IOException {
         projectRequest = testDataFormatter.getProjectCreateRequestData();
+        projectUpdateRequest = testDataFormatter.getProjectUpdateRequestData();
         projectCreateData = new Gson().toJson(projectRequest);
         projectSearchResponse = testDataFormatter.getProjectSearchReponseData();
         projectSearchRequest = testDataFormatter.getProjectSearchRequestData();
@@ -77,6 +79,31 @@ public class ProjectApiControllerTest {
     @Test
     public void projectV1CreatePostFailure() throws Exception {
         mockMvc.perform(post("/project/v1/_create")
+                        .accept(MediaType.APPLICATION_JSON).content("")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void projectV1UpdatePostSuccess() throws Exception {
+        doReturn(projectUpdateRequest).when(projectService).updateProject((ProjectRequest) any());
+
+        doReturn(new ResponseHeader()).when(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(projectUpdateRequest.getRequestHeader(), true);
+
+        mockMvc.perform(post("/project/v1/_update")
+                        .accept(MediaType.APPLICATION_JSON).content(projectCreateData)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(projectService, times(1)).updateProject((ProjectRequest) any());
+        verify(responseHeaderCreator)
+                .createResponseHeaderFromRequestHeader(projectUpdateRequest.getRequestHeader(), true);
+    }
+
+    @Test
+    public void projectV1UpdatePostFailure() throws Exception {
+        mockMvc.perform(post("/project/v1/_update")
                         .accept(MediaType.APPLICATION_JSON).content("")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

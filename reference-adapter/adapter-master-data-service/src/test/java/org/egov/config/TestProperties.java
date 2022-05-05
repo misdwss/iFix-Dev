@@ -52,6 +52,9 @@ public class TestProperties {
     @Value("${project.create.request.data}")
     private String projectCreateRequestData;
 
+    @Value("${project.update.request.data}")
+    private String projectUpdateRequestData;
+
     @Value("${department.create.request.data}")
     private String departmentCreateRequestData;
 
