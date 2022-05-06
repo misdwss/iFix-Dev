@@ -23,11 +23,12 @@ public class DepartmentEntityEnrichmentService {
         RequestHeader requestHeader = departmentEntityRequest.getRequestHeader();
 
         AuditDetails auditDetails = null;
+        String userUUID = requestHeader.getUserInfo() != null ? requestHeader.getUserInfo().getUuid() : null;
 
         if (departmentEntity.getAuditDetails() == null) {
-            auditDetails = enrichAuditDetails.enrichAuditDetails(requestHeader.getUserInfo().getUuid(), departmentEntity.getAuditDetails(), true);
+            auditDetails = enrichAuditDetails.enrichAuditDetails(userUUID, departmentEntity.getAuditDetails(), true);
         } else {
-            auditDetails = enrichAuditDetails.enrichAuditDetails(requestHeader.getUserInfo().getUuid(), departmentEntity.getAuditDetails(), false);
+            auditDetails = enrichAuditDetails.enrichAuditDetails(userUUID, departmentEntity.getAuditDetails(), false);
         }
 
         departmentEntity.setId(UUID.randomUUID().toString());

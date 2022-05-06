@@ -46,8 +46,7 @@ public class DepartmentUtil {
             Object response = serviceRequestRepository.fetchResult(createSearchDepartmentUrl(), departmentMap);
 
             try {
-                List<String> departmentList = JsonPath.read(response, DepartmentEntityConstant.DEPARTMENT_JSON_PATH);
-                return departmentList;
+                return JsonPath.read(response, DepartmentEntityConstant.DEPARTMENT_JSON_PATH);
             } catch (Exception e) {
                 throw new CustomException(DepartmentEntityConstant.JSONPATH_ERROR, "Failed to parse department response for department Id");
             }

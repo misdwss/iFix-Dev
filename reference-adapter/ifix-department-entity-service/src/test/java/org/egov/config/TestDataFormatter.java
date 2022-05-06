@@ -59,6 +59,18 @@ public class TestDataFormatter {
      * @return
      * @throws IOException
      */
+    public DepartmentEntityRequest getDeptEntityUpdateRequestData() throws IOException {
+        DepartmentEntityRequest departmentEntityRequest = objectMapper
+                .readValue(getFileFromClassLoaderResource(testProperties.getDeptEntityUpdateRequest()),
+                        DepartmentEntityRequest.class);
+
+        return departmentEntityRequest;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
     public DepartmentEntityResponse getDeptEntityCreateResponseData() throws IOException {
         File fileContent = getFileFromClassLoaderResource(testProperties.getDeptEntityCreateResponse());
         JsonNode rootNode = objectMapper.readTree(fileContent);

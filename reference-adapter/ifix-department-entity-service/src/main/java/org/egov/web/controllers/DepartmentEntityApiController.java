@@ -85,4 +85,26 @@ public class DepartmentEntityApiController {
         return new ResponseEntity<DepartmentEntityResponse>(departmentEntityResponse, HttpStatus.OK);
     }
 
+    /**
+     * @param body
+     * @return
+     */
+    @RequestMapping(value = "/_update", method = RequestMethod.POST)
+    public ResponseEntity<DepartmentEntityResponse> departmentEntityV1UpdatePost(
+            @ApiParam(value = "Details for the update Department Entity RequestHeader (meta data of the API).",
+                    required = true)
+            @Valid @RequestBody DepartmentEntityRequest body) {
+
+        DepartmentEntityRequest departmentEntityRequest = departmentEntityService.updateDepartmentEntity(body);
+
+        ResponseHeader responseHeader = responseHeaderCreator
+                .createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
+
+        DepartmentEntityResponse departmentEntityResponse = DepartmentEntityResponse.builder()
+                .responseHeader(responseHeader)
+                .departmentEntity(Collections.singletonList(departmentEntityRequest.getDepartmentEntity())).build();
+
+        return new ResponseEntity<DepartmentEntityResponse>(departmentEntityResponse, HttpStatus.OK);
+    }
+
 }

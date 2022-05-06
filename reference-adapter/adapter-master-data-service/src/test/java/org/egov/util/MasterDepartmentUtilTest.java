@@ -86,7 +86,7 @@ class MasterDepartmentUtilTest {
         List<Department> actualDepartmentList = masterDepartmentUtil
                 .fetchDepartment(null, null, null);
 
-        assertSame(actualDepartmentList, Collections.emptyList());
+        assertSame(Collections.emptyList(), actualDepartmentList);
     }
 
 

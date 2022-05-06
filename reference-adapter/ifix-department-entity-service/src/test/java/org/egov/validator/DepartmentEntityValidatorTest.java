@@ -36,7 +36,9 @@ class DepartmentEntityValidatorTest {
     private TestDataFormatter testDataFormatter;
 
     private DepartmentEntityRequest departmentEntityRequest;
+    private DepartmentEntityRequest departmentEntityUpdateRequest;
     private DepartmentEntity departmentEntity;
+    private DepartmentEntity updateDepartmentEntity;
     private DepartmentEntitySearchRequest departmentEntitySearchRequest;
     private DepartmentEntityResponse searchDepartmentEntityResponse;
     private DepartmentEntityResponse createDepartmentEntityResponse;
@@ -45,6 +47,8 @@ class DepartmentEntityValidatorTest {
     void init() throws IOException {
         departmentEntityRequest = testDataFormatter.getDeptEntityCreateRequestData();
         departmentEntity = departmentEntityRequest.getDepartmentEntity();
+        departmentEntityUpdateRequest = testDataFormatter.getDeptEntityUpdateRequestData();
+        updateDepartmentEntity = departmentEntityUpdateRequest.getDepartmentEntity();
         departmentEntitySearchRequest = testDataFormatter.getDeptEntitySearchRequestData();
         searchDepartmentEntityResponse = testDataFormatter.getDeptEntitySearchResponseData();
         createDepartmentEntityResponse = testDataFormatter.getDeptEntityCreateResponseData();
@@ -224,6 +228,16 @@ class DepartmentEntityValidatorTest {
                 .searchChildDepartment((List<String>) any(), (Integer) any());
         assertThrows(CustomException.class,
                 () -> this.departmentEntityValidator.validateDepartmentEntityRequest(departmentEntityRequest));
+    }
+
+
+    @Test
+    void testValidateDepartmentEntityUpdateRequestWithNullDepartmentEntityId() {
+        DepartmentEntity updateDepartmentEntity = mock(DepartmentEntity.class);
+        when(updateDepartmentEntity.getDepartmentId()).thenReturn(null);
+
+        assertThrows(CustomException.class,
+                () -> this.departmentEntityValidator.validateUpdateDepartmentEntityRequest(departmentEntityUpdateRequest));
     }
 }
 

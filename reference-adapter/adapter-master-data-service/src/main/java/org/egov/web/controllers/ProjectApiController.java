@@ -52,6 +52,26 @@ public class ProjectApiController {
         return new ResponseEntity<>(projectResponse, HttpStatus.OK);
     }
 
+
+    /**
+     * @param body
+     * @return
+     */
+    @RequestMapping(value = "/_update", method = RequestMethod.POST)
+    public ResponseEntity<ProjectResponse> projectV1UpdatePost(@ApiParam(value = "Details to update the existing Project " +
+            "RequestHeader (meta data of the API).", required = true) @Valid @RequestBody ProjectRequest body) {
+
+        ProjectRequest projectRequest = projectService.updateProject(body);
+
+        ResponseHeader responseHeader = responseHeaderCreator
+                .createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
+
+        ProjectResponse projectResponse = ProjectResponse.builder().responseHeader(responseHeader)
+                .project(Collections.singletonList(projectRequest.getProject())).build();
+
+        return new ResponseEntity<>(projectResponse, HttpStatus.OK);
+    }
+
     /**
      * @param body
      * @return
