@@ -6,6 +6,7 @@ import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentEntityAncestryUtil;
 import org.egov.validator.DepartmentEntityValidator;
 import org.egov.web.models.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -131,6 +132,8 @@ public class DepartmentEntityService {
             if (isModified) {
                 existingDepartmentEntity.getAuditDetails().setLastModifiedTime(System.currentTimeMillis());
                 entityRepository.save(existingDepartmentEntity);
+
+                BeanUtils.copyProperties(existingDepartmentEntity, departmentEntityRequest.getDepartmentEntity());
             }
         } else {
             throw new CustomException("INVALID_DEPARTMENT_ENTITY_ID", "Unable to find department entity by given id");
