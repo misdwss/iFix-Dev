@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.0.1 - 2022-05-11
+- Fixed EventTime mapping in the Event Mapper
+
 ## 2.0.0 - 2022-03-11
 - Refactored Code.
 - Multiple department entity support in project.
