@@ -31,7 +31,13 @@ public class DataProcessor {
             int count = 0;
             if (iterableDocument != null && iterableDocument.iterator() != null) {
                 for (Document document : iterableDocument) {
-                    customKafkaProducer.push(globalProperties.getKafkaTopic(), document);
+
+                    Document fiscalEventDocument = new Document();
+                    fiscalEventDocument.append("requestHeader", new Document());
+                    fiscalEventDocument.append("fiscalEvent", document);
+
+                    customKafkaProducer.push(globalProperties.getKafkaTopic(), fiscalEventDocument);
+
                     count += 1;
                 }
 
