@@ -5,6 +5,9 @@ public class MasterDataConstants {
     public static final String CRITERIA_NAME = "name";
     public static final String CRITERIA_CODE = "code";
     public static final String CRITERIA_ID = "id";
+    public static final String LENGTH_RANGE_2_64 = "Length range [2-64]";
+    public static final String TENANT_ID_IS_MISSING_IN_REQUEST_DATA = "Tenant id is missing in request data";
+    public static final String TENANT_ID_LENGTH_IS_INVALID = "Tenant id length is invalid. ";
 
     private MasterDataConstants() {
     }
@@ -40,6 +43,9 @@ public class MasterDataConstants {
     public static final String DEPARTMENT_CODE = "DEPARTMENT_CODE";
     public static final String DEPARTMENT_NAME = "DEPARTMENT_NAME";
     public static final String DEPARTMENT_PARENT = "DEPARTMENT_PARENT";
+
+    public static final String ID = "ID";
+    public static final String INVALID_ID = "INVALID_ID";
 
 
 }

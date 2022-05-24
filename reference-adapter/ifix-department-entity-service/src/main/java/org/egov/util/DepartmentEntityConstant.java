@@ -23,6 +23,7 @@ public class DepartmentEntityConstant {
 
     //Search key parameters
     public static final String IDS = "Ids";
+    public static final String ID = "Id";
     public static final String REQUEST_HEADER = "requestHeader";
     public static final String CRITERIA = "criteria";
     public static final String CRITERIA_TENANT_ID = "tenantId";

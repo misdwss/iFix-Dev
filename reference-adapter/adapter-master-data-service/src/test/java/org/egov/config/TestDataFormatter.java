@@ -189,6 +189,18 @@ public class TestDataFormatter {
      * @return
      * @throws IOException
      */
+    public ProjectRequest getProjectUpdateRequestData() throws IOException {
+        ProjectRequest projectRequest = new ObjectMapper()
+                .readValue(getFileFromClassLoaderResource(testProperties.getProjectUpdateRequestData()),
+                        ProjectRequest.class);
+
+        return projectRequest;
+    }
+
+    /**
+     * @return
+     * @throws IOException
+     */
     public DepartmentRequest getDepartmentCreateRequestData() throws IOException {
         DepartmentRequest departmentRequest = new ObjectMapper()
                 .readValue(getFileFromClassLoaderResource(testProperties.getDepartmentCreateRequestData()),

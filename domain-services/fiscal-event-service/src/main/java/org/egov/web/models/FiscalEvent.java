@@ -26,6 +26,9 @@ import java.util.List;
 @Builder
 public class FiscalEvent {
 
+    @JsonProperty("version")
+    private String version = null;
+
     @JsonProperty("id")
     private String id = null;
 

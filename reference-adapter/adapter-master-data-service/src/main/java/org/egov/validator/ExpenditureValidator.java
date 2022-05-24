@@ -34,7 +34,7 @@ public class ExpenditureValidator {
                 throw new CustomException(MasterDataConstants.TENANT_ID, "Tenant id is missing in request data");
             } else if (criteria.getTenantId().length() < 2 || criteria.getTenantId().length() > 64) {
                 throw new CustomException(MasterDataConstants.TENANT_ID, "Tenant id length is invalid. " +
-                        "Length range [2-64]");
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
             if (!StringUtils.isEmpty(criteria.getName())
@@ -46,7 +46,7 @@ public class ExpenditureValidator {
             if (!StringUtils.isEmpty(criteria.getCode())
                     && (criteria.getCode().length() < 2 || criteria.getCode().length() > 64)) {
                 throw new CustomException(MasterDataConstants.EXPENDITURE_CODE, "Expenditure code length is invalid. " +
-                        "Length range [2-64]");
+                        MasterDataConstants.LENGTH_RANGE_2_64);
             }
 
         } else {
@@ -78,7 +78,7 @@ public class ExpenditureValidator {
         if (StringUtils.isNotBlank(expenditure.getTenantId())
                 && (expenditure.getTenantId().length() < 2 || expenditure.getTenantId().length() > 64)) {
             throw new CustomException(MasterDataConstants.TENANT_ID, "Tenant id length is invalid. " +
-                    "Length range [2-64]");
+                    MasterDataConstants.LENGTH_RANGE_2_64);
         }
 
         //code
@@ -88,7 +88,7 @@ public class ExpenditureValidator {
         if (StringUtils.isNotBlank(expenditure.getCode())
                 && (expenditure.getCode().length() < 2 || expenditure.getCode().length() > 64)) {
             errorMap.put(MasterDataConstants.EXPENDITURE_CODE, "Expenditure code length is invalid. " +
-                    "Length range [2-64]");
+                    MasterDataConstants.LENGTH_RANGE_2_64);
         }
 
         //name

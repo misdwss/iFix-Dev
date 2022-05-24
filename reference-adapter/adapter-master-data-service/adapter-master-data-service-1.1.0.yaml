@@ -3,9 +3,9 @@ openapi: 3.0.0
 info:
   title: adapter-master-data-service
   description: ""
-  version: 1.0.0
+  version: 1.1.0
 servers:
-- url: https://<server-address>/fiscal-event-service
+  - url: https://<server-address>/fiscal-event-service
 paths:
   /department/v1/_create:
     post:
@@ -169,6 +169,38 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /project/v1/_update:
+    post:
+      tags:
+        - Project
+      summary: Update existing project on iFix for a tenant
+      description: Update existing project on iFix for a tenant
+      requestBody:
+        description: Details for the update Project + RequestHeader (meta data of the API).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdateRequest'
+        required: true
+      responses:
+        "202":
+          description: Request has been accepted for processing
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        "400":
+          description: Failed to process the request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /project/v1/_search:
     post:
       tags:
@@ -288,10 +320,6 @@ components:
           $ref: '#/components/schemas/AuditDetails'
       description: Captures the Expenditure attributes
     Project:
-      required:
-        - code
-        - name
-        - tenantId
       type: object
       properties:
         id:
@@ -299,7 +327,6 @@ components:
           minLength: 1
           type: string
           description: Unique system generated UUID
-          readOnly: true
         tenantId:
           maxLength: 64
           minLength: 1
@@ -455,7 +482,29 @@ components:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
         project:
-          $ref: '#/components/schemas/Project'
+          properties:
+            id:
+              readOnly: true
+          allOf:
+            - $ref: '#/components/schemas/Project'
+            - required:
+                - code
+                - name
+                - tenantId
+      description: Project request along with request metadata
+    ProjectUpdateRequest:
+      required:
+        - project
+        - requestHeader
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        project:
+          allOf:
+            - $ref: '#/components/schemas/Project'
+            - required:
+                - id
+                - tenantId
       description: Project request along with request metadata
     ProjectResponse:
       properties:

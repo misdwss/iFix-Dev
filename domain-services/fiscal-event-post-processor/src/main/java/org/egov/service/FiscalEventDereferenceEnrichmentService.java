@@ -23,7 +23,7 @@ public class FiscalEventDereferenceEnrichmentService {
         fiscalEventDeReferenced.setLinkedEventId(fiscalEvent.getLinkedEventId());
         fiscalEventDeReferenced.setReferenceId(fiscalEvent.getReferenceId());
         fiscalEventDeReferenced.setAttributes(fiscalEvent.getAttributes());
-        fiscalEventDeReferenced.setVersion(MasterDataConstants.FISCAL_EVENT_VERSION);
+        fiscalEventDeReferenced.setVersion(fiscalEvent.getVersion());
 
         fiscalEventDeReferenced.setAuditDetails(fiscalEvent.getAuditDetails());
         fiscalEventDeReferenced.setId(fiscalEvent.getId());
