@@ -188,7 +188,7 @@
       "granularitySpec": {
         "queryGranularity": "none",
         "rollup": false,
-        "segmentGranularity": "hour"
+        "segmentGranularity": "month"
       }
     }
   }
