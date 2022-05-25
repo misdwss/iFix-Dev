@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.egov</groupId>
     <artifactId>mongodb-kafka-source-connector</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>mongodb-kafka-source-connector</name>
     <description>It pulls data from mongo DB and push to Kafka topic for further processing and persisting in Druid
     </description>
