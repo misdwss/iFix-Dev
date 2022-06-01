@@ -1,0 +1,31 @@
+package org.egov.util;
+
+import org.egov.common.contract.request.RequestHeader;
+import org.egov.common.contract.request.UserInfo;
+import org.egov.config.PspclIfixAdapterConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.UUID;
+
+
+@Component
+public class RequestHeaderUtil {
+
+    @Autowired
+    private PspclIfixAdapterConfiguration adapterConfiguration;
+
+    public RequestHeader getRequestHeader() {
+        RequestHeader requestHeader = new RequestHeader();
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUuid(UUID.randomUUID().toString());
+
+        requestHeader.setUserInfo(userInfo);
+        requestHeader.setTs(Instant.now().toEpochMilli());
+        
+        return requestHeader;
+    }
+
+}
+
