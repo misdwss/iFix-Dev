@@ -27,8 +27,8 @@ public class PspclIfixAdapterConstant {
     public static final String NA = "N/A";
     public static final String EMPTY_FISCAL_EVENT = "EMPTY FISCAL EVENT";
 
-    public static final String MDMS_MODULE_NAME = "acn-gp-mapping";
-    public static final String MDMS_ACCOUNT_GP_MAPPING_MASTER_NAME = "acnGpMapping";
+    public static final String MDMS_MODULE_NAME = "pspcl-integration";
+    public static final String MDMS_ACCOUNT_GP_MAPPING_MASTER_NAME = "accountNumberGpMapping";
 
     public static final String FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY = "departmentEntity";
     public static final String FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE = "code";

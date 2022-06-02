@@ -5,6 +5,9 @@ CREATE INDEX idx_bill_detail_account_no
 CREATE INDEX idx_bill_detail_bill_no
   ON pspcl_bill_detail (bill_no);
 
+CREATE INDEX idx_bill_detail_orderbycolumn
+  ON pspcl_bill_detail (orderbycolumn);
+
 CREATE INDEX idx_bill_detail_bill_issue_date
   ON pspcl_bill_detail (bill_issue_date);
 
