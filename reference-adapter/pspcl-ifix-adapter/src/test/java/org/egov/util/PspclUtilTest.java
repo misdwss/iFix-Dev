@@ -2,6 +2,7 @@ package org.egov.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.egov.PspclIfixAdapterApplication;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.repository.SoapServiceRequestRepository;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(classes= PspclIfixAdapterApplication.class)
 class PspclUtilTest {
 
     @InjectMocks

@@ -2,7 +2,7 @@
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
         <GetPayments xmlns="http://tempuri.org/">
-            <accountNo>${accountNo}</accountNo>
+            <accountNo>3005754414</accountNo>
         </GetPayments>
     </soap:Body>
 </soap:Envelope>

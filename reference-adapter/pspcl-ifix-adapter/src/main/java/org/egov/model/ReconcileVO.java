@@ -17,4 +17,6 @@ public class ReconcileVO {
 
     private String departmentEntityName;
     private String departmentEntityCode;
+
+    private boolean status;
 }

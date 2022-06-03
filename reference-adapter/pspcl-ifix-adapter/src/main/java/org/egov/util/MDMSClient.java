@@ -9,6 +9,9 @@ import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.mdms.model.*;
 import org.egov.model.AccountNumberGpMappingVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -47,17 +50,37 @@ public class MDMSClient {
             MdmsCriteriaReq mdmsCriteriaReq = MdmsCriteriaReq.builder().requestInfo(RequestInfo.builder().build())
                     .mdmsCriteria(mdmsCriteria).build();
 
+            //header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            //request
+            HttpEntity<MdmsCriteriaReq> request = new HttpEntity<>(mdmsCriteriaReq, headers);
+
             ResponseEntity<MdmsResponse> response =
                     restTemplate.postForEntity(adapterConfiguration.getEgovMdmsHost() + adapterConfiguration.getEgovMdmsSearchUrl(),
-                            mdmsCriteriaReq, MdmsResponse.class);
+                            request, MdmsResponse.class);
 
-            JSONArray acnGpMapping = response.getBody().getMdmsRes().get(PspclIfixAdapterConstant.MDMS_MODULE_NAME)
-                    .get(PspclIfixAdapterConstant.MDMS_ACCOUNT_GP_MAPPING_MASTER_NAME);
+            MdmsResponse mdmsResponse = null;
+            if (response != null) {
+                mdmsResponse = response.getBody();
+            }
 
-            ObjectReader reader = objectMapper.readerFor(objectMapper.getTypeFactory().constructCollectionType(List.class,
-                    AccountNumberGpMappingVO.class));
+            if (mdmsResponse != null && (mdmsResponse.getMdmsRes() == null || mdmsResponse.getMdmsRes().isEmpty())) {
+                log.error("account number to GP mapping config file is missing in MDMS!");
+            } else {
+                if (mdmsResponse.getMdmsRes().get(PspclIfixAdapterConstant.MDMS_MODULE_NAME) != null && mdmsResponse.getMdmsRes().get(PspclIfixAdapterConstant.MDMS_MODULE_NAME)
+                        .get(PspclIfixAdapterConstant.MDMS_ACCOUNT_GP_MAPPING_MASTER_NAME) != null) {
+                    JSONArray acnGpMapping = mdmsResponse.getMdmsRes().get(PspclIfixAdapterConstant.MDMS_MODULE_NAME)
+                            .get(PspclIfixAdapterConstant.MDMS_ACCOUNT_GP_MAPPING_MASTER_NAME);
 
-            acnGpMappingVOs = reader.readValue(acnGpMapping.toString());
+                    ObjectReader reader = objectMapper.readerFor(objectMapper.getTypeFactory().constructCollectionType(List.class,
+                            AccountNumberGpMappingVO.class));
+
+                    acnGpMappingVOs = reader.readValue(acnGpMapping.toString());
+                }
+
+            }
+
         } catch (IOException e) {
             log.error("Error occurred while getting the account to gp mapping from MDMS", e);
         }

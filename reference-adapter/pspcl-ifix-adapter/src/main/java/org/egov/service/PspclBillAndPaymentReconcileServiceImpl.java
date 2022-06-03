@@ -56,7 +56,7 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
     @Transactional
     public ReconcileVO reconcile(List<GetBillResult> pspclBillResults, List<GetPaymentResult> pspclPaymentResults) {
         log.info("Started - reconcile pspcl bills and payments...");
-        ReconcileVO reconcileVO = null;
+        ReconcileVO reconcileVO = new ReconcileVO();
         PspclBillDetail lastBillDetail = null;
         PspclPaymentDetail lastPaymentDetail = null;
         BigDecimal lastBillAmt = null;
@@ -71,6 +71,11 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         if (pspclBillResults != null && !pspclBillResults.isEmpty() && pspclPaymentResults != null && !pspclPaymentResults.isEmpty()) {
             GetBillResult currentMonthBillResult = pspclBillResults.get(0);
             GetPaymentResult currentMonthPaymentResult = pspclPaymentResults.get(0);
+            //check reconciled or not and update the status.
+            if (isReconciled(reconcileVO, currentMonthBillResult, currentMonthPaymentResult)) {
+                reconcileVO.setStatus(Boolean.TRUE);
+                return reconcileVO;
+            }
             //2. Fetch the last month bill & Payment
             //a. Get the Last_Bill based on 'DATE_READING_PREV'
             //b. Get the Last_Payment based on range of 'DATE_READING_PREV' to current time.
@@ -81,12 +86,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                 lastPaymentDetail = getLastPaymentDetails(lastBillDate);
                 if (lastBillDetail != null) {
                     lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-                }else{
+                } else {
                     lastBillAmt = new BigDecimal("0");
                 }
                 if (lastPaymentDetail != null) {
                     lastPaymentAmt = new BigDecimal(lastPaymentDetail.getAMT());
-                }else{
+                } else {
                     lastPaymentAmt = new BigDecimal("0");
                 }
             }
@@ -100,7 +105,6 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
             billDetailRepository.save(currentPspclBillDetail);
             paymentDetailRepository.save(currentPspclPaymentDetail);
 
-            reconcileVO = new ReconcileVO();
             reconcileVO.setCurrentPspclBillDetail(currentPspclBillDetail);
             reconcileVO.setCurrentPspclPaymentDetail(currentPspclPaymentDetail);
             reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
@@ -109,6 +113,36 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
         }
         return reconcileVO;
+    }
+
+    /**
+     * First check , bill is present in the DB or not,
+     * if 'no' then return flag as not reconcile.
+     * else if 'yes' then check payment is reconciled or not then
+     *     if payment is reconciled then return a flag as reconciled (that is true)
+     *     else save the payment detail in DB and return a flag as reconciled (that is true)
+     *
+     * @param reconcileVO
+     * @param currentMonthBillResult
+     * @param currentMonthPaymentResult
+     * @return
+     */
+    private boolean isReconciled(ReconcileVO reconcileVO, GetBillResult currentMonthBillResult, GetPaymentResult currentMonthPaymentResult) {
+        boolean isBillReconciled = false;
+        List<PspclBillDetail> pspclBillDetails = billDetailRepository.findByORDERBYCOLUMN(currentMonthBillResult.getORDERBYCOLUMN());
+        if (pspclBillDetails != null && !pspclBillDetails.isEmpty()) {
+            isBillReconciled = true;
+        }
+
+        if (!isBillReconciled) {
+            return false;
+        } else {
+            Optional<PspclPaymentDetail> optionalPspclPaymentDetail = paymentDetailRepository.findByTXNID(currentMonthPaymentResult.getTXNID());
+            if (!optionalPspclPaymentDetail.isPresent()) {
+                paymentDetailRepository.save(pspclDataEntityMapper.mapPspclPaymentToEntity(currentMonthPaymentResult));
+            }
+        }
+        return true;
     }
 
     @Override

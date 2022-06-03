@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.entity.EventPostingDetail;
 import org.egov.entity.PspclBillDetail;
@@ -63,13 +64,17 @@ public class FiscalEventUtil {
             PspclPaymentDetail pspclPaymentDetail = billAndPaymentEventDetail.getCurrentPspclPaymentDetail();
 
             Amount paymentAmount = new Amount();
-            paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
+            if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
+                paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
+            }
 //            paymentAmount.setFromBillingPeriod();//missing
 //            paymentAmount.setToBillingPeriod();//missing
             paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
             amounts.add(paymentAmount);
 
-            paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
+            if (pspclPaymentDetail.getTXNDATE() != null) {
+                paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
+            }
             paymentFiscalEvent.setEventType(EVENT_TYPE_RECEIPT);
             paymentFiscalEvent.setReferenceId(pspclPaymentDetail.getTXNID());
             paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
@@ -107,8 +112,12 @@ public class FiscalEventUtil {
 
             Amount billAmount = new Amount();
             billAmount.setAmount(billAndPaymentEventDetail.getCurrentCalculatedBillAmt());
-            billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_PREV()).getTime());
-            billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_CURR()).getTime());
+            if (pspclBillDetail.getDATE_READING_PREV() != null) {
+                billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_PREV()).getTime());
+            }
+            if (pspclBillDetail.getDATE_READING_CURR() != null) {
+                billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_CURR()).getTime());
+            }
             billAmount.setCoaCode(adapterConfiguration.getDemandCoaCode());
             amounts.add(billAmount);
 

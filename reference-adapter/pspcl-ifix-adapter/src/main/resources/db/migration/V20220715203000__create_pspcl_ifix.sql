@@ -49,7 +49,7 @@ CREATE TABLE pspcl_event_posting_detail
     event_type          character varying(255),
     ifix_event_id       character varying(255),
     last_modified_date  timestamp without time zone,
-    record              oid,
+    record              jsonb,
     reference_id        character varying(255),
     status              character varying(255),
     tenant_id           character varying(255),

@@ -1,5 +1,6 @@
 package org.egov.util;
 
+import org.egov.PspclIfixAdapterApplication;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
@@ -11,7 +12,7 @@ import static org.egov.util.PspclIfixAdapterConstant.PATH_FETCH_PSPCL_BILL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(classes= PspclIfixAdapterApplication.class)
 class PspclIfixAdapterUtilTest {
 
     @InjectMocks

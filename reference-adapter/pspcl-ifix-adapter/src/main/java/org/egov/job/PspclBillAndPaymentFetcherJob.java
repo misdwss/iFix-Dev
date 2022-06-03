@@ -46,7 +46,7 @@ public class PspclBillAndPaymentFetcherJob extends QuartzJobBean {
 
                     ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResults, pspclPaymentResults);
 
-                    if (reconcileVO != null) {
+                    if (reconcileVO != null && !reconcileVO.isStatus()) {
                         reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
                         reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 

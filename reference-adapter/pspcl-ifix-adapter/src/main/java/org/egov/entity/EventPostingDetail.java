@@ -1,6 +1,7 @@
 package org.egov.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -38,7 +39,8 @@ public class EventPostingDetail {
     @Size(max = 4000, min = 0)
     private String error;
 
-    @Lob
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
     private String record;
 
     private Date createdDate;
