@@ -119,8 +119,8 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
      * First check , bill is present in the DB or not,
      * if 'no' then return flag as not reconcile.
      * else if 'yes' then check payment is reconciled or not then
-     *     if payment is reconciled then return a flag as reconciled (that is true)
-     *     else save the payment detail in DB and return a flag as reconciled (that is true)
+     * if payment is reconciled then return a flag as reconciled (that is true)
+     * else save the payment detail in DB and return a flag as reconciled (that is true)
      *
      * @param reconcileVO
      * @param currentMonthBillResult
@@ -180,8 +180,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
             FiscalEvent billFiscalEvent = fiscalEventUtil.getDemandFiscalEvent(billAndPaymentEventDetail);
             FiscalEvent paymentFiscalEvent = fiscalEventUtil.getReceiptFiscalEvent(billAndPaymentEventDetail);
 
-            fiscalEvents.add(billFiscalEvent);
-            fiscalEvents.add(paymentFiscalEvent);
+            if (billFiscalEvent != null) {
+                fiscalEvents.add(billFiscalEvent);
+            }
+            if (paymentFiscalEvent != null) {
+                fiscalEvents.add(paymentFiscalEvent);
+            }
         }
 
         //publish the fiscal event

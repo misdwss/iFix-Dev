@@ -57,10 +57,11 @@ public class FiscalEventUtil {
      * @return
      */
     public FiscalEvent getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
-        FiscalEvent paymentFiscalEvent = new FiscalEvent();
+        FiscalEvent paymentFiscalEvent = null;
         List<Amount> amounts = new ArrayList<>();
 
         if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetail() != null) {
+            paymentFiscalEvent = new FiscalEvent();
             PspclPaymentDetail pspclPaymentDetail = billAndPaymentEventDetail.getCurrentPspclPaymentDetail();
 
             Amount paymentAmount = new Amount();
@@ -105,9 +106,10 @@ public class FiscalEventUtil {
      * @return
      */
     public FiscalEvent getDemandFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
-        FiscalEvent billFiscalEvent = new FiscalEvent();
+        FiscalEvent billFiscalEvent = null;
         List<Amount> amounts = new ArrayList<>();
         if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclBillDetail() != null) {
+            billFiscalEvent = new FiscalEvent();
             PspclBillDetail pspclBillDetail = billAndPaymentEventDetail.getCurrentPspclBillDetail();
 
             Amount billAmount = new Amount();
