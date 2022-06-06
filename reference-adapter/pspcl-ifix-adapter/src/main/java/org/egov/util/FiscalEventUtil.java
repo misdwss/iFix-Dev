@@ -81,7 +81,7 @@ public class FiscalEventUtil {
             paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
 
             List<String> receivers = new ArrayList<>();
-            receivers.add(adapterConfiguration.getReceiverFiscalEvent());
+            receivers.add(adapterConfiguration.getFiscalEventReceiver());
             paymentFiscalEvent.setReceivers(receivers);
 
             ObjectNode additionalAttributes = objectMapper.createObjectNode();
@@ -129,7 +129,7 @@ public class FiscalEventUtil {
             billFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
 
             List<String> receivers = new ArrayList<>();
-            receivers.add(adapterConfiguration.getReceiverFiscalEvent());
+            receivers.add(adapterConfiguration.getFiscalEventReceiver());
             billFiscalEvent.setReceivers(receivers);
 
             ObjectNode additionalAttributes = objectMapper.createObjectNode();

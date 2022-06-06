@@ -38,7 +38,7 @@ public class PspclIfixAdapterConfiguration {
     @Value("${ifix.event.url}")
     private String ifixEventUrl;
 
-    @Value("${tenant.id}")
+    @Value("${fiscal.event.tenantId}")
     private String tenantId;
 
     @Value("${demand.coaCode}")
@@ -47,8 +47,8 @@ public class PspclIfixAdapterConfiguration {
     @Value("${receipt.coaCode}")
     private String receiptCoaCode;
 
-    @Value("${receiver.fiscal.event}")
-    private String receiverFiscalEvent;
+    @Value("${fiscal.event.receiver}")
+    private String fiscalEventReceiver;
 
     //keycloak
     @Value("${keycloak.credentials.clientid}")
