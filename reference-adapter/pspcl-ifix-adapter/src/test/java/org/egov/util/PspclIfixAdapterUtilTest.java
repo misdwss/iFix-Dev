@@ -1,5 +1,6 @@
 package org.egov.util;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.egov.PspclIfixAdapterApplication;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes= PspclIfixAdapterApplication.class)
+@AutoConfigureEmbeddedDatabase
 class PspclIfixAdapterUtilTest {
 
     @InjectMocks

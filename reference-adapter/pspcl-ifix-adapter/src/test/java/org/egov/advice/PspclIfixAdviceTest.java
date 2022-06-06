@@ -1,5 +1,6 @@
 package org.egov.advice;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.egov.PspclIfixAdapterApplication;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes= PspclIfixAdapterApplication.class)
+@AutoConfigureEmbeddedDatabase
 class PspclIfixAdviceTest {
 
     @InjectMocks

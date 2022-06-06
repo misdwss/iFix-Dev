@@ -2,6 +2,7 @@ package org.egov.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.egov.PspclIfixAdapterApplication;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.repository.SoapServiceRequestRepository;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes= PspclIfixAdapterApplication.class)
+@AutoConfigureEmbeddedDatabase
 class PspclUtilTest {
 
     @InjectMocks
