@@ -66,5 +66,3 @@ config:
       - work-dir: "reference-adapter/pspcl-ifix-adapter"
         image-name: "pspcl-ifix-adapter"
         dockerfile: "build/maven/Dockerfile"
-      - work-dir: "reference-adapter/pspcl-ifix-adapter/src/main/resources/db"
-        image-name: "pspcl-ifix-adapter-db"
