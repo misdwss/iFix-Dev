@@ -1,7 +1,7 @@
 package org.egov.util;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.egov.PspclIfixAdapterApplication;
+import org.egov.config.AbstractPostgreSQLTestContainerIT;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
@@ -13,9 +13,9 @@ import static org.egov.util.PspclIfixAdapterConstant.PATH_FETCH_PSPCL_BILL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes= PspclIfixAdapterApplication.class)
-@AutoConfigureEmbeddedDatabase
-class PspclIfixAdapterUtilTest {
+//@SpringBootTest(classes = PspclIfixAdapterApplication.class)
+//@AutoConfigureEmbeddedDatabase
+class PspclIfixAdapterUtilTest extends AbstractPostgreSQLTestContainerIT {
 
     @InjectMocks
     private PspclIfixAdapterUtil pspclIfixAdapterUtil;
