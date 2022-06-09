@@ -51,6 +51,7 @@ public class ExceptionAdvise {
                     Error error = new Error();
                     error.setCode(customException.getCode());
                     error.setMessage(customException.getMessage());
+                    error.setDescription(customException.getDescription());
                     errorList.add(error);
                 }
                 errorResponse.setErrors(errorList);

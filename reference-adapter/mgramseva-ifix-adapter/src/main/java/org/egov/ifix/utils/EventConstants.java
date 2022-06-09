@@ -31,14 +31,10 @@ public class EventConstants {
     public static final String DEMAND_DETAILS = "demandDetails";
     public static final String BILL_DEMAND_CLIENT_COA_AMOUNT = "taxAmount";
     public static final String BILL_DEMAND_CLIENT_COA_CODE = "taxHeadMasterCode";
-    public static final String BILL_DEMAND_AUDIT_DETAILS = "auditDetails";
-    public static final String BILL_DEMAND_LAST_MODIFIED_TIME = "lastModifiedTime";
     public static final String PROJECT_CODE_DATA_NAME = "PROJECT_CODE";
     public static final String CODE = "code";
     public static final String PROJECT_CODE = "PROJECT_CODE";
     public static final String CLIENT_PROJECT_CODE = "CLIENT_PROJECT_CODE";
-
-    public static final String PAYMENT_RECEIPT_TRANSACTION_DATE = "transactionDate";
     public static final String PAYMENT_RECEIPT_FROM_BILLING_PERIOD = "fromPeriod";
     public static final String PAYMENT_RECEIPT_TO_BILLING_PERIOD = "toPeriod";
     public static final String PAYMENT_RECEIPT_CLIENT_COA_AMOUNT = "adjustedAmount";
@@ -52,4 +48,23 @@ public class EventConstants {
     public static final String MSG_ID = "msgId";
     public static final String VERSION = "version";
     public static final String DEPARTMENT_ENTITY_CODE = "DEPARTMENT_ENTITY_CODE";
+    public static final String MGRAMSEVA_CHALLAN_API_ID = "mgramseva";
+    public static final Integer MGRAMSEVA_CHALLAN_VERSION = 1;
+    public static final Integer MGRAMSEVA_CHALLAN_DID = 1;
+    public static final String MGRAMSEVA_CHALLAN_MSG_ID = "20170310130900|en_IN";
+    public static final String MGRAMSEVA_CHALLAN_CREATE_ACTION = "create";
+    public static final String MGRAMSEVA_CHALLAN_UPDATE_ACTION = "update";
+    public static final String MGRAMSEVA_VENDOR_ID = "Vendor Id";
+
+    public static final String CACHED_KEYCLOAK_AUTH_TOKEN = "authToken";
+    public static final String ACCESS_TOKEN = "Access Token";
+    public static final String CACHED_MGRAMSEVA_ACCESS_TOKEN = "mgramsevaAccessToken";
+    public static final String CREATE_CHALLAN = "Create Challan";
+    public static final String PSPCL = "PSPCL";
+    public static final String MGRAMSEVA_TENANT_ID = "tenantId";
+    public static final String MGRAMSEVA_EXPENSE_TYPE = "expenseType";
+    public static final String MGRAMSEVA_ELECTRICITY_BILL_EXPENSE_TYPE = "ELECTRICITY_BILL";
+    public static final String FISCAL_EVENT_DEMAND = "Demand";
+    public static final String FISCAL_EVENT_RECEIPT = "Receipt";
+    public static final String CHALLAN_IS_BILL_PAID = "isBillPaid";
 }

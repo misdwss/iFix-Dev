@@ -57,11 +57,10 @@ public class BillEventMapper implements EventMapper {
 
             demandJsonArray.forEach(demandJsonElement -> {
                 JsonObject demandJsonObject = demandJsonElement.getAsJsonObject();
-                JsonObject demandAuditDetails = demandJsonObject.get(BILL_DEMAND_AUDIT_DETAILS).getAsJsonObject();
 
                 FiscalEvent fiscalEvent = FiscalEvent.builder().tenantId(applicationConfiguration.getTenantId())
                         .eventType(getEventType())
-                        .eventTime(demandAuditDetails.get(BILL_DEMAND_LAST_MODIFIED_TIME).getAsLong())
+                        .eventTime(Instant.now().toEpochMilli())
                         .referenceId(demandJsonObject.get(ID).getAsString())
                         .parentEventId(null)
                         .parentReferenceId(null)
