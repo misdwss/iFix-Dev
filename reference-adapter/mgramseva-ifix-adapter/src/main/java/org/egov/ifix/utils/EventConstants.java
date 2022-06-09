@@ -48,4 +48,23 @@ public class EventConstants {
     public static final String MSG_ID = "msgId";
     public static final String VERSION = "version";
     public static final String DEPARTMENT_ENTITY_CODE = "DEPARTMENT_ENTITY_CODE";
+    public static final String MGRAMSEVA_CHALLAN_API_ID = "mgramseva";
+    public static final Integer MGRAMSEVA_CHALLAN_VERSION = 1;
+    public static final Integer MGRAMSEVA_CHALLAN_DID = 1;
+    public static final String MGRAMSEVA_CHALLAN_MSG_ID = "20170310130900|en_IN";
+    public static final String MGRAMSEVA_CHALLAN_CREATE_ACTION = "create";
+    public static final String MGRAMSEVA_CHALLAN_UPDATE_ACTION = "update";
+    public static final String MGRAMSEVA_VENDOR_ID = "Vendor Id";
+
+    public static final String CACHED_KEYCLOAK_AUTH_TOKEN = "authToken";
+    public static final String ACCESS_TOKEN = "Access Token";
+    public static final String CACHED_MGRAMSEVA_ACCESS_TOKEN = "mgramsevaAccessToken";
+    public static final String CREATE_CHALLAN = "Create Challan";
+    public static final String PSPCL = "PSPCL";
+    public static final String MGRAMSEVA_TENANT_ID = "tenantId";
+    public static final String MGRAMSEVA_EXPENSE_TYPE = "expenseType";
+    public static final String MGRAMSEVA_ELECTRICITY_BILL_EXPENSE_TYPE = "ELECTRICITY_BILL";
+    public static final String FISCAL_EVENT_DEMAND = "Demand";
+    public static final String FISCAL_EVENT_RECEIPT = "Receipt";
+    public static final String CHALLAN_IS_BILL_PAID = "isBillPaid";
 }

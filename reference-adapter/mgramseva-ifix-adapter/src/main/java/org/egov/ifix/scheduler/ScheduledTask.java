@@ -1,5 +1,6 @@
 package org.egov.ifix.scheduler;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -14,8 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledTask {
 
-/*
-	@Autowired
+	/*@Autowired
 	EventPostingDetailRepository eventPostingDetailRepository;
 	@Autowired
 	private EventTypeConsumer consumer;
@@ -25,14 +25,13 @@ public class ScheduledTask {
 	public void readAndPush()
 	{
 		
-		List<EventPostingDetail> notPostedList = eventPostingDetailRepository.findByStatus("500");
+//		List<EventPostingDetail> notPostedList = eventPostingDetailRepository.findByStatus("500");
 		
-		for(EventPostingDetail detail:notPostedList)
-		{
-			consumer.process(detail.getRecord(),detail);
-		}
+//		for(EventPostingDetail detail:notPostedList)
+//		{
+//			consumer.process(detail.getRecord(),detail);
+//		}
 		
 	}
 */
-
 }

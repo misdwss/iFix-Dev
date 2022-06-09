@@ -1,23 +1,16 @@
 package org.egov.ifix.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.models.FiscalEventRequest;
 import org.egov.ifix.models.FiscalEventResponse;
-import org.egov.ifix.models.KeyCloackData;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -41,7 +34,7 @@ public class PostEvent {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setBearerAuth(authTokenService.getAuthToken());
+		headers.setBearerAuth(authTokenService.getKeyCloakAuthToken());
 		ResponseEntity<FiscalEventResponse> response =null; 
 		
 		HttpEntity<FiscalEventRequest> request = new HttpEntity<>(event, headers);
