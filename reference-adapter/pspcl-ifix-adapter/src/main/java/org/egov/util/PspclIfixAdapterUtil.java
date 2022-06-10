@@ -1,6 +1,8 @@
 package org.egov.util;
 
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.config.PspclIfixAdapterConfiguration;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,6 +24,8 @@ import static org.egov.util.PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class PspclIfixAdapterUtil {
 
     @Autowired
@@ -38,8 +41,8 @@ public class PspclIfixAdapterUtil {
                 return reqFetchPspclBill;
             URI filePathUri = resourceLoader.getResource(filePath) != null ? resourceLoader.getResource(filePath).getURI() : null;
             reqFetchPspclBill = filePathUri != null ? Files.lines(Paths.get(filePathUri)).collect(Collectors.joining("\n")) : reqFetchPspclBill;
-        } catch (IOException e) {
-            log.error("Exception occurred while reading the file from filePath : {}", filePath, e);
+        } catch (Exception ex) {
+            log.error("Exception occurred while reading the file from filePath : {}", filePath, ex);
         }
         return reqFetchPspclBill;
     }

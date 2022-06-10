@@ -3,6 +3,8 @@ package org.egov.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import java.util.Map;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServiceRequestRepository {
 
     @Autowired

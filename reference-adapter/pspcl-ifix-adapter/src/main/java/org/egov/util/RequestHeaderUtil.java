@@ -1,5 +1,7 @@
 package org.egov.util;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.PspclIfixAdapterConfiguration;
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 
 @Component
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestHeaderUtil {
 
     @Autowired
@@ -23,7 +27,7 @@ public class RequestHeaderUtil {
 
         requestHeader.setUserInfo(userInfo);
         requestHeader.setTs(Instant.now().toEpochMilli());
-        
+
         return requestHeader;
     }
 

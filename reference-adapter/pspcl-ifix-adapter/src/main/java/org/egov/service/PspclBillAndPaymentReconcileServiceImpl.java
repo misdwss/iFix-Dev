@@ -2,6 +2,8 @@ package org.egov.service;
 
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.common.contract.request.RequestHeader;
@@ -18,7 +20,6 @@ import org.egov.util.PspclIfixAdapterUtil;
 import org.egov.util.RequestHeaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ import static org.egov.util.PspclIfixAdapterConstant.TXN_DATE_FORMAT;
 
 @Service
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaymentReconcileService {
 
     @Autowired
@@ -53,7 +56,6 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
 
     @Override
-    @Transactional
     public ReconcileVO reconcile(List<GetBillResult> pspclBillResults, List<GetPaymentResult> pspclPaymentResults) {
         log.info("Started - reconcile pspcl bills and payments...");
         ReconcileVO reconcileVO = new ReconcileVO();
@@ -146,7 +148,6 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
     }
 
     @Override
-    @Transactional
     public void publishFiscalEvent(List<ReconcileVO> reconcileVOS) {
         log.info("Preparing for fiscal event publish to iFix...");
         int chunkSize = 5;

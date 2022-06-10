@@ -3,6 +3,8 @@ package org.egov.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.config.PspclIfixAdapterConfiguration;
@@ -29,6 +31,8 @@ import static org.egov.util.PspclIfixAdapterConstant.*;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class FiscalEventUtil {
 
     @Autowired

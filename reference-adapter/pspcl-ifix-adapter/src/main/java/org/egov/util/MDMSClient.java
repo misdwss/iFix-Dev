@@ -2,6 +2,8 @@ package org.egov.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.egov.common.contract.request.RequestInfo;
@@ -24,6 +26,8 @@ import java.util.List;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class MDMSClient {
 
     @Autowired
@@ -61,8 +65,10 @@ public class MDMSClient {
                             request, MdmsResponse.class);
 
             MdmsResponse mdmsResponse = null;
-            if (response != null) {
+            if (response != null && response.getBody() != null) {
                 mdmsResponse = response.getBody();
+            }else {
+                return;
             }
 
             if (mdmsResponse != null && (mdmsResponse.getMdmsRes() == null || mdmsResponse.getMdmsRes().isEmpty())) {

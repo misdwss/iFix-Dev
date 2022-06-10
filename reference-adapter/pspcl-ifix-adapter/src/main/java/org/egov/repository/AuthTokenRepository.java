@@ -1,5 +1,7 @@
 package org.egov.repository;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.model.KeyCloackData;
@@ -13,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Repository
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthTokenRepository {
 
     @Autowired

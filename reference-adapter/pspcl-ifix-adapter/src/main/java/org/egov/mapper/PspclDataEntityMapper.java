@@ -2,6 +2,8 @@ package org.egov.mapper;
 
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.entity.BillJsonData;
 import org.egov.entity.PaymentJsonData;
@@ -16,6 +18,8 @@ import static org.egov.util.PspclIfixAdapterConstant.TXN_DATE_FORMAT;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class PspclDataEntityMapper {
 
     @Autowired

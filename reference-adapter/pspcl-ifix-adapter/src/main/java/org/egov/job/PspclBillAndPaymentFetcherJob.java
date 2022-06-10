@@ -2,16 +2,18 @@ package org.egov.job;
 
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.model.AccountNumberGpMappingVO;
 import org.egov.model.ReconcileVO;
 import org.egov.service.PspclBillAndPaymentReconcileService;
 import org.egov.util.MDMSClient;
 import org.egov.util.PspclUtil;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,7 +21,9 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class PspclBillAndPaymentFetcherJob extends QuartzJobBean {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
 
     @Autowired
     private PspclUtil pspclUtil;
@@ -30,10 +34,9 @@ public class PspclBillAndPaymentFetcherJob extends QuartzJobBean {
     @Autowired
     private MDMSClient mdmsClient;
 
-
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        log.info("Job ** {} ** fired @ {}", context.getJobDetail().getKey().getName(), context.getFireTime());
+    public void run(ApplicationArguments args) throws Exception {
+        log.info("Started PspclBillAndPaymentFetcherJob ....");
         List<ReconcileVO> reconcileVOS = new ArrayList<>();
 
         try {
@@ -62,6 +65,6 @@ public class PspclBillAndPaymentFetcherJob extends QuartzJobBean {
         } catch (Exception e) {
             throw new JobExecutionException(e);
         }
-        log.info("Next job scheduled @ {}", context.getNextFireTime());
+        log.info("Completed PspclBillAndPaymentFetcherJob ....");
     }
 }

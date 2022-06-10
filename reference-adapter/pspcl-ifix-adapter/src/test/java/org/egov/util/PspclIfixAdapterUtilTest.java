@@ -1,38 +1,83 @@
 package org.egov.util;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.egov.PspclIfixAdapterApplication;
+import org.egov.config.PspclIfixAdapterConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.core.io.ResourceLoader;
 
-import static org.egov.util.PspclIfixAdapterConstant.PATH_FETCH_PSPCL_BILL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest(classes= PspclIfixAdapterApplication.class)
-//@AutoConfigureEmbeddedDatabase
+import static org.junit.jupiter.api.Assertions.*;
+
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PspclIfixAdapterUtilTest {
 
-//    @InjectMocks
-//    private PspclIfixAdapterUtil pspclIfixAdapterUtil;
-//
-//    @Mock
-//    private ResourceLoader resourceLoader;
-//
-//    @Test
-//    void testGetFileAsString() {
-//        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString(PATH_FETCH_PSPCL_BILL));
-//        assertEquals("",
-//                this.pspclIfixAdapterUtil.getFileAsString("Exception occurred while reading the file from filePath : {}"));
-//        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString(""));
-//        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString(PATH_FETCH_PSPCL_BILL));
-//        assertEquals("",
-//                this.pspclIfixAdapterUtil.getFileAsString("Exception occurred while reading the file from filePath : {}"));
-//        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString(""));
-//    }
+    @Mock
+    private PspclIfixAdapterConfiguration pspclIfixAdapterConfiguration;
+
+    private PspclIfixAdapterUtil pspclIfixAdapterUtil;
+
+    @Spy
+    private ResourceLoader resourceLoader;
+
+    @BeforeEach
+    private void init() throws IOException {
+        MockitoAnnotations.openMocks(this);
+        pspclIfixAdapterUtil = new PspclIfixAdapterUtil(resourceLoader, pspclIfixAdapterConfiguration);
+    }
+
+    @Test
+    void testGetFileAsStringWithUnknownPath() {
+        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString("/directory/foo.txt"));
+    }
+
+    @Test
+    void testGetFileAsStringWithEmptyPath() {
+        assertEquals("", this.pspclIfixAdapterUtil.getFileAsString(""));
+    }
+
+    @Test
+    void testFormatWithStringDate() {
+        Date actualDate = this.pspclIfixAdapterUtil.format(PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT, "2020-03-01");
+        assertEquals("2020-03-01", (new SimpleDateFormat(PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT)).format(actualDate));
+    }
+
+    @Test
+    void testFormatWithDate() {
+        Date dt = new Date("1/14/2021 7:46:01 PM");
+        Date actualDate = this.pspclIfixAdapterUtil.format(PspclIfixAdapterConstant.TXN_DATE_FORMAT, dt);
+        assertNotNull(actualDate);
+    }
+
+
+    @Test
+    void testFormatWithStringDateAndEmptyFormat() {
+        Date actualDate = this.pspclIfixAdapterUtil.format("", "2020-03-01");
+        assertEquals("2020-03-01", (new SimpleDateFormat(PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT)).format(actualDate));
+    }
+
+    @Test
+    void testFormatWithDateAndEmptyFormat() {
+        Date dt = new Date("1/14/2021 7:46:01 PM");
+        assertThrows(Exception.class,()->this.pspclIfixAdapterUtil.format("", dt));
+    }
+
+    @Test
+    void testFormatWithStringDateAndInvalidFormat() {
+        assertNull(this.pspclIfixAdapterUtil.format("42", "2020-03-01"));
+    }
+
+    @Test
+    void testFormatWithInvalidStringDate() {
+        assertNull(this.pspclIfixAdapterUtil.format("Format", ""));
+    }
 }
 

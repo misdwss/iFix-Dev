@@ -5,6 +5,8 @@ import client.stub.GetPaymentResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.advice.LogExecutionTime;
@@ -21,6 +23,8 @@ import static org.egov.util.PspclIfixAdapterConstant.*;
 
 @Component
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class PspclUtil {
 
     @Autowired

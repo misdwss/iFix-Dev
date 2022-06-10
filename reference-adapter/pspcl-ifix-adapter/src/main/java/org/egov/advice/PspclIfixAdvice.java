@@ -22,12 +22,4 @@ public class PspclIfixAdvice {
         log.info(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName() + ". Time taken for Execution is : " + (endTime - startTime) + "ms");
         return object;
     }
-
-//    @AfterThrowing("@annotation(org.egov.advice.LogException)")
-//    public Object logException(ProceedingJoinPoint joinPoint) throws Throwable {
-//        Object object = joinPoint.proceed();
-//        log.info();
-//        return object;
-//    }
-
 }
