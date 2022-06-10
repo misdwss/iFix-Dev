@@ -2,8 +2,8 @@ package org.egov.util;
 
 public class PspclIfixAdapterConstant {
 
-    public static final String PATH_FETCH_PSPCL_BILL = "classpath:fetchPspclBill.xml";
-    public static final String PATH_FETCH_PSPCL_PAYMENT = "classpath:fetchPspclPayment.xml";
+    public static final String PATH_FETCH_PSPCL_BILL = "fetchPspclBill.xml";
+    public static final String PATH_FETCH_PSPCL_PAYMENT = "fetchPspclPayment.xml";
 
     public static final String PLACEHOLDER_ACCOUNT_NO = "${accountNo}";
 

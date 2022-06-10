@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,8 @@ public class PspclIfixAdapterUtil {
         try {
             if (StringUtils.isBlank(filePath))
                 return reqFetchPspclBill;
-            URI filePathUri = resourceLoader.getResource(filePath) != null ? resourceLoader.getResource(filePath).getURI() : null;
+
+            URI filePathUri = new ClassPathResource(filePath) != null ? new ClassPathResource(filePath).getURI() : null;
             reqFetchPspclBill = filePathUri != null ? Files.lines(Paths.get(filePathUri)).collect(Collectors.joining("\n")) : reqFetchPspclBill;
         } catch (Exception ex) {
             log.error("Exception occurred while reading the file from filePath : {}", filePath, ex);

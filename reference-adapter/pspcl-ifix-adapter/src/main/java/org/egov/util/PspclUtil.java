@@ -47,6 +47,9 @@ public class PspclUtil {
     public List<GetBillResult> getBillsFromPspcl(String accountNumber) {
         try {
             String reqFetchPspclBill = pspclIfixAdapterUtil.getFileAsString(PATH_FETCH_PSPCL_BILL);
+            if (StringUtils.isBlank(reqFetchPspclBill)) {
+                return Collections.emptyList();
+            }
             reqFetchPspclBill = reqFetchPspclBill.replace(PLACEHOLDER_ACCOUNT_NO, accountNumber);
             String outputString = soapServiceRequestRepository.fetchResult(reqFetchPspclBill,
                     pspclIfixAdapterConfiguration.getUrlForFetchPspclBill()).toString();
@@ -71,6 +74,9 @@ public class PspclUtil {
     public List<GetPaymentResult> getPaymentsFromPspcl(String accountNumber) {
         try {
             String reqFetchPspclPayment = pspclIfixAdapterUtil.getFileAsString(PATH_FETCH_PSPCL_PAYMENT);
+            if (StringUtils.isBlank(reqFetchPspclPayment)) {
+                return Collections.emptyList();
+            }
             reqFetchPspclPayment = reqFetchPspclPayment.replace(PLACEHOLDER_ACCOUNT_NO, accountNumber);
 
             String outputString = soapServiceRequestRepository.fetchResult(reqFetchPspclPayment,
