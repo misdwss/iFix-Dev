@@ -4,22 +4,19 @@ package org.egov.util;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static org.egov.util.PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT;
 
@@ -41,8 +38,9 @@ public class PspclIfixAdapterUtil {
             if (StringUtils.isBlank(filePath))
                 return reqFetchPspclBill;
 
-            URI filePathUri = new ClassPathResource(filePath) != null ? new ClassPathResource(filePath).getURI() : null;
-            reqFetchPspclBill = filePathUri != null ? Files.lines(Paths.get(filePathUri)).collect(Collectors.joining("\n")) : reqFetchPspclBill;
+            if (PspclIfixAdapterUtil.class.getClassLoader().getResourceAsStream(filePath) != null) {
+                reqFetchPspclBill = IOUtils.toString(PspclIfixAdapterUtil.class.getClassLoader().getResourceAsStream(filePath), StandardCharsets.UTF_8);
+            }
         } catch (Exception ex) {
             log.error("Exception occurred while reading the file from filePath : {}", filePath, ex);
         }
