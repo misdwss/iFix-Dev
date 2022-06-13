@@ -250,6 +250,12 @@ components:
           items:
             maxItems: 100
             type: string
+        receivers:
+          type: array
+          description: Client ids of the registered data receivers system
+          items:
+            maxItems: 100
+            type: string
       description: The object contains all the search criteria of the fiscal events
     FiscalEventRequest:
       required:
