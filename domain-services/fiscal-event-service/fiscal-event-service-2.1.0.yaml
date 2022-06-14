@@ -252,7 +252,7 @@ components:
             type: string
         receiver:
           type: string
-          description: Client ids of the registered data receiver system
+          description: Client id of the registered data receiver system
           example: mGramSeva
         fromIngestionTime:
           type: integer
