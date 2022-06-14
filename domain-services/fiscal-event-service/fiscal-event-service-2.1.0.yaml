@@ -250,12 +250,10 @@ components:
           items:
             maxItems: 100
             type: string
-        receivers:
-          type: array
-          description: Client ids of the registered data receivers system
-          items:
-            maxItems: 100
-            type: string
+        receiver:
+          type: string
+          description: Client ids of the registered data receiver system
+          example: mGramSeva
         fromIngestionTime:
           type: integer
           description: Search events b/w ingestion time(the time when event published)
