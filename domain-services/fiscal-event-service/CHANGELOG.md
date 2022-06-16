@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.1.0 - 2022-06-16
+- Added the 'receivers', 'fromIngestionTime','toIngestionTime' search criteria in fiscal event search api
+
 ## 2.0.1 - 2022-04-22
 - Added the version to the Fiscal Events.
 
