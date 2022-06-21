@@ -21,9 +21,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class FiscalEventResponse {
-    
-    @JsonProperty("responseInfo")
-    private ResponseHeader responseInfo = null;
+
+    @JsonProperty("responseHeader")
+    private ResponseHeader responseHeader = null;
 
     @JsonProperty("fiscalEvent")
     @Valid

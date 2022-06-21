@@ -3,6 +3,7 @@ package org.egov.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.egov.tracer.model.CustomException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -65,6 +66,7 @@ public class SoapServiceRequestRepository {
                     }
                 } catch (Exception e) {
                     log.error("Exception occurred while reading the response content from {} : {}", uri, e);
+                    throw new CustomException("PSPCL_API_CALL",e.getMessage());
                 } finally {
                     if (isr != null) {
                         isr.close();
@@ -75,6 +77,7 @@ public class SoapServiceRequestRepository {
                 }
             } catch (Exception e) {
                 log.error("Exception occurred while fetching the details from other system", e);
+                throw new CustomException("PSPCL_API_CALL",e.getMessage());
             } finally {
                 if (httpConn != null) {
                     httpConn.disconnect();

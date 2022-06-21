@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-//@EnableScheduling
-//@EnableBatchProcessing
 public class PspclIfixAdapterApplication {
 
     public static void main(String[] args) {

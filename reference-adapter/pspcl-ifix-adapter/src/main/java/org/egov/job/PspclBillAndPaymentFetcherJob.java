@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.egov.model.AccountNumberGpMappingVO;
 import org.egov.model.ReconcileVO;
 import org.egov.service.PspclBillAndPaymentReconcileService;
+import org.egov.tracer.model.CustomException;
 import org.egov.util.MDMSClient;
 import org.egov.util.PspclUtil;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -63,7 +63,8 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);
 
         } catch (Exception e) {
-            throw new JobExecutionException(e);
+            log.error("Exception occurred while running PspclBillAndPaymentFetcherJob", e);
+            throw new CustomException("JOB_FAILURE","Exception occurred while running PspclBillAndPaymentFetcherJob");
         }
         log.info("Completed PspclBillAndPaymentFetcherJob ....");
     }

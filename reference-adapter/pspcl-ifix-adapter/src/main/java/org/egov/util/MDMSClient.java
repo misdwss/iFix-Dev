@@ -10,6 +10,7 @@ import org.egov.common.contract.request.RequestInfo;
 import org.egov.config.PspclIfixAdapterConfiguration;
 import org.egov.mdms.model.*;
 import org.egov.model.AccountNumberGpMappingVO;
+import org.egov.tracer.model.ServiceCallException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -89,6 +90,7 @@ public class MDMSClient {
 
         } catch (IOException e) {
             log.error("Error occurred while getting the account to gp mapping from MDMS", e);
+            throw new ServiceCallException("Error occurred while getting the account to gp mapping from MDMS");
         }
     }
 

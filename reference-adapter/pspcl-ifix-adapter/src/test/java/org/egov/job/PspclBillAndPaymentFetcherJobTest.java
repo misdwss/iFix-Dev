@@ -3,7 +3,6 @@ package org.egov.job;
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
 import org.egov.model.AccountNumberGpMappingVO;
-import org.egov.model.ReconcileVO;
 import org.egov.service.PspclBillAndPaymentReconcileService;
 import org.egov.util.MDMSClient;
 import org.egov.util.PspclUtil;
@@ -12,18 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.JobExecutionContext;
-import org.quartz.impl.JobExecutionContextImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PspclBillAndPaymentFetcherJobTest {
@@ -43,7 +37,7 @@ class PspclBillAndPaymentFetcherJobTest {
     @BeforeEach
     private void init() throws IOException {
         MockitoAnnotations.openMocks(this);
-        fetcherJob = new PspclBillAndPaymentFetcherJob(pspclUtil,pspclBillAndPaymentReconcileService,mdmsClient);
+        fetcherJob = new PspclBillAndPaymentFetcherJob(pspclUtil, pspclBillAndPaymentReconcileService, mdmsClient);
     }
 
     @Test

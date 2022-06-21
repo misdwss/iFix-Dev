@@ -20,8 +20,6 @@ import java.math.BigDecimal;
 @Builder
 @ToString
 public class Amount {
-//    @JsonProperty("id")
-//    private String id = null;
 
     @JsonProperty("amount")
     private BigDecimal amount = null;

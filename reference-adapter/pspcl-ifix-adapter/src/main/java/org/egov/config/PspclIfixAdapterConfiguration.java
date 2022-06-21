@@ -35,7 +35,7 @@ public class PspclIfixAdapterConfiguration {
     @Value("${ifix.host}")
     private String ifixHost;
 
-    @Value("${ifix.event.url}")
+    @Value("${ifix.event.endpoint}")
     private String ifixEventUrl;
 
     @Value("${fiscal.event.tenantId}")
