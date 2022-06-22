@@ -56,7 +56,7 @@ public class ReceiptEventMapper implements EventMapper {
             FiscalEvent fiscalEvent = FiscalEvent.builder()
                     .tenantId(applicationConfiguration.getTenantId())
                     .eventType(getEventType())
-                    .eventTime(paymentJsonObject.get(PAYMENT_RECEIPT_TRANSACTION_DATE).getAsLong())
+                    .eventTime(Instant.now().toEpochMilli())
                     .referenceId(paymentJsonObject.get(ID).getAsString())
                     .parentEventId(null).parentReferenceId(null)
                     .amountDetails(getAmountDetails(paymentJsonObject, data)).build();

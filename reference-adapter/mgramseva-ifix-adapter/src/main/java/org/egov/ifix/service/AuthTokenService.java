@@ -1,64 +1,92 @@
 package org.egov.ifix.service;
 
-import java.util.concurrent.TimeUnit;
-
+import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.cache.AdapterCache;
+import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.KeyCloackData;
+import org.egov.ifix.models.mgramseva.OauthSuccessResponseDTO;
 import org.egov.ifix.repository.AuthTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.TimeUnit;
+
+import static org.egov.ifix.utils.EventConstants.*;
+
 /**
- * 
  * @author mani
  * This will provide authtoken. First time it will ask repository for authtoken .
  * Once token received from repository it will cache it . Cache expiry is set to 5 minutes before the
- * token expiry. 
+ * token expiry.
  */
 @Service
 @Slf4j
 public class AuthTokenService {
-	
-	private static final String AUTHTOKEN = "authToken";
 
+	private static final Long TIMEBEFOREEXPIRY = 5l * 60 * 1000;
 	@Autowired
 	private AuthTokenRepository authTokenRepository;
-	
 	@Autowired
-	private AdapterCache<KeyCloackData> adapterCache; 
-	
-	private static final  Long TIMEBEFOREEXPIRY=5l*60*1000;
-	
-	
-	/**
-	 * 
-	 * @return authtoken
-	 * First search in cache . if found return else ask repository to provide . 
-	 * Cache in redis with expiry time . 
-	 */
-	
-	public String getAuthToken()
-	{
-		
-		KeyCloackData data = adapterCache.getValue(AUTHTOKEN);
-		if(data==null)
-		{
-		 data = authTokenRepository.getAuthToken();
-		 if(data.getExpires_in()>TIMEBEFOREEXPIRY)		 
-			 adapterCache.putValueWithExpireTime(AUTHTOKEN, data,data.getExpires_in()-TIMEBEFOREEXPIRY,TimeUnit.MILLISECONDS);
-		 else
-			 adapterCache.putValueWithExpireTime(AUTHTOKEN, data,data.getExpires_in(),TimeUnit.MILLISECONDS);	 
-		} else
-		{
-			log.info("got token from Cache",data.getAccess_token());
-		}
-		
-		return data.getAccess_token();
-		
-		
+	private AdapterCache<KeyCloackData> adapterCache;
+	@Autowired
+	private AdapterCache<OauthSuccessResponseDTO> oauthSuccessResponseDTOAdapterCache;
 
-	
+	/**
+	 * @return authtoken
+	 * First search in cache . if found return else ask repository to provide .
+	 * Cache in redis with expiry time .
+	 */
+
+	public String getKeyCloakAuthToken() {
+
+		KeyCloackData keyCloakAuthTokenData = adapterCache.getValue(CACHED_KEYCLOAK_AUTH_TOKEN);
+		if (keyCloakAuthTokenData == null) {
+			keyCloakAuthTokenData = authTokenRepository.getKeyCloakAuthToken();
+
+			if (keyCloakAuthTokenData == null || StringUtils.isEmpty(keyCloakAuthTokenData.getAccess_token())) {
+				log.error("Unable to get auth token from keycloak end point");
+				throw new GenericCustomException(ACCESS_TOKEN, "Unable to get auth token from keycloak end point");
+
+			} else if (keyCloakAuthTokenData.getExpires_in() <= 0) {
+				log.error("Invalid expiry time in auth token from keycloak");
+				throw new GenericCustomException(ACCESS_TOKEN, "Invalid expiry time in auth token from keycloak");
+
+			} else {
+				adapterCache.putValueWithExpireTime(CACHED_KEYCLOAK_AUTH_TOKEN, keyCloakAuthTokenData,
+						keyCloakAuthTokenData.getExpires_in(), TimeUnit.MILLISECONDS);
+			}
+		} else {
+			log.info("got token from Cache", keyCloakAuthTokenData.getAccess_token());
+		}
+		return keyCloakAuthTokenData.getAccess_token();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMgramsevaAccessToken() {
+		OauthSuccessResponseDTO oauthAccessTokenData = oauthSuccessResponseDTOAdapterCache
+				.getValue(CACHED_MGRAMSEVA_ACCESS_TOKEN);
+
+		if (oauthAccessTokenData == null) {
+			oauthAccessTokenData = authTokenRepository.getMgramsevaOauthAccessToken();
+
+			if (oauthAccessTokenData == null || StringUtils.isEmpty(oauthAccessTokenData.getAccessToken())) {
+				log.error("Unable to get access token from mgramseva oauth end point");
+				throw new GenericCustomException(ACCESS_TOKEN, "Unable to get access token from mgramseva oauth");
+			} else if (oauthAccessTokenData.getExpiresIn() <= 0) {
+				log.error("Invalid expiry time in access token of mgramseva oauth");
+				throw new GenericCustomException(ACCESS_TOKEN, "Invalid expiry time in access token of mgramseva oauth");
+			} else {
+				oauthSuccessResponseDTOAdapterCache.putValueWithExpireTime(CACHED_MGRAMSEVA_ACCESS_TOKEN,
+						oauthAccessTokenData, oauthAccessTokenData.getExpiresIn(), TimeUnit.MINUTES);
+			}
+		} else {
+			log.info("Received access token from redis cache server: " + oauthAccessTokenData.getAccessToken());
+		}
+
+		return oauthAccessTokenData.getAccessToken();
 	}
 
 }

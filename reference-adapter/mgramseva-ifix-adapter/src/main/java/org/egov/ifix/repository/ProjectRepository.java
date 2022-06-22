@@ -72,7 +72,7 @@ public class ProjectRepository {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(authTokenService.getAuthToken());
+            headers.setBearerAuth(authTokenService.getKeyCloakAuthToken());
 
             ProjectSearchCriteria criteria = new ProjectSearchCriteria();
             criteria.setCode(projectCode);
