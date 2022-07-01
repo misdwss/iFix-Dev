@@ -12,12 +12,12 @@ import org.egov.model.ReconcileVO;
 import org.egov.repository.EventPostingDetailRepository;
 import org.egov.service.AuthTokenService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -30,8 +30,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import static org.egov.util.PspclIfixAdapterConstant.TXN_DATE_FORMAT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -358,7 +358,7 @@ class FiscalEventUtilTest {
         doReturn(responseEntity).when(restTemplate).postForEntity((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
 
 
-        when(this.eventPostingDetailRepository.saveAll((Iterable<EventPostingDetail>) any())).thenReturn(new ArrayList<>());
+        when(this.eventPostingDetailRepository.save((List<EventPostingDetail>) any())).thenReturn(new int[1]);
         when(this.authTokenService.getAuthToken()).thenReturn("ABC123");
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<>();
@@ -367,7 +367,7 @@ class FiscalEventUtilTest {
         verify(this.restTemplate).postForEntity((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
         verify(this.pspclIfixAdapterConfiguration).getIfixEventUrl();
         verify(this.pspclIfixAdapterConfiguration).getIfixHost();
-        verify(this.eventPostingDetailRepository).saveAll((Iterable<EventPostingDetail>) any());
+        verify(this.eventPostingDetailRepository).save((List<EventPostingDetail>) any());
         verify(this.authTokenService).getAuthToken();
     }
 
@@ -381,7 +381,7 @@ class FiscalEventUtilTest {
 
         when(this.pspclIfixAdapterConfiguration.getIfixEventUrl()).thenReturn("https://example.org/example");
         when(this.pspclIfixAdapterConfiguration.getIfixHost()).thenReturn("localhost");
-        when(this.eventPostingDetailRepository.saveAll((Iterable<EventPostingDetail>) any()))
+        when(this.eventPostingDetailRepository.save((List<EventPostingDetail>) any()))
                 .thenThrow(new RestClientException("Posting fiscal eventRequest to iFix... "));
         when(this.authTokenService.getAuthToken()).thenReturn("ABC123");
 
@@ -392,7 +392,7 @@ class FiscalEventUtilTest {
         verify(this.restTemplate).postForEntity((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
         verify(this.pspclIfixAdapterConfiguration).getIfixEventUrl();
         verify(this.pspclIfixAdapterConfiguration).getIfixHost();
-        verify(this.eventPostingDetailRepository).saveAll((Iterable<EventPostingDetail>) any());
+        verify(this.eventPostingDetailRepository).save((List<EventPostingDetail>) any());
         verify(this.authTokenService).getAuthToken();
     }
 
@@ -407,7 +407,7 @@ class FiscalEventUtilTest {
         when(this.pspclIfixAdapterConfiguration.getIfixEventUrl()).thenReturn("https://example.org/example");
         when(this.pspclIfixAdapterConfiguration.getIfixHost()).thenReturn("localhost");
         when(this.objectMapper.writeValueAsString((Object) any())).thenReturn("42");
-        when(this.eventPostingDetailRepository.saveAll((Iterable<EventPostingDetail>) any())).thenReturn(new ArrayList<>());
+        when(this.eventPostingDetailRepository.save((List<EventPostingDetail>) any())).thenReturn(new int[1]);
         when(this.authTokenService.getAuthToken()).thenReturn("ABC123");
 
         ArrayList<FiscalEvent> fiscalEventList = new ArrayList<>();
@@ -416,7 +416,7 @@ class FiscalEventUtilTest {
         verify(this.restTemplate).postForEntity((String) any(), (Object) any(), (Class<Object>) any(), (Object[]) any());
         verify(this.pspclIfixAdapterConfiguration).getIfixEventUrl();
         verify(this.pspclIfixAdapterConfiguration).getIfixHost();
-        verify(this.eventPostingDetailRepository).saveAll((Iterable<EventPostingDetail>) any());
+        verify(this.eventPostingDetailRepository).save((List<EventPostingDetail>) any());
         verify(this.authTokenService).getAuthToken();
     }
 

@@ -5,6 +5,7 @@ import client.stub.GetPaymentResult;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.common.contract.AuditDetails;
 import org.egov.entity.BillJsonData;
 import org.egov.entity.PaymentJsonData;
 import org.egov.entity.PspclBillDetail;
@@ -13,6 +14,8 @@ import org.egov.util.PspclIfixAdapterUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 import static org.egov.util.PspclIfixAdapterConstant.BILL_ISSUE_DATE_FORMAT;
 import static org.egov.util.PspclIfixAdapterConstant.TXN_DATE_FORMAT;
@@ -51,6 +54,14 @@ public class PspclDataEntityMapper {
         pspclBillDetail.setPAYABLE_AMOUNT_BY_DUE_DATE(currentMonthBill.getPAYABLE_AMOUNT_BY_DUE_DATE());
         pspclBillDetail.setORDERBYCOLUMN(currentMonthBill.getORDERBYCOLUMN());
 
+        AuditDetails auditDetails = new AuditDetails();
+        auditDetails.setCreatedBy("pspcl-ifix-adapter");
+        auditDetails.setLastModifiedBy("pspcl-ifix-adapter");
+        auditDetails.setCreatedTime(new Date().getTime());
+        auditDetails.setLastModifiedTime(new Date().getTime());
+
+        pspclBillDetail.setAuditDetails(auditDetails);
+
         return pspclBillDetail;
 
     }
@@ -74,6 +85,14 @@ public class PspclDataEntityMapper {
         pspclPaymentDetail.setDUEDTCHQ(pspclIfixAdapterUtil.format(TXN_DATE_FORMAT, currentMonthPayment.getDUEDTCHQ()));
         pspclPaymentDetail.setDUEDTCASH(pspclIfixAdapterUtil.format(TXN_DATE_FORMAT, currentMonthPayment.getDUEDTCASH()));
         pspclPaymentDetail.setBILNO(currentMonthPayment.getBILNO());
+
+        AuditDetails auditDetails = new AuditDetails();
+        auditDetails.setCreatedBy("pspcl-ifix-adapter");
+        auditDetails.setLastModifiedBy("pspcl-ifix-adapter");
+        auditDetails.setCreatedTime(new Date().getTime());
+        auditDetails.setLastModifiedTime(new Date().getTime());
+
+        pspclPaymentDetail.setAuditDetails(auditDetails);
 
         return pspclPaymentDetail;
     }

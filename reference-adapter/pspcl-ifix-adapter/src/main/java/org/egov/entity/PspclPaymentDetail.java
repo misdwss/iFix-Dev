@@ -1,22 +1,19 @@
 package org.egov.entity;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import lombok.NoArgsConstructor;
+import org.egov.common.contract.AuditDetails;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@Entity
-@Table(name = "pspcl_payment_detail")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PspclPaymentDetail {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
     private String TXNID;
@@ -31,7 +28,7 @@ public class PspclPaymentDetail {
     private Date DUEDTCHQ;
     private String STATUS_P;
 
-    @Type(type = "jsonb")
-    @Column(name = "json_data", columnDefinition = "jsonb")
     private PaymentJsonData paymentJsonData;
+
+    private AuditDetails auditDetails;
 }

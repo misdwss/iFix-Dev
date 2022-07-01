@@ -185,7 +185,7 @@ public class FiscalEventUtil {
                         e.getMessage());
             }
 
-            eventPostingDetailRepo.saveAll(eventPostingDetailList);
+            eventPostingDetailRepo.save(eventPostingDetailList);
 
         } else {
             log.error(LOG_ERROR_PREFIX + NON_RECOVERABLE_ERROR + "Invalid parameter to push event");

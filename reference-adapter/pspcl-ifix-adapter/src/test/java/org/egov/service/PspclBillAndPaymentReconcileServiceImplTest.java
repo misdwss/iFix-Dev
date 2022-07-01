@@ -26,7 +26,6 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -49,6 +48,12 @@ class PspclBillAndPaymentReconcileServiceImplTest {
 
     @Mock
     private RequestHeaderUtil requestHeaderUtil;
+
+    @Mock
+    private PspclBillReconcileService billReconcileService;
+
+    @Mock
+    private PspclPaymentReconcileService paymentReconcileService;
 
     private PspclBillAndPaymentReconcileServiceImpl pspclBillAndPaymentReconcileService;
 
@@ -262,16 +267,16 @@ class PspclBillAndPaymentReconcileServiceImplTest {
     private void init() throws IOException {
         MockitoAnnotations.openMocks(this);
         pspclBillAndPaymentReconcileService = new PspclBillAndPaymentReconcileServiceImpl(pspclIfixAdapterUtil, pspclDataEntityMapper,
-                billDetailRepository, paymentDetailRepository, fiscalEventUtil, requestHeaderUtil);
+                billDetailRepository, paymentDetailRepository, fiscalEventUtil, requestHeaderUtil, billReconcileService, paymentReconcileService);
 
         getBillResults = new ArrayList<>();
         getPaymentResults = new ArrayList<>();
 
         Gson gson = new Gson();
-        GetBillResult getBillResult = gson.fromJson(billReqData,GetBillResult.class);
+        GetBillResult getBillResult = gson.fromJson(billReqData, GetBillResult.class);
         getBillResults.add(getBillResult);
 
-        GetPaymentResult getPaymentResult = gson.fromJson(paymentReqData,GetPaymentResult.class);
+        GetPaymentResult getPaymentResult = gson.fromJson(paymentReqData, GetPaymentResult.class);
         getPaymentResults.add(getPaymentResult);
     }
 
@@ -292,9 +297,6 @@ class PspclBillAndPaymentReconcileServiceImplTest {
 
         doReturn(currentPspclBillDetail).when(pspclDataEntityMapper).mapPspclBillToEntity(any());
         doReturn(currentPspclPaymentDetail).when(pspclDataEntityMapper).mapPspclPaymentToEntity(any());
-
-        doReturn(currentPspclBillDetail).when(billDetailRepository).save(any());
-        doReturn(currentPspclPaymentDetail).when(paymentDetailRepository).save(any());
 
         ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(getBillResults, getPaymentResults);
 

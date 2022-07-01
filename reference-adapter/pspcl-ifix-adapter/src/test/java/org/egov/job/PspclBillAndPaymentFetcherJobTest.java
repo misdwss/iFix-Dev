@@ -3,6 +3,8 @@ package org.egov.job;
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
 import org.egov.model.AccountNumberGpMappingVO;
+import org.egov.repository.PspclBillDetailRepository;
+import org.egov.repository.PspclPaymentDetailRepository;
 import org.egov.service.PspclBillAndPaymentReconcileService;
 import org.egov.util.MDMSClient;
 import org.egov.util.PspclUtil;
@@ -34,10 +36,17 @@ class PspclBillAndPaymentFetcherJobTest {
     @Mock
     private MDMSClient mdmsClient;
 
+    @Mock
+    private PspclBillDetailRepository billDetailRepository;
+
+    @Mock
+    private PspclPaymentDetailRepository paymentDetailRepository;
+
     @BeforeEach
     private void init() throws IOException {
         MockitoAnnotations.openMocks(this);
-        fetcherJob = new PspclBillAndPaymentFetcherJob(pspclUtil, pspclBillAndPaymentReconcileService, mdmsClient);
+        fetcherJob = new PspclBillAndPaymentFetcherJob(pspclUtil, pspclBillAndPaymentReconcileService,
+                mdmsClient, billDetailRepository, paymentDetailRepository);
     }
 
     @Test

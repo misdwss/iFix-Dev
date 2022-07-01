@@ -26,7 +26,7 @@ class AuthTokenServiceTest {
     @BeforeEach
     private void init() throws IOException {
         MockitoAnnotations.openMocks(this);
-        authTokenService = new AuthTokenService(authTokenRepository);
+        authTokenService = new AuthTokenService(authTokenRepository,keyCloackData);
 
         keyCloackData = new KeyCloackData();
         keyCloackData.setAccess_token("tyeu3irowed csd mcksldf;ew;kf;ke;fwf ewv kekwlllllllllllllllllllvdcmsfnlmd");

@@ -54,6 +54,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
     @Autowired
     private RequestHeaderUtil requestHeaderUtil;
 
+    @Autowired
+    private PspclBillReconcileService billReconcileService;
+
+    @Autowired
+    private PspclPaymentReconcileService paymentReconcileService;
+
 
     @Override
     public ReconcileVO reconcile(List<GetBillResult> pspclBillResults, List<GetPaymentResult> pspclPaymentResults) {
@@ -70,81 +76,48 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         sortBillResultsWRTLatestBillIssueDate(pspclBillResults);
         sortPaymentResultsWRTTXNDate(pspclPaymentResults);
 
-        if (pspclBillResults != null && !pspclBillResults.isEmpty() && pspclPaymentResults != null && !pspclPaymentResults.isEmpty()) {
-            GetBillResult currentMonthBillResult = pspclBillResults.get(0);
-            GetPaymentResult currentMonthPaymentResult = pspclPaymentResults.get(0);
-            //check reconciled or not and update the status.
-            if (isReconciled(reconcileVO, currentMonthBillResult, currentMonthPaymentResult)) {
-                reconcileVO.setStatus(Boolean.TRUE);
-                return reconcileVO;
+        billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
+        paymentReconcileService.reconcilePayment(pspclPaymentResults, reconcileVO);
+
+        if (reconcileVO.getCurrentPspclBillDetail() != null && !reconcileVO.isBillReconcile()) {
+            PspclPaymentDetail currentMonthPaymentResult = null;
+            PspclBillDetail currentPspclBillDetail = reconcileVO.getCurrentPspclBillDetail();
+            if (reconcileVO.getCurrentPspclPaymentDetail() != null && !reconcileVO.isPaymentReconcile()) {
+                currentMonthPaymentResult = reconcileVO.getCurrentPspclPaymentDetail();
             }
             //2. Fetch the last month bill & Payment
             //a. Get the Last_Bill based on 'DATE_READING_PREV'
             //b. Get the Last_Payment based on range of 'DATE_READING_PREV' to current time.
-            String lastBillDate = currentMonthBillResult.getDATE_READING_PREV();
-            currentBillAmt = new BigDecimal(currentMonthBillResult.getPAYABLE_AMOUNT_BY_DUE_DATE());
-            if (StringUtils.isNotBlank(lastBillDate)) {
-                lastBillDetail = getLastBillDetail(lastBillDate);
-                lastPaymentDetail = getLastPaymentDetails(lastBillDate);
-                if (lastBillDetail != null) {
-                    lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-                } else {
-                    lastBillAmt = new BigDecimal("0");
+            Date lastBillDate = currentPspclBillDetail != null ? currentPspclBillDetail.getDATE_READING_PREV() : null;
+            String accountNumber = currentPspclBillDetail != null ? currentPspclBillDetail.getACCOUNT_NO() : null;
+            if (currentPspclBillDetail != null && StringUtils.isNotBlank(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE())) {
+
+                currentBillAmt = new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+                if (lastBillDate != null) {
+                    lastBillDetail = getLastBillDetail(lastBillDate, accountNumber);
+                    lastPaymentDetail = getLastPaymentDetails(lastBillDate, accountNumber);
+                    if (lastBillDetail != null) {
+                        lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+                    } else {
+                        lastBillAmt = new BigDecimal("0");
+                    }
+                    if (lastPaymentDetail != null) {
+                        lastPaymentAmt = new BigDecimal(lastPaymentDetail.getAMT());
+                    } else {
+                        lastPaymentAmt = new BigDecimal("0");
+                    }
                 }
-                if (lastPaymentDetail != null) {
-                    lastPaymentAmt = new BigDecimal(lastPaymentDetail.getAMT());
-                } else {
-                    lastPaymentAmt = new BigDecimal("0");
-                }
+
+                //3. calculate the current bill and current payment
+                currentMonthBillAmt = (currentBillAmt.subtract(lastBillAmt.subtract(lastPaymentAmt)));
+
+                reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
+
+                return reconcileVO;
             }
-
-            //3. calculate the current bill and current payment
-            currentMonthBillAmt = (currentBillAmt.subtract(lastBillAmt.subtract(lastPaymentAmt)));
-            //4. save to DB
-            PspclBillDetail currentPspclBillDetail = pspclDataEntityMapper.mapPspclBillToEntity(currentMonthBillResult);
-            PspclPaymentDetail currentPspclPaymentDetail = pspclDataEntityMapper.mapPspclPaymentToEntity(currentMonthPaymentResult);
-
-            billDetailRepository.save(currentPspclBillDetail);
-            paymentDetailRepository.save(currentPspclPaymentDetail);
-
-            reconcileVO.setCurrentPspclBillDetail(currentPspclBillDetail);
-            reconcileVO.setCurrentPspclPaymentDetail(currentPspclPaymentDetail);
-            reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
-
-            return reconcileVO;
 
         }
         return reconcileVO;
-    }
-
-    /**
-     * First check , bill is present in the DB or not,
-     * if 'no' then return flag as not reconcile.
-     * else if 'yes' then check payment is reconciled or not then
-     * if payment is reconciled then return a flag as reconciled (that is true)
-     * else save the payment detail in DB and return a flag as reconciled (that is true)
-     *
-     * @param reconcileVO
-     * @param currentMonthBillResult
-     * @param currentMonthPaymentResult
-     * @return
-     */
-    private boolean isReconciled(ReconcileVO reconcileVO, GetBillResult currentMonthBillResult, GetPaymentResult currentMonthPaymentResult) {
-        boolean isBillReconciled = false;
-        List<PspclBillDetail> pspclBillDetails = billDetailRepository.findByORDERBYCOLUMN(currentMonthBillResult.getORDERBYCOLUMN());
-        if (pspclBillDetails != null && !pspclBillDetails.isEmpty()) {
-            isBillReconciled = true;
-        }
-
-        if (!isBillReconciled) {
-            return false;
-        } else {
-            Optional<PspclPaymentDetail> optionalPspclPaymentDetail = paymentDetailRepository.findByTXNID(currentMonthPaymentResult.getTXNID());
-            if (!optionalPspclPaymentDetail.isPresent()) {
-                paymentDetailRepository.save(pspclDataEntityMapper.mapPspclPaymentToEntity(currentMonthPaymentResult));
-            }
-        }
-        return true;
     }
 
     @Override
@@ -201,16 +174,17 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         return chunkPointer;
     }
 
-    private PspclPaymentDetail getLastPaymentDetails(String lastBillDate) {
+    private PspclPaymentDetail getLastPaymentDetails(Date lastBillDate, String accountNumber) {
         Date lastBillDateFormatted = pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillDate);
         Date fromDate = pspclIfixAdapterUtil.format(TXN_DATE_FORMAT, lastBillDateFormatted);
         Date toDate = new Date();
-        List<PspclPaymentDetail> dbPspclPaymentDetails = paymentDetailRepository.findByTXNDATEBetweenOrderByTXNDATEDesc(fromDate, toDate);
+        List<PspclPaymentDetail> dbPspclPaymentDetails = paymentDetailRepository.findByTXNDATEBetweenOrderByTXNDATEDescAndAccountNumber(fromDate, toDate, accountNumber);
         return (dbPspclPaymentDetails != null && !dbPspclPaymentDetails.isEmpty() ? dbPspclPaymentDetails.get(0) : null);
     }
 
-    private PspclBillDetail getLastBillDetail(String lastBillDate) {
-        Optional<PspclBillDetail> lastMonthBillOptional = billDetailRepository.findByBILL_ISSUE_DATE(pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillDate));
+    private PspclBillDetail getLastBillDetail(Date lastBillDate, String accountNumber) {
+        Optional<PspclBillDetail> lastMonthBillOptional = billDetailRepository
+                .findByBILL_ISSUE_DATE(lastBillDate, accountNumber);
         if (lastMonthBillOptional.isPresent())
             return lastMonthBillOptional.get();
         return null;

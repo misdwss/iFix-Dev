@@ -1,19 +1,65 @@
 package org.egov.repository;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.egov.entity.PspclBillDetail;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.egov.repository.builder.PspclIfixQueryBuilder;
+import org.egov.repository.rowmapper.PspclBillRowMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PspclBillDetailRepository extends JpaRepository<PspclBillDetail, Long> {
+@Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
+public class PspclBillDetailRepository {
 
-    @Query(value = "SELECT * FROM pspcl_bill_detail WHERE BILL_ISSUE_DATE = ?1", nativeQuery = true)
-    Optional<PspclBillDetail> findByBILL_ISSUE_DATE(Date date_reading_prev);
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    List<PspclBillDetail> findByORDERBYCOLUMN(String orderByColumn);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private PspclIfixQueryBuilder queryBuilder;
+
+    @Autowired
+    private PspclBillRowMapper billRowMapper;
+
+
+    public int[] save(List<PspclBillDetail> pspclBillDetails) {
+        List<SqlParameterSource> sqlParameterSources = queryBuilder.getPspclBillSqlParameterSources(pspclBillDetails);
+        if (sqlParameterSources != null && !sqlParameterSources.isEmpty()) {
+            return (namedParameterJdbcTemplate.batchUpdate(PspclIfixQueryBuilder.INSERT_QUERY_FOR_PSPCL_BILL_DETAIL,
+                    sqlParameterSources.toArray(new SqlParameterSource[sqlParameterSources.size()])));
+        }
+        return new int[0];
+    }
+
+    public Optional<PspclBillDetail> findByBILL_ISSUE_DATE(Date dateReadingPrev, String accountNumber) {
+        if (dateReadingPrev != null) {
+            List<PspclBillDetail> pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForIssueDateAndAccountNumber(dateReadingPrev,accountNumber), billRowMapper);
+            return (pspclBillDetails != null && !pspclBillDetails.isEmpty() ? Optional.of(pspclBillDetails.get(0)) : Optional.empty());
+        }
+        return Optional.empty();
+    }
+
+    public List<PspclBillDetail> findByORDERBYCOLUMNAndAccountNumber(String orderByColumn, String accountNumber) {
+        List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
+        if (StringUtils.isNotBlank(orderByColumn)) {
+            pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForOrderByColumnAndAccountNumber(orderByColumn,accountNumber), billRowMapper);
+        }
+        return pspclBillDetails;
+    }
+
 }

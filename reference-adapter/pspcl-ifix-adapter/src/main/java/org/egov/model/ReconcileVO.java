@@ -19,4 +19,7 @@ public class ReconcileVO {
     private String departmentEntityCode;
 
     private boolean status;
+
+    private boolean billReconcile;
+    private boolean paymentReconcile;
 }
