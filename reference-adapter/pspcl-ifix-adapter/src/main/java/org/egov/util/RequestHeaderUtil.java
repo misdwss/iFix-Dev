@@ -22,10 +22,6 @@ public class RequestHeaderUtil {
 
     public RequestHeader getRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUuid(UUID.randomUUID().toString());
-
-        requestHeader.setUserInfo(userInfo);
         requestHeader.setTs(Instant.now().toEpochMilli());
 
         return requestHeader;
