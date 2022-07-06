@@ -155,7 +155,7 @@
           "attributes.departmentEntity.ancestry[10].name",
           "attributes.departmentEntity.ancestry[10].hierarchyLevel",
 
-          "attributes.accountNumber",
+          "attributes.pspclAccountNumber",
 
           {
             "name": "bill",
