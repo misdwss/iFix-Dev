@@ -72,5 +72,6 @@ public class EventConstants {
     public static final String BILLING_SERVICE_BUSINESS_SERVICE = "businessService";
     public static final String CASH_PAYMENT_MODE = "CASH";
     public static final String COLLECTION_SERVICE_PAYMENT_CREATE = "Collection Service payment create";
+    public static final String TIME = "TIME";
 
 }

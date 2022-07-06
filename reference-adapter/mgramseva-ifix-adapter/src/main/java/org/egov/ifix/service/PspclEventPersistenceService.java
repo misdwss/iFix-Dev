@@ -6,5 +6,5 @@ public interface PspclEventPersistenceService {
     PspclEventDetail saveFailedPspclEventDetail(String mgramsevaTenantId, String eventType,
                                                 String data, String error);
 
-    PspclEventDetail saveSuccessPspclEventDetail(String mgramsevaTenantId, String eventType);
+    PspclEventDetail saveSuccessPspclEventDetail(String mgramsevaTenantId, String eventType, String eventId);
 }

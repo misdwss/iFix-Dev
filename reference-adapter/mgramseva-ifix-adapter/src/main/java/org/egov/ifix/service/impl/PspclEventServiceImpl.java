@@ -74,52 +74,68 @@ public class PspclEventServiceImpl implements PspclEventService {
                 .collectFiscalEvent(applicationConfiguration.getPspclIfixEventReceiverName(), eventType);
 
         if (fiscalEventResponseDTO == null) {
+            pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", eventType, "N/A",
+                    "It's on initial stage. Trying to fetch data from fiscal event (iFix Core)");
             throw new GenericCustomException(PSPCL, "Unable to fetch PSPCL event from fiscal event");
         }else {
-            List<FiscalEvent> fiscalEventList = fiscalEventResponseDTO.getFiscalEvent();
+//            List<FiscalEvent> fiscalEventList = fiscalEventResponseDTO.getFiscalEvent();
 
-            for (FiscalEvent fiscalEvent : fiscalEventList) {
-                Optional<String> departmentEntityCodeOptional = getDepartmentEntityCode(fiscalEvent);
+            List<FiscalEvent> fiscalEventList = fiscalEventRepository
+                    .resolveDuplicateEvent(fiscalEventResponseDTO.getFiscalEvent());
 
-                if (!departmentEntityCodeOptional.isPresent()) {
-                    throw new GenericCustomException(PSPCL, "Unable to get department Entity code");
-                } else {
-                    List<Tenant> tenantList = mdmsRepository.getMdmsTenantByCityCode(departmentEntityCodeOptional.get());
+            if (fiscalEventList.isEmpty()) {
+                pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", eventType, "N/A",
+                        "Trying to resolve duplicate data of fiscal event (iFix Core)");
+                throw new GenericCustomException(PSPCL, "Trying to resolve duplicate data of fiscal event (iFix Core)");
+            }else {
+                for (FiscalEvent fiscalEvent : fiscalEventList) {
+                    Optional<String> departmentEntityCodeOptional = getDepartmentEntityCode(fiscalEvent);
 
-                    log.info("tenantList" + tenantList);
-                    if (tenantList == null || tenantList.isEmpty()) {
-                        throw new GenericCustomException(PSPCL, "Unable to get tenant details from MDMS");
+                    if (!departmentEntityCodeOptional.isPresent()) {
+                        pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", eventType,
+                                "N/A", "Unable to get department Entity code");
+                        throw new GenericCustomException(PSPCL, "Unable to get department Entity code");
                     } else {
-                        for (Tenant tenant : tenantList) {
-                            if (FISCAL_EVENT_RECEIPT.equalsIgnoreCase(eventType)) {
-                                try {
-                                    collectionService.makePspclPaymentByCollectionService(fiscalEvent, tenant.getCode());
+                        List<Tenant> tenantList = mdmsRepository.getMdmsTenantByCityCode(departmentEntityCodeOptional.get());
 
-                                    pspclEventPersistenceService.saveSuccessPspclEventDetail(tenant.getCode(),
-                                            eventType);
-                                } catch (Exception e) {
-                                    log.error("Unable to push update challan into mgramseva", e);
+                        log.info("tenantList" + tenantList);
+                        if (tenantList == null || tenantList.isEmpty()) {
+                            pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", eventType,
+                                    new Gson().toJson(fiscalEvent), "Unable to get tenant details from MDMS");
+                            throw new GenericCustomException(PSPCL, "Unable to get tenant details from MDMS");
+                        } else {
+                            for (Tenant tenant : tenantList) {
+                                if (FISCAL_EVENT_RECEIPT.equalsIgnoreCase(eventType)) {
+                                    try {
+                                        collectionService.makePspclPaymentByCollectionService(fiscalEvent, tenant.getCode());
 
-                                    pspclEventPersistenceService.saveFailedPspclEventDetail(tenant.getCode(), eventType,
-                                            new Gson().toJson(fiscalEvent), e.getMessage());
-                                }
-                            } else if (FISCAL_EVENT_DEMAND.equalsIgnoreCase(eventType)) {
-                                try {
-                                    List<CreateChallanRequestDTO> createChallanRequestList =
-                                            wrapCreateChallanRequestDTO(fiscalEvent, tenant.getCode());
-
-                                    for (CreateChallanRequestDTO createChallanRequest : createChallanRequestList) {
-                                        CreateChallanResponseDTO createChallanResponse = mgramsevaChallanRepository
-                                                .pushMgramsevaCreateChallanAPI(createChallanRequest);
 
                                         pspclEventPersistenceService.saveSuccessPspclEventDetail(tenant.getCode(),
-                                                eventType);
-                                    }
-                                } catch (Exception e) {
-                                    log.error("Unable to push create challan into mgramseva", e);
+                                                eventType, fiscalEvent.getId());
+                                    } catch (Exception e) {
+                                        log.error("Unable to push update challan into mgramseva", e);
 
-                                    pspclEventPersistenceService.saveFailedPspclEventDetail(tenant.getCode(), eventType,
-                                            new Gson().toJson(fiscalEvent), e.getMessage());
+                                        pspclEventPersistenceService.saveFailedPspclEventDetail(tenant.getCode(), eventType,
+                                                new Gson().toJson(fiscalEvent), e.getMessage());
+                                    }
+                                } else if (FISCAL_EVENT_DEMAND.equalsIgnoreCase(eventType)) {
+                                    try {
+                                        List<CreateChallanRequestDTO> createChallanRequestList =
+                                                wrapCreateChallanRequestDTO(fiscalEvent, tenant.getCode());
+
+                                        for (CreateChallanRequestDTO createChallanRequest : createChallanRequestList) {
+                                            CreateChallanResponseDTO createChallanResponse = mgramsevaChallanRepository
+                                                    .pushMgramsevaCreateChallanAPI(createChallanRequest);
+
+                                            pspclEventPersistenceService.saveSuccessPspclEventDetail(tenant.getCode(),
+                                                    eventType, fiscalEvent.getId());
+                                        }
+                                    } catch (Exception e) {
+                                        log.error("Unable to push create challan into mgramseva", e);
+
+                                        pspclEventPersistenceService.saveFailedPspclEventDetail(tenant.getCode(), eventType,
+                                                new Gson().toJson(fiscalEvent), e.getMessage());
+                                    }
                                 }
                             }
                         }
@@ -276,6 +292,8 @@ public class PspclEventServiceImpl implements PspclEventService {
                         .readValue(objectMapper.writeValueAsString(fiscalEvent.getAttributes()), ObjectNode.class);
 
                 if (!objectNodeAttribute.has("departmentEntity")) {
+                    pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", "N/A", "N/A",
+                            "Department Entity is missing from attributes section of fiscal event");
                     throw new GenericCustomException(PSPCL, "Department Entity is missing from attributes section");
                 } else {
                     JsonNode departmentEntityJsonNode = objectNodeAttribute.get("departmentEntity");
@@ -283,10 +301,16 @@ public class PspclEventServiceImpl implements PspclEventService {
                     departmentEntityCode = departmentEntityJsonNode.get("code").asText();
                 }
             } catch (JsonMappingException e) {
+                pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", "N/A", "N/A",
+                        "Json parsing error while to process department Entity code in fiscal event");
                 throw new GenericCustomException(PSPCL, "Json parsing error while to process department Entity code in fiscal event");
             } catch (JsonProcessingException e) {
+                pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", "N/A", "N/A",
+                        "Json parsing error while to process department Entity code in fiscal event");
                 throw new GenericCustomException(PSPCL, "Json parsing error while to process department Entity code in fiscal event");
             } catch (Exception e) {
+                pspclEventPersistenceService.saveFailedPspclEventDetail("N/A", "N/A", "N/A",
+                        "Unable to process department Entity code in fiscal event");
                 throw new GenericCustomException(PSPCL, "Unable to process department Entity code in fiscal event");
             }
         }

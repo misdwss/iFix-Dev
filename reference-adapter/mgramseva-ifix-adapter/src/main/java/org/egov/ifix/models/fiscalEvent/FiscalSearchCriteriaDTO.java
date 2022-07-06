@@ -34,5 +34,16 @@ public class FiscalSearchCriteriaDTO {
 
     @JsonProperty("referenceId")
     private List<String> referenceId = null;
+
+    @JsonProperty("receiver")
+    private String receiver = null;
+
+    @JsonProperty("fromIngestionTime")
+    private Long fromIngestionTime = null;
+
+    @JsonProperty("toIngestionTime")
+    private Long toIngestionTime = null;
+
+
 }
 

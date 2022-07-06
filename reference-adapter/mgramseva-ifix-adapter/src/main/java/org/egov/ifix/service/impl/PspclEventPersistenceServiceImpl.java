@@ -19,7 +19,7 @@ public class PspclEventPersistenceServiceImpl implements PspclEventPersistenceSe
 
     public PspclEventDetail saveFailedPspclEventDetail(String mgramsevaTenantId, String eventType,
                                                         String data, String error) {
-        return savePspclEventDetail(false, mgramsevaTenantId, eventType, data, error);
+        return savePspclEventDetail(false, mgramsevaTenantId, eventType, "N/A", data, error);
     }
 
     /**
@@ -27,8 +27,8 @@ public class PspclEventPersistenceServiceImpl implements PspclEventPersistenceSe
      * @param eventType
      * @return
      */
-    public PspclEventDetail saveSuccessPspclEventDetail(String mgramsevaTenantId, String eventType) {
-        return savePspclEventDetail(true, mgramsevaTenantId, eventType, null, null);
+    public PspclEventDetail saveSuccessPspclEventDetail(String mgramsevaTenantId, String eventType, String eventId) {
+        return savePspclEventDetail(true, mgramsevaTenantId, eventType, eventId, null, null);
     }
 
     /**
@@ -40,7 +40,7 @@ public class PspclEventPersistenceServiceImpl implements PspclEventPersistenceSe
      * @return
      */
     private PspclEventDetail savePspclEventDetail(boolean isSuccess, String mgramsevaTenantId, String eventType,
-                                                       String data, String error) {
+                                                    String eventId, String data, String error) {
         PspclEventDetail pspclEventDetail = new PspclEventDetail();
         pspclEventDetail.setEventType(eventType);
         pspclEventDetail.setTenantId(mgramsevaTenantId);

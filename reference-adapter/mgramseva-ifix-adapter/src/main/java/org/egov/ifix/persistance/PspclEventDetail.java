@@ -23,6 +23,9 @@ public class PspclEventDetail {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
+    @Size(max=36)
+    private String eventId;
+
     @Size(max=64)
     private String tenantId;
 
