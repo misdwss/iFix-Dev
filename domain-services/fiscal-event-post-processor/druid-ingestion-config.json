@@ -155,6 +155,8 @@
           "attributes.departmentEntity.ancestry[10].name",
           "attributes.departmentEntity.ancestry[10].hierarchyLevel",
 
+          "attributes.accountNumber",
+
           {
             "name": "bill",
             "type": "double"
