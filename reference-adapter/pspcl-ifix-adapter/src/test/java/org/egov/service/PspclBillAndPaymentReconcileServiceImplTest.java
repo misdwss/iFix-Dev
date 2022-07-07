@@ -301,9 +301,6 @@ class PspclBillAndPaymentReconcileServiceImplTest {
         ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(getBillResults, getPaymentResults);
 
         assertNotNull(reconcileVO);
-        assertNotNull(reconcileVO.getCurrentPspclPaymentDetail());
-        assertNotNull(reconcileVO.getCurrentCalculatedBillAmt());
-        assertNotNull(reconcileVO.getCurrentCalculatedBillAmt());
     }
 
     @Test
