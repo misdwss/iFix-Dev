@@ -46,9 +46,9 @@ public class PspclBillDetailRepository {
         return new int[0];
     }
 
-    public Optional<PspclBillDetail> findByBILL_ISSUE_DATE(Date dateReadingPrev, String accountNumber) {
+    public Optional<PspclBillDetail> findByBillIssueDateAndAccountNumber(Date dateReadingPrev, String accountNumber) {
         if (dateReadingPrev != null) {
-            List<PspclBillDetail> pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForIssueDateAndAccountNumber(dateReadingPrev,accountNumber), billRowMapper);
+            List<PspclBillDetail> pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForIssueDateAndAccountNumber(dateReadingPrev, accountNumber), billRowMapper);
             return (pspclBillDetails != null && !pspclBillDetails.isEmpty() ? Optional.of(pspclBillDetails.get(0)) : Optional.empty());
         }
         return Optional.empty();
@@ -57,7 +57,7 @@ public class PspclBillDetailRepository {
     public List<PspclBillDetail> findByORDERBYCOLUMNAndAccountNumber(String orderByColumn, String accountNumber) {
         List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
         if (StringUtils.isNotBlank(orderByColumn)) {
-            pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForOrderByColumnAndAccountNumber(orderByColumn,accountNumber), billRowMapper);
+            pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForOrderByColumnAndAccountNumber(orderByColumn, accountNumber), billRowMapper);
         }
         return pspclBillDetails;
     }

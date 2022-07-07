@@ -65,8 +65,16 @@ public class FiscalEventUtil {
         List<Amount> amounts = new ArrayList<>();
 
         if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetail() != null) {
-            paymentFiscalEvent = new FiscalEvent();
             PspclPaymentDetail pspclPaymentDetail = billAndPaymentEventDetail.getCurrentPspclPaymentDetail();
+
+            //mandatory condition check
+            if (StringUtils.isBlank(adapterConfiguration.getReceiptCoaCode())
+                    && StringUtils.isBlank(adapterConfiguration.getTenantId())
+                    && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
+                    && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
+                return paymentFiscalEvent;
+            }
+            paymentFiscalEvent = new FiscalEvent();
 
             Amount paymentAmount = new Amount();
             if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
@@ -112,10 +120,18 @@ public class FiscalEventUtil {
     public FiscalEvent getDemandFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
         FiscalEvent billFiscalEvent = null;
         List<Amount> amounts = new ArrayList<>();
-        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclBillDetail() != null) {
-            billFiscalEvent = new FiscalEvent();
-            PspclBillDetail pspclBillDetail = billAndPaymentEventDetail.getCurrentPspclBillDetail();
+        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclBillDetail() != null
+                && billAndPaymentEventDetail.getCurrentCalculatedBillAmt() != null
+                && billAndPaymentEventDetail.getCurrentCalculatedBillAmt().compareTo(BigDecimal.ZERO) != 0) {
 
+            PspclBillDetail pspclBillDetail = billAndPaymentEventDetail.getCurrentPspclBillDetail();
+            //mandatory condition check
+            if (StringUtils.isBlank(adapterConfiguration.getDemandCoaCode())
+                    && StringUtils.isBlank(adapterConfiguration.getTenantId())
+                    && StringUtils.isBlank(pspclBillDetail.getBILL_NO())) {
+                return billFiscalEvent;
+            }
+            billFiscalEvent = new FiscalEvent();
             Amount billAmount = new Amount();
             billAmount.setAmount(billAndPaymentEventDetail.getCurrentCalculatedBillAmt());
             if (pspclBillDetail.getDATE_READING_PREV() != null) {
