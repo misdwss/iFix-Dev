@@ -49,14 +49,14 @@ public class PspclPaymentDetailRepository {
     public List<PspclPaymentDetail> findByTXNDATEBetweenOrderByTXNDATEDescAndAccountNumber(Date fromDate, Date toDate, String accountNumber) {
         List<PspclPaymentDetail> pspclPaymentDetails = new ArrayList<>();
         if (fromDate != null && toDate != null) {
-            pspclPaymentDetails = jdbcTemplate.query(queryBuilder.getPspclPaymentQueryForBetweenAndOrderByTxnDateAndAccountNumber(fromDate, toDate,accountNumber), paymentRowMapper);
+            pspclPaymentDetails = jdbcTemplate.query(queryBuilder.getPspclPaymentQueryForBetweenAndOrderByTxnDateAndAccountNumber(fromDate, toDate, accountNumber), paymentRowMapper);
         }
         return pspclPaymentDetails;
     }
 
     public Optional<PspclPaymentDetail> findByTXNIDAndAccountNumber(String txnId, String accountNumber) {
         if (StringUtils.isNotBlank(txnId)) {
-            List<PspclPaymentDetail> pspclPaymentDetails = jdbcTemplate.query(queryBuilder.getPspclPaymentQueryForTxnIdAndAccountNumber(txnId,accountNumber), paymentRowMapper);
+            List<PspclPaymentDetail> pspclPaymentDetails = jdbcTemplate.query(queryBuilder.getPspclPaymentQueryForTxnIdAndAccountNumber(txnId, accountNumber), paymentRowMapper);
             return (pspclPaymentDetails != null && !pspclPaymentDetails.isEmpty() ? Optional.of(pspclPaymentDetails.get(0)) : Optional.empty());
         }
         return Optional.empty();

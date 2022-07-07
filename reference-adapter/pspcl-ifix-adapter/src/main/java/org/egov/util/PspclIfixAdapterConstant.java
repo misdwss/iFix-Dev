@@ -33,5 +33,5 @@ public class PspclIfixAdapterConstant {
     public static final String FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY = "departmentEntity";
     public static final String FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE = "code";
     public static final String FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_NAME = "name";
-    public static final String FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER = "accountNumber";
+    public static final String FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER = "pspclAccountNumber";
 }

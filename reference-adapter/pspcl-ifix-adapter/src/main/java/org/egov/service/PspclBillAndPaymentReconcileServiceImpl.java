@@ -184,7 +184,7 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
     private PspclBillDetail getLastBillDetail(Date lastBillDate, String accountNumber) {
         Optional<PspclBillDetail> lastMonthBillOptional = billDetailRepository
-                .findByBILL_ISSUE_DATE(lastBillDate, accountNumber);
+                .findByBillIssueDateAndAccountNumber(lastBillDate, accountNumber);
         if (lastMonthBillOptional.isPresent())
             return lastMonthBillOptional.get();
         return null;
