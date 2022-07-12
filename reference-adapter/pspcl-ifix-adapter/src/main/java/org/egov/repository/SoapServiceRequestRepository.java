@@ -57,7 +57,7 @@ public class SoapServiceRequestRepository {
                         return null;
                     }
                 }
-                
+
                 try {
                     isr = new InputStreamReader(httpConn.getInputStream());
                     in = new BufferedReader(isr);
@@ -66,7 +66,7 @@ public class SoapServiceRequestRepository {
                     }
                 } catch (Exception e) {
                     log.error("Exception occurred while reading the response content from {} : {}", uri, e);
-                    throw new CustomException("PSPCL_API_CALL",e.getMessage());
+                    throw new CustomException("PSPCL_API_CALL", e.getMessage());
                 } finally {
                     if (isr != null) {
                         isr.close();
@@ -77,7 +77,7 @@ public class SoapServiceRequestRepository {
                 }
             } catch (Exception e) {
                 log.error("Exception occurred while fetching the details from other system", e);
-                throw new CustomException("PSPCL_API_CALL",e.getMessage());
+                throw new CustomException("PSPCL_API_CALL", e.getMessage());
             } finally {
                 if (httpConn != null) {
                     httpConn.disconnect();
