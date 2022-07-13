@@ -1,6 +1,7 @@
 package org.egov.util;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,8 @@ public class FiscalEventMapperUtil {
                 .linkedReferenceId(node.get("linkedReferenceId") != null ? node.get("linkedReferenceId").asText() : null)
                 .linkedEventId(node.get("linkedEventId") != null ? node.get("linkedEventId").asText() : null)
                 .ingestionTime(node.get("ingestionTime") != null ? node.get("ingestionTime").asLong() : null)
+                .receivers(node.get("receivers") != null && node.get("receivers").isArray() ? objectMapper.convertValue(node.get("receivers"), new TypeReference<List<String>>() {
+                }) : null)
                 .attributes(node.get("attributes"))
                 .build();
 

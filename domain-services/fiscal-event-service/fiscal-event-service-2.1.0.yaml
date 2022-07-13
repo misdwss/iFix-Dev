@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: iFIX-Fiscal-Event
   description: ""
-  version: 2.0.0
+  version: 2.1.0
 servers:
   - url: https://<server_address>/fiscal-event-service
 paths:
@@ -250,6 +250,18 @@ components:
           items:
             maxItems: 100
             type: string
+        receiver:
+          type: string
+          description: Client id of the registered data receiver system
+          example: mGramSeva
+        fromIngestionTime:
+          type: integer
+          description: Search events b/w ingestion time(the time when event published)
+          format: int64
+        toIngestionTime:
+          type: integer
+          description: Search events b/w ingestion time(the time when event published)
+          format: int64
       description: The object contains all the search criteria of the fiscal events
     FiscalEventRequest:
       required:
