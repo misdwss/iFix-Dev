@@ -31,10 +31,14 @@ public class EventConstants {
     public static final String DEMAND_DETAILS = "demandDetails";
     public static final String BILL_DEMAND_CLIENT_COA_AMOUNT = "taxAmount";
     public static final String BILL_DEMAND_CLIENT_COA_CODE = "taxHeadMasterCode";
+    public static final String BILL_DEMAND_AUDIT_DETAILS = "auditDetails";
+    public static final String BILL_DEMAND_LAST_MODIFIED_TIME = "lastModifiedTime";
     public static final String PROJECT_CODE_DATA_NAME = "PROJECT_CODE";
     public static final String CODE = "code";
     public static final String PROJECT_CODE = "PROJECT_CODE";
     public static final String CLIENT_PROJECT_CODE = "CLIENT_PROJECT_CODE";
+
+    public static final String PAYMENT_RECEIPT_TRANSACTION_DATE = "transactionDate";
     public static final String PAYMENT_RECEIPT_FROM_BILLING_PERIOD = "fromPeriod";
     public static final String PAYMENT_RECEIPT_TO_BILLING_PERIOD = "toPeriod";
     public static final String PAYMENT_RECEIPT_CLIENT_COA_AMOUNT = "adjustedAmount";
