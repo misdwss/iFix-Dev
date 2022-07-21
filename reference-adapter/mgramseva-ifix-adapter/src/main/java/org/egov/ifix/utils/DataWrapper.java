@@ -1,7 +1,10 @@
 package org.egov.ifix.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -11,9 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.egov.ifix.utils.EventConstants.*;
 
+@Slf4j
 @Component
 public class DataWrapper {
 
+    @Autowired
+    ApplicationConfiguration applicationConfiguration;
 
     /**
      * @param data
@@ -78,5 +84,66 @@ public class DataWrapper {
         }
 
         return fiscalMessage.toString();
+    }
+
+    /**
+     * @return
+     */
+    public Long getValidSearchIntervalTime() {
+        String plainTime = applicationConfiguration.getIfixFiscalEventSearchIntervalTime();
+
+        if (!org.apache.commons.lang3.StringUtils.isNumeric(plainTime)) {
+            log.error(">>>>> Ifix fiscal event search interval time value is invalid");
+            throw new GenericCustomException(TIME, "Ifix fiscal event search interval time value is invalid");
+        }else {
+            return Long.parseLong(plainTime) * 1000;
+        }
+    }
+
+    /**
+     * @param plainTextTime
+     * @return
+     */
+    public Long getMilliSecondTime(String plainTextTime) {
+        long oneHourMilliSecond = 60L * 60L * 1000L;
+        long totalMilliSecond = 0L;
+
+        if (isValidSearchIntervalTime(plainTextTime)) {
+            String[] timeArray = plainTextTime.split(" ");
+
+            String paramValue = timeArray[0];
+            totalMilliSecond += Long.parseLong(paramValue) * 24 * oneHourMilliSecond;
+
+            paramValue = timeArray[1];
+            totalMilliSecond += Long.parseLong(paramValue) * oneHourMilliSecond;
+
+            paramValue = timeArray[2];
+            totalMilliSecond += Long.parseLong(paramValue) * (oneHourMilliSecond / 60);
+        }
+        return totalMilliSecond;
+    }
+
+    /**
+     * @param plainTextTime
+     * @return
+     */
+    public boolean isValidSearchIntervalTime(String plainTextTime) {
+        boolean isValid = true;
+
+        if (!StringUtils.isEmpty(plainTextTime)) {
+            String[] timeArray = plainTextTime.split(" ");
+
+            if (timeArray.length == 3) {
+                for (String paramValue : timeArray) {
+                    if (!org.apache.commons.lang3.StringUtils.isNumeric(paramValue)) {
+                        isValid = false;
+                        break;
+                    }
+                }
+            }else {
+                isValid = false;
+            }
+        }
+        return false;
     }
 }

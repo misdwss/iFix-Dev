@@ -11,6 +11,7 @@ public class HttpCustomException extends RuntimeException{
     private String message;
     private Map<String, String> errors;
     private HttpStatus httpStatus = null;
+    private String description;
 
     public HttpCustomException() {
     }
@@ -31,5 +32,10 @@ public class HttpCustomException extends RuntimeException{
         this.errors = errors;
     }
 
-
+    public HttpCustomException(String code, String message, String description, HttpStatus httpStatus) {
+        this.code = code;
+        this.message = message;
+        this.description = description;
+        this.httpStatus = httpStatus;
+    }
 }
