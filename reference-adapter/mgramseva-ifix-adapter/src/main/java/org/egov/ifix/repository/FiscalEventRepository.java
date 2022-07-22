@@ -45,7 +45,7 @@ public class FiscalEventRepository {
 
     public FiscalEventResponseDTO collectFiscalEvent(String receivers, String eventType) {
         FiscalEventResponseDTO fiscalEventResponseDTO = null;
-        String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventSearchURL();
+        String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventSearchEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

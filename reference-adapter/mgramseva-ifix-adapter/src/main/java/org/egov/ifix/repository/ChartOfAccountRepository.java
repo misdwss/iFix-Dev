@@ -93,7 +93,7 @@ public class ChartOfAccountRepository {
      */
     private Optional<ChartOfAccount> getCoaFromIFixMasterService(COASearchCriteria coaCriteria, JsonObject jsonObject) {
         if (coaCriteria != null) {
-            String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getCoaSearchApi();
+            String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getCoaSearchEndpoint();
             coaCriteria.setTenantId(applicationConfiguration.getTenantId());
 
             HttpHeaders headers = new HttpHeaders();

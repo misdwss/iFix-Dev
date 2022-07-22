@@ -68,7 +68,7 @@ public class ProjectRepository {
      */
     public Optional<Project> getProjectFromIFixMasterService(String projectCode, JsonObject jsonObjectData) {
         if (!StringUtils.isEmpty(projectCode) && jsonObjectData != null) {
-            String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getProjectSearchApi();
+            String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getProjectSearchEndpoint();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

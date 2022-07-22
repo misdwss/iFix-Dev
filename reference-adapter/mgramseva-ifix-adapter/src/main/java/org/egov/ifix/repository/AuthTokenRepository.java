@@ -62,7 +62,7 @@ public class AuthTokenRepository {
      */
     public OauthSuccessResponseDTO getMgramsevaOauthAccessToken() {
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaOauthAccessTokenURL();
+                + applicationConfiguration.getMgramsevaOauthAccessTokenEndpoint();
         ;
 
         HttpHeaders headers = new HttpHeaders();

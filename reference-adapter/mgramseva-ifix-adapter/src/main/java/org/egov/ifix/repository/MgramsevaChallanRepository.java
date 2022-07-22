@@ -37,7 +37,7 @@ public class MgramsevaChallanRepository {
     public CreateChallanResponseDTO pushMgramsevaCreateChallanAPI(CreateChallanRequestDTO createChallanRequestDTO) {
         CreateChallanResponseDTO createChallanResponseDTO = null;
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaCreateChallanURL();
+                + applicationConfiguration.getMgramsevaCreateChallanEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,7 +68,7 @@ public class MgramsevaChallanRepository {
     public CreateChallanResponseDTO pushMgramsevaUpdateChallanAPI(CreateChallanRequestDTO createChallanRequestDTO) {
         CreateChallanResponseDTO createChallanResponseDTO = null;
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaUpdateChallanURL();
+                + applicationConfiguration.getMgramsevaUpdateChallanEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -102,7 +102,7 @@ public class MgramsevaChallanRepository {
         SearchChallanResponseDTO searchChallanResponseDTO = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaSearchChallanURL();
+                + applicationConfiguration.getMgramsevaSearchChallanEndpoint();
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)

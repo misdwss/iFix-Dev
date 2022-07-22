@@ -34,7 +34,7 @@ public class CollectionServiceRepository {
         CreatePaymentResponseDTO createPaymentResponseDTO = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaCollectionServicePaymentsCreateURL();
+                + applicationConfiguration.getMgramsevaCollectionServicePaymentsCreateEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

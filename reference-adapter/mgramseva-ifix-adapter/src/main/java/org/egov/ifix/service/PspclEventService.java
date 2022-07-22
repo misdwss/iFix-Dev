@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface PspclEventService {
     void processPspclEventForMgramseva(String eventType);
 
-    Optional<ChallanResponseDTO> getOldestChallanByBillDate(String tenantId);
 }

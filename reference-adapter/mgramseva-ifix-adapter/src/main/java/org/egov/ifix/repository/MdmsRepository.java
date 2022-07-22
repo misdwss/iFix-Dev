@@ -53,7 +53,7 @@ public class MdmsRepository {
 
             ResponseEntity<MdmsResponse> response =
                     restTemplate.postForEntity(applicationConfiguration.getMgramsevaHost()
-                            + applicationConfiguration.getMdmsSearchUrl(), mdmsCriteriaReq, MdmsResponse.class);
+                            + applicationConfiguration.getMdmsSearchEndpoint(), mdmsCriteriaReq, MdmsResponse.class);
 
             JSONArray tenantJsonArray = response.getBody().getMdmsRes().get("tenant").get("tenants");
 

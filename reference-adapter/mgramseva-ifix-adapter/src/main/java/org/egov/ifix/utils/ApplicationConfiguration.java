@@ -32,23 +32,23 @@ public class ApplicationConfiguration {
     @Value("${keycloak.host}")
     private String keyCloakHost;
 
-    @Value("${keycloak.token.url}")
+    @Value("${keycloak.token.endpoint}")
     private String keyCloakAuthApi;
 
     @Value("${ifix.host}")
     private String ifixHost;
 
-    @Value("${ifix.event.url}")
-    private String ifixEventApi;
+    @Value("${ifix.event.endpoint}")
+    private String ifixEventEndpoint;
 
-    @Value("${ifix.event.search.url}")
-    private String ifixEventSearchURL;
+    @Value("${ifix.event.search.endpoint}")
+    private String ifixEventSearchEndpoint;
 
-    @Value("${ifix.coa.search.url}")
-    private String coaSearchApi;
+    @Value("${ifix.coa.search.endpoint}")
+    private String coaSearchEndpoint;
 
-    @Value("${ifix.project.search.url}")
-    private String projectSearchApi;
+    @Value("${ifix.project.search.endpoint}")
+    private String projectSearchEndpoint;
 
     @Value("${ifix.department.entity.host}")
     private String departmentEntityHost;
@@ -83,20 +83,20 @@ public class ApplicationConfiguration {
     @Value("${mgramseva.host}")
     private String mgramsevaHost;
 
-    @Value("${mgramseva.oauth.access.token.url}")
-    private String mgramsevaOauthAccessTokenURL;
+    @Value("${mgramseva.oauth.access.token.endpoint")
+    private String mgramsevaOauthAccessTokenEndpoint;
 
-    @Value("${mgramseva.create.challan.url}")
-    private String mgramsevaCreateChallanURL;
+    @Value("${mgramseva.create.challan.endpoint}")
+    private String mgramsevaCreateChallanEndpoint;
 
-    @Value("${mgramseva.update.challan.url}")
-    private String mgramsevaUpdateChallanURL;
+    @Value("${mgramseva.update.challan.endpoint}")
+    private String mgramsevaUpdateChallanEndpoint;
 
-    @Value("${mgramseva.search.challan.url}")
-    private String mgramsevaSearchChallanURL;
+    @Value("${mgramseva.search.challan.endpoint}")
+    private String mgramsevaSearchChallanEndpoint;
 
-    @Value("${mgramseva.vendor.search.url}")
-    private String mgramsevaVendorSearchURL;
+    @Value("${mgramseva.vendor.search.endpoint}")
+    private String mgramsevaVendorSearchEndpoint;
 
     @Value("${mgramseva.pspcl.business.service}")
     private String mgramsevaPspclBusinessService;
@@ -116,14 +116,14 @@ public class ApplicationConfiguration {
     @Value("${mgramseva.pspcl.tax.head.code}")
     private String mgramsevaPspclTaxHeadCode;
 
-    @Value("${mdms.search.url}")
-    private String mdmsSearchUrl;
+    @Value("${mdms.search.endpoint}")
+    private String mdmsSearchEndpoint;
 
-    @Value("${mgramseva.billing.service.fetch.bill.url}")
-    private String mgramsevaBillingServiceFetchBillURL;
+    @Value("${mgramseva.billing.service.fetch.bill.endpoint}")
+    private String mgramsevaBillingServiceFetchBillEndpoint;
 
-    @Value("${mgramseva.collection.service.payments.create.url}")
-    private String mgramsevaCollectionServicePaymentsCreateURL;
+    @Value("${mgramseva.collection.service.payments.create.endpoint}")
+    private String mgramsevaCollectionServicePaymentsCreateEndpoint;
 
     @Value("${mgramseva.basic.authorization.base64.value}")
     private String mgramsevaBasicAuthorizationBase64Value;

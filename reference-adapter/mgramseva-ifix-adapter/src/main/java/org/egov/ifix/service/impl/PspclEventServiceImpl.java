@@ -152,35 +152,6 @@ public class PspclEventServiceImpl implements PspclEventService {
     }
 
     /**
-     * @param tenantId
-     * @return
-     */
-    public Optional<ChallanResponseDTO> getOldestChallanByBillDate(String tenantId) {
-        Optional<ChallanResponseDTO> oldestChallanResponse = null;
-
-        Optional<SearchChallanResponseDTO> searchChallanResponseDTOOptional = mgramsevaChallanRepository
-                .searchChallan(tenantId, MGRAMSEVA_ELECTRICITY_BILL_EXPENSE_TYPE);
-
-        if (!searchChallanResponseDTOOptional.isPresent()) {
-            throw new GenericCustomException(PSPCL, "Unable to fetch challan from mgramseva");
-        } else {
-            SearchChallanResponseDTO searchChallanResponseDTO = searchChallanResponseDTOOptional.get();
-            List<ChallanResponseDTO> challanResponseDTOList = searchChallanResponseDTO.getChallans();
-
-            Comparator<ChallanResponseDTO> challanComparator =
-                    Comparator.comparingLong(ChallanResponseDTO::getBillDate);
-
-            oldestChallanResponse = challanResponseDTOList.stream()
-                    .map(challanResponseDTO -> challanResponseDTO)
-                    .max(challanComparator);
-
-            log.info("oldestChallanResponse: " + oldestChallanResponse);
-        }
-        return oldestChallanResponse;
-    }
-
-
-    /**
      * @param fiscalEvent
      * @return
      */

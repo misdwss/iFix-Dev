@@ -32,7 +32,7 @@ public class BillingServiceRepository {
         FetchBillResponseDTO searchVendorResponse = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaBillingServiceFetchBillURL();
+                + applicationConfiguration.getMgramsevaBillingServiceFetchBillEndpoint();
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)

@@ -39,7 +39,7 @@ public class PostEvent {
 
 		HttpEntity<FiscalEventRequest> request = new HttpEntity<>(event, headers);
 
-		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventApi();
+		String url = applicationConfiguration.getIfixHost() + applicationConfiguration.getIfixEventEndpoint();
 		response = restTemplate.postForEntity(url, request, FiscalEventResponse.class);
 
 		log.info("Posting to IFix status" +response.getStatusCode());

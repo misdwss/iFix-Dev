@@ -72,7 +72,7 @@ public class MgramsevaVendorRepository {
         SearchVendorResponseDTO searchVendorResponse = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
-                + applicationConfiguration.getMgramsevaVendorSearchURL();
+                + applicationConfiguration.getMgramsevaVendorSearchEndpoint();
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)
