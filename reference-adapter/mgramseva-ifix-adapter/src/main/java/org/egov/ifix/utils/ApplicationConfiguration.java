@@ -107,9 +107,6 @@ public class ApplicationConfiguration {
     @Value("${mgramseva.pspcl.typeOfExpense}")
     private String mgramsevaPspclTypeOfExpense;
 
-    @Value("${mgramseva.pspcl.vendor.id}")
-    private String mgramsevaPspclVendorId;
-
     @Value("${mgramseva.pspcl.vendor.name}")
     private String mgramsevaPspclVendorName;
 
