@@ -79,7 +79,7 @@ public class PspclEventServiceImpl implements PspclEventService {
                 || fiscalEventResponseDTO.getFiscalEvent().isEmpty()) {
             pspclEventPersistenceService.saveFailedPspclEventDetail(NA, eventType, NA,
                     "Unable to get any PSPCL event from fiscal event (iFix Core)");
-            throw new GenericCustomException(PSPCL, "Unable to get any PSPCL event from fiscal event (iFix Core)");
+            log.error("Unable to get any PSPCL event from fiscal event (iFix Core)");
         } else {
             List<FiscalEvent> fiscalEventList = fiscalEventRepository
                     .resolveDuplicateEvent(fiscalEventResponseDTO.getFiscalEvent(), eventType);
@@ -138,7 +138,7 @@ public class PspclEventServiceImpl implements PspclEventService {
                 }
             } else if (FISCAL_EVENT_DEMAND.equalsIgnoreCase(eventType)) {
                 try {
-                    mgramsevaChallanService.createChallanInChallanService(eventType, fiscalEvent, tenant.getCode(),
+                    mgramsevaChallanService.createChallan(eventType, fiscalEvent, tenant.getCode(),
                             getPspclAccountNoFromFiscalEvent(fiscalEvent));
 
                 } catch (Exception e) {

@@ -47,14 +47,18 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
     private PspclEventPersistenceService pspclEventPersistenceService;
 
     /**
+     * TODO: As of now, vendor id is mandatory to create challan.
+     *      It gets vendor list by tenant id and pick first vendor from vendor list.
+     *      In near future, challan may be created without vendor info.
+     *
      * @param eventType
      * @param fiscalEvent
      * @param mgramsevaTenantId
      * @param pspclAccountNumber
      */
     @Override
-    public void createChallanInChallanService(String eventType, FiscalEvent fiscalEvent, String mgramsevaTenantId,
-                                              @NotNull String pspclAccountNumber) {
+    public void createChallan(String eventType, FiscalEvent fiscalEvent, String mgramsevaTenantId,
+                              @NotNull String pspclAccountNumber) {
         if (fiscalEvent != null && fiscalEvent.getAmountDetails() != null && !fiscalEvent.getAmountDetails().isEmpty()
                 && !StringUtils.isEmpty(mgramsevaTenantId)) {
 

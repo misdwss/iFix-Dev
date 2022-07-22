@@ -64,7 +64,6 @@ public class DemandEventMapper implements EventMapper {
                         .tenantId(applicationConfiguration.getTenantId())
                         .eventType(getEventType())
                         .eventTime(demandAuditDetails.get(BILL_DEMAND_LAST_MODIFIED_TIME).getAsLong())
-                        .eventTime(Instant.now().toEpochMilli())
                         .referenceId(demandJO.get(ID).getAsString())
                         .parentEventId(null)
                         .parentReferenceId(null)
