@@ -62,8 +62,8 @@ public class ApplicationConfiguration {
     @Value("${pspcl.ifix.event.receiver.name}")
     private String pspclIfixEventReceiverName;
 
-    @Value("${ifix.fiscal.event.search.interval.time}")
-    private String ifixFiscalEventSearchIntervalTime;
+    @Value("${ifix.fiscal.event.search.time.interval.minutes}")
+    private String ifixFiscalEventSearchTimeIntervalMinutes;
 
     @Value("${adapter.master.data.host}")
     private String adapterMasterDataHost;

@@ -90,13 +90,13 @@ public class DataWrapper {
      * @return
      */
     public Long getValidSearchIntervalTime() {
-        String plainTime = applicationConfiguration.getIfixFiscalEventSearchIntervalTime();
+        String plainTime = applicationConfiguration.getIfixFiscalEventSearchTimeIntervalMinutes();
 
         if (!org.apache.commons.lang3.StringUtils.isNumeric(plainTime)) {
             log.error(">>>>> Ifix fiscal event search interval time value is invalid");
             throw new GenericCustomException(TIME, "Ifix fiscal event search interval time value is invalid");
         }else {
-            return Long.parseLong(plainTime) * 1000;
+            return Long.parseLong(plainTime) * 60 * 1000;
         }
     }
 
