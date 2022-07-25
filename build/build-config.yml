@@ -47,7 +47,7 @@ config:
         image-name: "ifix-reference-adapter"
         dockerfile: "build/maven/Dockerfile"
       - work-dir: "reference-adapter/mgramseva-ifix-adapter/src/main/resources/db"
-        image-name: "mgramseva-ifix-adapter-db"
+        image-name: "ifix-reference-adapter-db"
   - name: "builds/iFix/reference-dashboard/fiscal-event-aggregator"
     build:
       - work-dir: "reference-dashboard/fiscal-event-aggregator"
