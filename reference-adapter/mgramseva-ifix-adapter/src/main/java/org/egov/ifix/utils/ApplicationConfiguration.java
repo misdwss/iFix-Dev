@@ -83,7 +83,7 @@ public class ApplicationConfiguration {
     @Value("${mgramseva.host}")
     private String mgramsevaHost;
 
-    @Value("${mgramseva.oauth.access.token.endpoint")
+    @Value("${mgramseva.oauth.access.token.endpoint}")
     private String mgramsevaOauthAccessTokenEndpoint;
 
     @Value("${mgramseva.create.challan.endpoint}")
