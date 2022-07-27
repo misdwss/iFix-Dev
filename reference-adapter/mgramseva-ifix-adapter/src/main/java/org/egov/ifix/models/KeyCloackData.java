@@ -15,14 +15,14 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RedisHash
 public class KeyCloackData implements Serializable{
-	
-	public String client_id;
-	public String client_secret;
-	public String grant_type;
-	public String access_token;
-	public Long expires_in;
-	public Long refresh_expires_in;
-	public String token_type;
-	public String scope;
+
+	private String client_id;
+	private String client_secret;
+	private String grant_type;
+	private String access_token;
+	private Long expires_in;
+	private Long refresh_expires_in;
+	private String token_type;
+	private String scope;
 
 }

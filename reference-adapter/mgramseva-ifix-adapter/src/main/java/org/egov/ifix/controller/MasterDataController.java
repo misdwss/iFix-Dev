@@ -1,15 +1,7 @@
 package org.egov.ifix.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
+import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.models.CoaMappingDTO;
-import org.egov.ifix.models.Event;
-import org.egov.ifix.models.EventRequest;
-import org.egov.ifix.models.EventResponse;
 import org.egov.ifix.service.ChartOfAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 @RestController
 @Slf4j
 @RequestMapping("/master/v1")
-public  class MasterDataController {
+public class MasterDataController {
 
     @Autowired
-    ChartOfAccountService chartOfAccountService;
+    private ChartOfAccountService chartOfAccountService;
 
     /**
      * @param coaMappingDTO
@@ -36,14 +28,13 @@ public  class MasterDataController {
     @PostMapping("/mapping/coa/search")
     public ResponseEntity<CoaMappingDTO> coaMappingSearch(@RequestBody CoaMappingDTO coaMappingDTO) {
 
-       Optional<CoaMappingDTO> coaMappingDTOOptional = chartOfAccountService
-               .getMappedCoaIdByClientCoaCode(coaMappingDTO);
+        Optional<CoaMappingDTO> coaMappingDTOOptional = chartOfAccountService
+                .getMappedCoaIdByClientCoaCode(coaMappingDTO);
 
         if (coaMappingDTOOptional.isPresent()) {
             return new ResponseEntity<CoaMappingDTO>(coaMappingDTOOptional.get(), HttpStatus.ACCEPTED);
-        }else {
+        } else {
             return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
         }
     }
-
 }

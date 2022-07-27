@@ -1,7 +1,10 @@
 package org.egov.ifix.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -11,9 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.egov.ifix.utils.EventConstants.*;
 
+@Slf4j
 @Component
 public class DataWrapper {
 
+    @Autowired
+    ApplicationConfiguration applicationConfiguration;
 
     /**
      * @param data
@@ -79,4 +85,19 @@ public class DataWrapper {
 
         return fiscalMessage.toString();
     }
+
+    /**
+     * @return
+     */
+    public Long getValidSearchIntervalTime() {
+        String plainTime = applicationConfiguration.getIfixFiscalEventSearchTimeIntervalMinutes();
+
+        if (!org.apache.commons.lang3.StringUtils.isNumeric(plainTime)) {
+            log.error(">>>>> Ifix fiscal event search interval time value is invalid");
+            throw new GenericCustomException(TIME, "Ifix fiscal event search interval time value is invalid");
+        }else {
+            return Long.parseLong(plainTime) * 60 * 1000;
+        }
+    }
+
 }
