@@ -64,7 +64,7 @@ public class MdmsRepository {
 
             tenantList = reader.readValue(tenantJsonArray.toString());
         } catch (IOException e) {
-            log.error("Error occurred while fetching tenant id from MDMS", e);
+            log.error("IO Error occurred while fetching tenant id from MDMS", e);
         } catch (Exception e) {
             log.error("Error occurred while fetching tenant id from MDMS", e);
         }

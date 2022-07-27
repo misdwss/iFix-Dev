@@ -78,8 +78,8 @@ public class PspclEventServiceImpl implements PspclEventService {
         if (fiscalEventResponseDTO == null || fiscalEventResponseDTO.getFiscalEvent() == null
                 || fiscalEventResponseDTO.getFiscalEvent().isEmpty()) {
             pspclEventPersistenceService.saveFailedPspclEventDetail(NA, eventType, NA,
-                    "Unable to get any PSPCL event from fiscal event (iFix Core)");
-            log.error("Unable to get any PSPCL event from fiscal event (iFix Core)");
+                    "No new PSPCL event found from fiscal event service (iFix Core)");
+            log.error("No new PSPCL event found from fiscal event service (iFix Core)");
         } else {
             List<FiscalEvent> fiscalEventList = fiscalEventRepository
                     .resolveDuplicateEvent(fiscalEventResponseDTO.getFiscalEvent(), eventType);
