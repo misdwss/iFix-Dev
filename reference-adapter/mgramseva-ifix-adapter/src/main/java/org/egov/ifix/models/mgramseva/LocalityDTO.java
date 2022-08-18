@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class LocalityDTO {
     @JsonProperty("longitude")
     private String longitude;
     @JsonProperty("children")
-    private String children;
+    private List<String> children;
     @JsonProperty("materializedPath")
     private String materializedPath;
 }

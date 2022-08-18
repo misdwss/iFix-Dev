@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static org.egov.ifix.utils.EventConstants.*;
@@ -35,40 +36,11 @@ public class MgramsevaVendorRepository {
     private AdapterCache<String> vendorCache;
 
 
-    public String getVendorIdByTenantId(String tenantId) {
-        String cachedVendorId = vendorCache.getValue(tenantId);
-
-        if (StringUtils.isEmpty(cachedVendorId)) {
-            Optional<SearchVendorResponseDTO> searchVendorResponseDTOOptional = searchVendor(tenantId);
-
-            if (searchVendorResponseDTOOptional.isPresent() && searchVendorResponseDTOOptional.get().getVendor() != null) {
-
-                Optional<VendorDTO> vendorOptional = searchVendorResponseDTOOptional.get().getVendor()
-                        .stream().findFirst();
-
-                if (vendorOptional.isPresent() && !StringUtils.isEmpty(vendorOptional.get().getId())) {
-                    vendorCache.putValue(tenantId, vendorOptional.get().getId());
-                    cachedVendorId = vendorOptional.get().getId();
-                } else {
-                    log.error("Vendor does not exit in the vendor list");
-                    throw new GenericCustomException(MGRAMSEVA_VENDOR_ID, "Vendor does not exit in the vendor list");
-                }
-            } else {
-                log.error("Unable to get vendor list from vendor search");
-                throw new GenericCustomException(MGRAMSEVA_VENDOR_ID, "Unable to get vendor list from vendor search");
-            }
-        } else {
-            log.info(LOG_INFO_PREFIX + "got vendor from Cache" + cachedVendorId);
-        }
-
-        return cachedVendorId;
-    }
-
     /**
      * @param tenantId
      * @return
      */
-    public Optional<SearchVendorResponseDTO> searchVendor(String tenantId) {
+    public Optional<SearchVendorResponseDTO> searchVendor(@NotNull String tenantId, @NotNull String name) {
         SearchVendorResponseDTO searchVendorResponse = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
@@ -77,6 +49,7 @@ public class MgramsevaVendorRepository {
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)
                 .queryParam("limit", -1)
+                .queryParam("name", name)
                 .encode()
                 .toUriString();
 
@@ -120,5 +93,39 @@ public class MgramsevaVendorRepository {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
 
         return new SearchVendorRequestDTO(requestInfoDTO, userInfoDTO);
+    }
+
+    /**
+     * @param vendorCreateRequestDTO
+     * @return
+     */
+    public Optional<VendorCreateResponseDTO> createVendor(VendorCreateRequestDTO vendorCreateRequestDTO) {
+        VendorCreateResponseDTO vendorCreateResponseDTO = null;
+
+        String url = applicationConfiguration.getMgramsevaHost()
+                + applicationConfiguration.getMgramsevaVendorCreateEndpoint();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<VendorCreateRequestDTO> entity = new HttpEntity<>(vendorCreateRequestDTO, headers);
+
+        try {
+            ResponseEntity<VendorCreateResponseDTO> response = restTemplate.exchange(url, HttpMethod.POST, entity,
+                    VendorCreateResponseDTO.class);
+
+            vendorCreateResponseDTO = response.getBody();
+
+            if (vendorCreateResponseDTO == null) {
+                throw new HttpCustomException(CREATE_CHALLAN, "Unable get response from create challan",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            log.error("Exception while sending request to create challan", e);
+            throw new HttpCustomException(CREATE_CHALLAN, e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+
+        return Optional.ofNullable(vendorCreateResponseDTO);
     }
 }

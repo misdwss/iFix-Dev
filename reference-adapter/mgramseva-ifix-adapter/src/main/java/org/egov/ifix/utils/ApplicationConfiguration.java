@@ -98,6 +98,9 @@ public class ApplicationConfiguration {
     @Value("${mgramseva.vendor.search.endpoint}")
     private String mgramsevaVendorSearchEndpoint;
 
+    @Value("${mgramseva.vendor.create.endpoint}")
+    private String mgramsevaVendorCreateEndpoint;
+
     @Value("${mgramseva.pspcl.business.service}")
     private String mgramsevaPspclBusinessService;
 
@@ -142,5 +145,23 @@ public class ApplicationConfiguration {
 
     @Value("${mgramseva.oauth.token.userType}")
     private String mgramsevaOauthTokenUserType;
+
+    @Value("${vendor.owner.father.husband.name}")
+    private String vendorOwnerFatherHusbandName;
+
+    @Value("${vendor.owner.relationship}")
+    private String vendorOwnerRelationship;
+
+    @Value("${vendor.owner.gender}")
+    private String vendorOwnerGender;
+
+    @Value("${vendor.owner.dob}")
+    private String vendorOwnerDob;
+
+    @Value("${vendor.owner.emailId}")
+    private String vendorOwnerEmailId;
+
+    @Value("${vendor.owner.locality.code}")
+    private String vendorOwnerLocalityCode;
 
 }
