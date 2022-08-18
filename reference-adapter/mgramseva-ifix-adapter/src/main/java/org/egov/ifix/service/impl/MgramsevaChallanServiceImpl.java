@@ -13,6 +13,7 @@ import org.egov.ifix.repository.MgramsevaChallanRepository;
 import org.egov.ifix.repository.MgramsevaVendorRepository;
 import org.egov.ifix.service.AuthTokenService;
 import org.egov.ifix.service.MgramsevaChallanService;
+import org.egov.ifix.service.MgramsevaVendorService;
 import org.egov.ifix.service.PspclEventPersistenceService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
 
     @Autowired
     private MgramsevaVendorRepository mgramsevaVendorRepository;
+
+    @Autowired
+    private MgramsevaVendorService mgramsevaVendorService;
 
     @Autowired
     private AuthTokenService authTokenService;
@@ -68,7 +72,7 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                 challanRequestDTO.setBusinessService(applicationConfiguration.getMgramsevaPspclBusinessService());
                 challanRequestDTO.setConsumerType(applicationConfiguration.getMgramsevaPspclConsumerType());
                 challanRequestDTO.setTypeOfExpense(applicationConfiguration.getMgramsevaPspclTypeOfExpense());
-                challanRequestDTO.setVendor(mgramsevaVendorRepository.getVendorIdByTenantId(mgramsevaTenantId));
+                challanRequestDTO.setVendor(mgramsevaVendorService.getVendorIdByTenantId(mgramsevaTenantId, PSPCL_VENDOR_NAME));
                 challanRequestDTO.setVendorName(applicationConfiguration.getMgramsevaPspclVendorName());
                 challanRequestDTO.setBillDate(fiscalEvent.getEventTime());
                 challanRequestDTO.setIsBillPaid(false);
@@ -90,7 +94,7 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                         fiscalEventAmount.getAmount().doubleValue());
             }
         } else {
-            throw new GenericCustomException(PSPCL, "Content missing from fiscal event " + fiscalEvent.getId());
+            throw new GenericCustomException(PSPCL, "Content missing from fiscal event " + fiscalEvent);
         }
     }
 
