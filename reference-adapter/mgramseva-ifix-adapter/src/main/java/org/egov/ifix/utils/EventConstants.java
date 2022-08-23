@@ -87,7 +87,6 @@ public class EventConstants {
     public static final String USER_TYPE = "userType";
     public static final String CLIENT_SECRET = "client_secret";
     public static final String CLIENT_ID = "client_id";
-    public static final String PSPCL_VENDOR_NAME = "TATA";
     public static final String OWNER_ROLE_CITIZEN = "CITIZEN";
 
 }
