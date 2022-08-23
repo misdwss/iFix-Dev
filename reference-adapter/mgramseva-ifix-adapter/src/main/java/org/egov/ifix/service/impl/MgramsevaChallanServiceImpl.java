@@ -72,7 +72,8 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                 challanRequestDTO.setBusinessService(applicationConfiguration.getMgramsevaPspclBusinessService());
                 challanRequestDTO.setConsumerType(applicationConfiguration.getMgramsevaPspclConsumerType());
                 challanRequestDTO.setTypeOfExpense(applicationConfiguration.getMgramsevaPspclTypeOfExpense());
-                challanRequestDTO.setVendor(mgramsevaVendorService.getVendorIdByTenantId(mgramsevaTenantId, PSPCL_VENDOR_NAME));
+                challanRequestDTO.setVendor(mgramsevaVendorService.getVendorIdByTenantId(mgramsevaTenantId,
+                        applicationConfiguration.getMgramsevaPspclVendorName()));
                 challanRequestDTO.setVendorName(applicationConfiguration.getMgramsevaPspclVendorName());
                 challanRequestDTO.setBillDate(fiscalEvent.getEventTime());
                 challanRequestDTO.setIsBillPaid(false);

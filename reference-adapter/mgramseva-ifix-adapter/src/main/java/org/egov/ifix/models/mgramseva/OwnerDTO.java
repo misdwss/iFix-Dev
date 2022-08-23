@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,4 +29,6 @@ public class OwnerDTO {
     private String emailId;
     @JsonProperty("mobileNumber")
     private String mobileNumber;
+    @JsonProperty("roles")
+    private List<RoleDTO> roles;
 }

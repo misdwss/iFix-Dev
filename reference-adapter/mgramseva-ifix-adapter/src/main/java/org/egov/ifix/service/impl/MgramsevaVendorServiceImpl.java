@@ -90,6 +90,11 @@ public class MgramsevaVendorServiceImpl implements MgramsevaVendorService {
      * @return
      */
     public @NotNull VendorCreateRequestDTO wrapVendorCreateRequestData(@NotNull String tenantId, @NotNull String name) {
+        RoleDTO role = new RoleDTO();
+        role.setTenantId(tenantId);
+        role.setName(OWNER_ROLE_CITIZEN);
+        role.setCode(OWNER_ROLE_CITIZEN);
+
         OwnerDTO owner = OwnerDTO.builder().build();
         owner.setTenantId(tenantId);
         owner.setName(name);
@@ -101,6 +106,8 @@ public class MgramsevaVendorServiceImpl implements MgramsevaVendorService {
 //      It is not fixed yet, it's just providing random mobile no with 10 digit. Needs to be implemented by user info.
         owner.setMobileNumber(
                 String.valueOf(ThreadLocalRandom.current().nextLong(10000_11111L, 10000_99999L)));
+        owner.setRoles(Collections.singletonList(role));
+
         LocalityDTO locality = LocalityDTO.builder().build();
         locality.setCode(applicationConfiguration.getVendorOwnerLocalityCode());
 
