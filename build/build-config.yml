@@ -36,6 +36,11 @@ config:
       - work-dir: "core/ifix-zuul"
         image-name: "ifix-zuul"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/domain-services/ifix-es-pipeline"
+    build:
+      - work-dir: "domain-services/ifix-es-pipeline"
+        image-name: "ifix-es-pipeline"
+        dockerfile: "build/maven/Dockerfile"
   - name: "builds/iFix/reference-adapter/ifix-department-entity-service"
     build:
       - work-dir: "reference-adapter/ifix-department-entity-service"
