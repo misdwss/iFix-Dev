@@ -28,7 +28,8 @@ public class FiscalDataEnrichmentService {
         HashMap<String, String> hierarchyMap = new HashMap<>();
 
         ancestryList.forEach(ancestry -> {
-            hierarchyMap.put((String)ancestry.get("type"), (String)ancestry.get("code"));
+            if(ancestry.containsKey("type") && ancestry.containsKey("code"))
+                hierarchyMap.put((String)ancestry.get("type"), (String)ancestry.get("code"));
         });
 
         incomingData.getFiscalEvent().setHierarchyMap(hierarchyMap);

@@ -33,6 +33,9 @@ public class IfixElasticSearchPipelineListener {
     @Autowired
     private Producer producer;
 
+    @Value("${fiscal.event.es.push.topic}")
+    private String indexFiscalEventsTopic;
+
 
     /**
      * Kafka consumer
@@ -45,7 +48,7 @@ public class IfixElasticSearchPipelineListener {
         try {
             FiscalEventRequest incomingData = objectMapper.convertValue(record, FiscalEventRequest.class);
             fiscalDataEnrichmentService.enrichFiscalData(incomingData);
-            producer.push("index-fiscal-data", incomingData);
+            producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
         }
