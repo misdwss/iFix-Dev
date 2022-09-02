@@ -1,17 +1,49 @@
 package org.egov.ifixespipeline.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.egov.ifixespipeline.models.Ancestry;
-import org.egov.ifixespipeline.models.FiscalEventRequest;
+import org.egov.common.contract.request.RequestHeader;
+import org.egov.ifixespipeline.models.*;
+import org.egov.ifixespipeline.repository.ServiceRequestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 public class FiscalDataEnrichmentService {
+
+    @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Value("${ifix.department.entity.service.host}")
+    private String ifixDeptEntityServiceHost;
+
+    @Value("${ifix.department.entity.search.endpoint}")
+    private String ifixDeptEntityServiceSearchEndpoint;
+
+    private HashMap<Integer, String> loadDepartmentHierarchyLevel(String tenantId){
+        DepartmentHierarchyLevelSearchCriteria criteria = DepartmentHierarchyLevelSearchCriteria.builder().tenantId(tenantId).build();
+        DepartmentHierarchyLevelSearchRequest request = DepartmentHierarchyLevelSearchRequest.builder().criteria(criteria).requestHeader(new RequestHeader()).build();
+        Object result = serviceRequestRepository.fetchResult(getIfixDepartmentEntityUri(), request);
+        DepartmentHierarchyLevelResponse response = objectMapper.convertValue(result, DepartmentHierarchyLevelResponse.class);
+        HashMap<Integer, String> hierarchyLevelVsLabelMap = new HashMap<>();
+        response.getDepartmentHierarchyLevel().forEach(hierarchyObject -> {
+            if(!hierarchyLevelVsLabelMap.containsKey(hierarchyObject.getLevel()))
+                hierarchyLevelVsLabelMap.put(hierarchyObject.getLevel(), hierarchyObject.getLabel());
+        });
+        return hierarchyLevelVsLabelMap;
+    }
+
     public void enrichFiscalData(FiscalEventRequest incomingData){
         HashMap<String, Object> attributes = (HashMap<String, Object>) incomingData.getFiscalEvent().getAttributes();
 
@@ -27,13 +59,21 @@ public class FiscalDataEnrichmentService {
 
         HashMap<String, String> hierarchyMap = new HashMap<>();
 
+        HashMap<Integer, String> hierarchyLevelVsLabelMap = loadDepartmentHierarchyLevel(incomingData.getFiscalEvent().getTenantId());
+
         ancestryList.forEach(ancestry -> {
-            if(ancestry.containsKey("type") && ancestry.containsKey("code"))
-                hierarchyMap.put((String)ancestry.get("type"), (String)ancestry.get("code"));
+            if(ancestry.containsKey("hierarchyLevel") && ancestry.containsKey("code"))
+                hierarchyMap.put(hierarchyLevelVsLabelMap.get(ancestry.get("hierarchyLevel")), (String)ancestry.get("code"));
         });
 
         incomingData.getFiscalEvent().setHierarchyMap(hierarchyMap);
 
         log.info(incomingData.getFiscalEvent().toString());
+    }
+
+    private StringBuilder getIfixDepartmentEntityUri(){
+        StringBuilder uri = new StringBuilder(ifixDeptEntityServiceHost);
+        uri.append(ifixDeptEntityServiceSearchEndpoint);
+        return uri;
     }
 }
