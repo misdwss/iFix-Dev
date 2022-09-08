@@ -17,6 +17,7 @@ import { checkCurrentScreen } from "../components/DSSCard";
 import FilterContext from "../components/FilterContext";
 import Filters from "../components/Filters";
 import FiltersNational from "../components/FiltersNational";
+import IfixFilters from "../components/IfixFilters";
 import Layout from "../components/Layout";
 
 const key = "DSS_FILTERS";
@@ -56,6 +57,7 @@ const DashBoard = ({ stateCode }) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const isNational = checkCurrentScreen();
   const { moduleCode } = useParams();
+  const [department, setDepartnemt] = useState({});
 
   const language = Digit.StoreData.getCurrentLanguage();
 
@@ -191,6 +193,46 @@ const DashBoard = ({ stateCode }) => {
     }
   }, [tabArray]);
 
+  let isEnableIFixFilter = !isLoading && dashboardConfig?.[0]?.name.includes("DSS_IFIX_DASHBOARD") ? true : false;
+  
+  const { data: departments, isLoading: isDeptLoading } = Digit.Hooks.dss.useGetDepartments(stateCode, {
+    enabled: isEnableIFixFilter,
+    select: (data) => {
+      if (data.department) {
+        // let deptList = data.department.filter((dept) => { if (!dept.parent) return dept; });
+        let deptList = data.department;
+        setDepartnemt(deptList[0]);
+        setFilters({...filters, department: deptList?.[0]?.code})
+        return deptList;
+      };
+      return [];
+    },
+  });
+
+  const { data: hierarchyLevels, isLoading: isHierarchyMetaLoading } =  Digit.Hooks.dss.useGetHierarchyMetaData(stateCode, department?.id, {
+    enabled: isEnableIFixFilter && !isDeptLoading,
+    select: (data) => {
+      if (data.departmentHierarchyLevel) {
+        return data.departmentHierarchyLevel
+      };
+      return [];
+    },
+  });
+  
+  const { data: hierarchyList, isLoading: isHierarchyLoading } = Digit.Hooks.dss.useGetHierarchy(stateCode, department?.id, {
+    enabled: isEnableIFixFilter && !isDeptLoading,
+    select: (data) => {
+      if (data.departmentEntity) {
+        return data.departmentEntity
+      };
+      return [];
+    },
+  });
+
+  const changeDepartment = (e) => {
+    setDepartnemt(e);
+  }
+
   const shareOptions =
     // navigator.share
     //   ? [
@@ -301,18 +343,35 @@ const DashBoard = ({ stateCode }) => {
             closeFilters={() => setIsFilterModalOpen(false)}
             isNational={isNational}
           />
-        ) : (
-          <Filters
-            t={t}
-            showModuleFilter={!isNational && dashboardConfig?.[0]?.name.includes("OVERVIEW") ? true : false}
-            services={screenConfig}
-            ulbTenants={isNational ? nationalInfo : ulbTenants}
-            isOpen={isFilterModalOpen}
-            closeFilters={() => setIsFilterModalOpen(false)}
-            isNational={isNational}
-            showDateRange={dashboardConfig?.[0]?.name.includes("DSS_FINANCE_DASHBOARD") ? false : true}
-          />
-        )}
+        ) : 
+          isEnableIFixFilter ? (
+            <IfixFilters
+              t={t}
+              showModuleFilter={false}
+              services={screenConfig}
+              ulbTenants={isNational ? nationalInfo : ulbTenants}
+              departments={departments}
+              hierarchyLevels={hierarchyLevels}
+              hierarchyList={hierarchyList}
+              isOpen={isFilterModalOpen}
+              closeFilters={() => setIsFilterModalOpen(false)}
+              isNational={isNational}
+              showDateRange={true}
+              changeDepartment={changeDepartment}
+            />
+          ) : (
+            <Filters
+              t={t}
+              showModuleFilter={!isNational && dashboardConfig?.[0]?.name.includes("OVERVIEW") ? true : false}
+              services={screenConfig}
+              ulbTenants={isNational ? nationalInfo : ulbTenants}
+              isOpen={isFilterModalOpen}
+              closeFilters={() => setIsFilterModalOpen(false)}
+              isNational={isNational}
+              showDateRange={dashboardConfig?.[0]?.name.includes("DSS_FINANCE_DASHBOARD") ? false : true}
+            />
+          )
+        }
         {filters?.filters?.tenantId?.length > 0 && (
           <div className="tag-container">
             {!showFilters &&

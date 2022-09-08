@@ -11,6 +11,14 @@
     margin-left: 5%;
   }
 
+  .ifix-filters-input {
+    margin-left: 0% !important;
+  }
+
+  .ifix-filters-input:not(:last-of-type) {
+    margin-right: 2%;
+  }
+
   .switch-wrapper {
     display: flex;
     justify-content: space-between;
