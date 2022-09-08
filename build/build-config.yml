@@ -36,6 +36,16 @@ config:
       - work-dir: "domain-services/ifix-es-pipeline"
         image-name: "ifix-es-pipeline"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/core/egov-indexer"
+    build:
+      - work-dir: "core/egov-indexer"
+        image-name: "egov-indexer"
+        dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/core/dashboard-analytics"
+    build:
+      - work-dir: "core/dashboard-analytics"
+        image-name: "dashboard-analytics"
+        dockerfile: "build/maven/Dockerfile"
   - name: "builds/iFix/core/ifix-zuul"
     build:
       - work-dir: "core/ifix-zuul"
