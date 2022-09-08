@@ -1,0 +1,19 @@
+
+h
+java:S3776!"RRefactor this method to reduce its Cognitive Complexity from 55 to the 15 allowed.(îò‰’
+>
+java:S1125*"(Remove the unnecessary boolean literals.(å­¯
+V	java:S125-"<This block of commented-out lines of code should be removed.(Í©œ¯úÿÿÿÿ
+B
+java:S1602/",Remove useless curly braces around statement(¦ûøó
+\
+java:S3457a"AFormat specifiers should be used instead of string concatenation.(ÎÒ½¤ÿÿÿÿÿ
+G
+java:S1172s",Remove this unused method parameter "limit".(œÏş©ûÿÿÿÿ
+Q	java:S125"<This block of commented-out lines of code should be removed.(™…†È
+u
+java:S2293†"YReplace the type specification in this constructor call with the diamond operator ("<>").(“ñ¾Úùÿÿÿÿ
+J
+java:S1066;"/Merge this if statement with the enclosing one.(÷×É“úÿÿÿÿ
+R
+java:S2629a"7Use the built-in formatting to construct this argument.(ÎÒ½¤ÿÿÿÿÿ

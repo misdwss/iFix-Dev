@@ -1,0 +1,11 @@
+
+o
+java:S3776%"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(îò‰’8€«û³û/
+d
+java:S1854,"BRemove this useless assignment to local variable "headerPlotList".(ÈÑø§øÿÿÿÿ8«û³û/
+I
+java:S16026",Remove useless curly braces around statement(¦ûøó8‹«û³û/
+X	java:S125A"<This block of commented-out lines of code should be removed.(Ò¨¢8—«û³û/
+_
+java:S1612G"=Replace this lambda with method reference 'JsonNode::asLong'.(ÉÒ¹¦ùÿÿÿÿ8œ«û³û/
+]	java:S125O"<This block of commented-out lines of code should be removed.(»…¦òùÿÿÿÿ8Ÿ«û³û/

@@ -1,0 +1,28 @@
+
+a	java:S112¸"FDefine and throw a dedicated exception instead of using a generic one.(¶Ô›ãÿÿÿÿÿ
+n
+java:S3776©"RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(óñìªúÿÿÿÿ
+2
+java:S3626È"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626Ì"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626Ğ"Remove this redundant jump.(ÉŠ©ƒ
+2
+java:S3626Ô"Remove this redundant jump.(ÉŠ©ƒ
+V
+java:S1117ª":Rename "mapper" which hides the field declared at line 84.(ĞÏáúÿÿÿÿ
+O
+java:S1874¯"8Remove this use of "ESCAPE_NON_ASCII"; it is deprecated.(™êŒ
+t	java:S135µ"YReduce the total number of break and continue statements in this loop to use at most one.(İ“ü×şÿÿÿÿ
+t	java:S135»"YReduce the total number of break and continue statements in this loop to use at most one.(†©¹§ûÿÿÿÿ
+F
+java:S1066"/Merge this if statement with the enclosing one.(§Â˜„
+Q
+java:S1141À"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+F
+java:S5411¼"*Use the primitive boolean expression here.(¯Ó˜…ûÿÿÿÿ
+A
+java:S5411œ"*Use the primitive boolean expression here.(„êÒè
+A
+java:S5411®"*Use the primitive boolean expression here.(¾ÙÜ¡

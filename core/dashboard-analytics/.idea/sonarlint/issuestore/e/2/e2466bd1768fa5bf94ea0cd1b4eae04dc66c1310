@@ -1,0 +1,41 @@
+
+Q
+java:S1854:";Remove this useless assignment to local variable "reqBody".(Şİ–±
+W
+java:S34577"AFormat specifiers should be used instead of string concatenation.(•– Ü
+W
+java:S34578"AFormat specifiers should be used instead of string concatenation.(ì¿ÍÉ
+B
+java:S1481:",Remove this unused "reqBody" local variable.(Şİ–±
+W
+java:S3457@"AFormat specifiers should be used instead of string concatenation.(ğÓæ£
+\
+java:S3457D"AFormat specifiers should be used instead of string concatenation.(ÈÌ»¬şÿÿÿÿ
+W
+java:S3457X"AFormat specifiers should be used instead of string concatenation.(‘¨Ã®
+W
+java:S3457b"AFormat specifiers should be used instead of string concatenation.(ğÓæ£
+W
+java:S3457e"AFormat specifiers should be used instead of string concatenation.(ñ²“ˆ
+W
+java:S3457|"AFormat specifiers should be used instead of string concatenation.(ğÓæ£
+W
+java:S3457"AFormat specifiers should be used instead of string concatenation.(©ëÌÈ
+Y
+java:S4719š"=Replace Charset.forName() call with StandardCharsets.US_ASCII(É×Ùóûÿÿÿÿ
+c
+java:S1128"HRemove this unused import 'org.springframework.web.client.RestTemplate'.(Îö¼Şûÿÿÿÿ
+p
+java:S1192@"ZDefine a constant instead of duplicating this literal "RestTemplate response :- " 3 times.(ğÓæ£
+M
+java:S26297"7Use the built-in formatting to construct this argument.(•– Ü
+M
+java:S26298"7Use the built-in formatting to construct this argument.(ì¿ÍÉ
+M
+java:S2629@"7Use the built-in formatting to construct this argument.(ğÓæ£
+M
+java:S2629X"7Use the built-in formatting to construct this argument.(‘¨Ã®
+M
+java:S2629b"7Use the built-in formatting to construct this argument.(ğÓæ£
+M
+java:S2629|"7Use the built-in formatting to construct this argument.(ğÓæ£

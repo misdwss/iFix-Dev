@@ -1,0 +1,65 @@
+
+a	java:S112Ê"FDefine and throw a dedicated exception instead of using a generic one.(¼ÿ¾¹ÿÿÿÿÿ
+Q	java:S1254"<This block of commented-out lines of code should be removed.(Ôˆç¥
+Q	java:S125;"<This block of commented-out lines of code should be removed.(Ä‹Î–
+P	java:S125R"<This block of commented-out lines of code should be removed.(Óæ§z
+Q	java:S125\"<This block of commented-out lines of code should be removed.(©Ş’Ñ
+V	java:S125s"<This block of commented-out lines of code should be removed.(®¸»òúÿÿÿÿ
+W	java:S125©"<This block of commented-out lines of code should be removed.(ØŒ ßøÿÿÿÿ
+M
+java:S1135w"2Complete the task associated to this TODO comment.(ÕÌ®şÿÿÿÿ
+?	java:S108È")Either remove or fill this block of code.(”ı¾
+L
+java:S1172ö"0Remove this unused method parameter "chartType".(ŸÈÙÓûÿÿÿÿ
+Q	java:S125Ğ"<This block of commented-out lines of code should be removed.(ÓÕÍv
+W	java:S125á"<This block of commented-out lines of code should be removed.(¹ Ùíûÿÿÿÿ
+R	java:S125ğ"<This block of commented-out lines of code should be removed.(ßÎ¶‡
+R	java:S125 "<This block of commented-out lines of code should be removed.(Å€ø·
+R	java:S125Ì"<This block of commented-out lines of code should be removed.(ä÷ÚÙ
+W	java:S125ã"<This block of commented-out lines of code should be removed.(õø‡ìúÿÿÿÿ
+6
+java:S2129¡" Remove this "Double" constructor(øŠ“{
+6
+java:S2129¡" Remove this "Double" constructor(øŠ“{
+X
+java:S1854Æ"<Remove this useless assignment to local variable "aggrNode".(–Ìõùÿÿÿÿ
+I
+java:S1481Æ"-Remove this unused "aggrNode" local variable.(–Ìõùÿÿÿÿ
+B
+java:S1874Ç"+Remove this use of "put"; it is deprecated.(ßÃÅï
+t
+java:S2139È"XEither log this exception and handle it, or rethrow it with some contextual information.(±Ÿ—±ÿÿÿÿÿ
+]
+java:S3457É"AFormat specifiers should be used instead of string concatenation.(°ÅÁÕıÿÿÿÿ
+K
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ
+F
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ
+F
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ
+k
+java:S1128"PRemove this unused import 'org.elasticsearch.action.search.MultiSearchResponse'.(‘¸øËüÿÿÿÿ
+f
+java:S1128"KRemove this unused import 'org.elasticsearch.action.search.SearchResponse'.(¿å‡ùÿÿÿÿ
+e
+java:S1128"ORemove this unused import 'org.elasticsearch.search.aggregations.Aggregations'.(»–õ£
+e
+java:S1128"JRemove this unused import 'com.fasterxml.jackson.core.JsonParseException'.(¸Ôéÿıÿÿÿÿ
+f
+java:S1128"PRemove this unused import 'com.fasterxml.jackson.databind.JsonMappingException'.(÷™‹Í
+9
+java:S1128$"Remove this duplicated import.(¥·È†ÿÿÿÿÿ
+d
+java:S1128&"IRemove this unused import 'com.tarento.analytics.exception.AINException'.(Àò«‚ûÿÿÿÿ
+T
+java:S1128)">Remove this unused import 'com.tarento.analytics.model.Query'.(«Ğš«
+[
+java:S1128*"ERemove this unused import 'com.tarento.analytics.model.ServiceQuery'.(š‰²±
+D
+java:S1068A".Remove this unused "WeekDayMap" private field.(š‡»ô
+T
+java:S1144ö"8Remove this unused private "parseParseLongTerms" method.(ŸÈÙÓûÿÿÿÿ
+S
+java:S1144 "7Remove this unused private "getFormattedDouble" method.(üãÓÛşÿÿÿÿ
+o
+java:S2293D"YReplace the type specification in this constructor call with the diamond operator ("<>").(µÔ¶

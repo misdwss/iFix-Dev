@@ -1,0 +1,33 @@
+
+W
+java:S34573"AFormat specifiers should be used instead of string concatenation.(Üù™Â
+W
+java:S34577"AFormat specifiers should be used instead of string concatenation.(á“¿
+\
+java:S3457:"AFormat specifiers should be used instead of string concatenation.(è·Í—ûÿÿÿÿ
+B
+java:S1125T"'Remove the unnecessary boolean literal.(©’Ô›ûÿÿÿÿ
+_
+java:S3358U"DExtract this nested ternary operation into an independent statement.(„Ü±Öüÿÿÿÿ
+U
+java:S1854v":Remove this useless assignment to local variable "bucket".(µ®¤±úÿÿÿÿ
+J
+java:S1172s"/Remove this unused method parameter "interval".(ËîÓƒùÿÿÿÿ
+G
+java:S1874‚"+Remove this use of "put"; it is deprecated.(­£à¶ÿÿÿÿÿ
+U
+java:S1854ˆ"9Remove this useless assignment to local variable "nodes".(Öß¾·øÿÿÿÿ
+F
+java:S1481ˆ"*Remove this unused "nodes" local variable.(Öß¾·øÿÿÿÿ
+K
+java:S2864Š"4Iterate over the "entrySet" instead of the "keySet".(íÀ¸Ÿ
+X
+java:S3457”"AFormat specifiers should be used instead of string concatenation.(ˆšØî
+B
+java:S1168Ÿ"+Return an empty collection instead of null.(¥¹ï
+M
+java:S26293"7Use the built-in formatting to construct this argument.(Üù™Â
+M
+java:S26297"7Use the built-in formatting to construct this argument.(á“¿
+R
+java:S2629:"7Use the built-in formatting to construct this argument.(è·Í—ûÿÿÿÿ
