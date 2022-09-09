@@ -83,3 +83,8 @@ config:
       - work-dir: "reference-adapter/pspcl-ifix-adapter"
         image-name: "pspcl-ifix-adapter"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/ifix/frontend/micro-ui/digit-ui"
+    build:
+      - work-dir: frontend/micro-ui/
+        image-name: ifix-digit-ui
+        dockerfile: frontend/micro-ui/web/docker/Dockerfile
