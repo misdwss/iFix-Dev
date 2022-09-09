@@ -169,4 +169,8 @@ public class FiscalEventService {
 
         return fiscalEvents;
     }
+
+    public Long getFiscalEventsCount(FiscalEventPlainSearchRequest body) {
+        return eventRepository.getFiscalEventsCount(body.getCriteria());
+    }
 }
