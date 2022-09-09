@@ -86,5 +86,5 @@ config:
   - name: "builds/iFix/frontend/micro-ui/digit-ui"
     build:
       - work-dir: frontend/micro-ui/
-        image-name: ifix-digit-ui
+        image-name: digit-ui
         dockerfile: frontend/micro-ui/web/docker/Dockerfile
