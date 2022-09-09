@@ -11,6 +11,7 @@ RUN ls -lah
 
 #RUN node web/envs.js
 RUN cd web/ \
+    && ls -lah \
     && node envs.js \
     &&  ./install-deps.sh \
     && yarn install \
