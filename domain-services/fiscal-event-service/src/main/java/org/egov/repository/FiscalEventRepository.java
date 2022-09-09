@@ -31,4 +31,10 @@ public class FiscalEventRepository {
         Query searchQuery = eventQueryBuilder.buildPlainSearchQuery(searchCriteria);
         return (mongoTemplate.find(searchQuery, Object.class, "fiscal_event"));
     }
+
+    public long getFiscalEventsCount(PlainsearchCriteria criteria) {
+        criteria.setIsCountCall(Boolean.TRUE);
+        Query countQuery = eventQueryBuilder.buildPlainSearchQuery(criteria);
+        return (mongoTemplate.count(countQuery, Integer.class, "fiscal_event"));
+    }
 }

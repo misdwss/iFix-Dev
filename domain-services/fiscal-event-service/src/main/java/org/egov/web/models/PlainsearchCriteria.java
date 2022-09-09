@@ -1,5 +1,6 @@
 package org.egov.web.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -18,6 +19,9 @@ public class PlainsearchCriteria {
 
     @JsonProperty("limit")
     private Integer limit = null;
+
+    @JsonIgnore
+    private Boolean isCountCall = false;
 
 
 }

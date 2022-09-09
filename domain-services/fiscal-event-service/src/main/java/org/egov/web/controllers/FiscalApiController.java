@@ -70,4 +70,14 @@ public class FiscalApiController {
         return new ResponseEntity<FiscalEventResponse>(fiscalEventResponse, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/_count", method = RequestMethod.POST)
+    public ResponseEntity<FiscalEventCountResponse> fiscalEventsV1Count(@Valid @RequestBody FiscalEventPlainSearchRequest body) {
+        Long count = fiscalEventService.getFiscalEventsCount(body);
+        ResponseHeader responseHeader = responseHeaderCreator.createResponseHeaderFromRequestHeader(body.getRequestHeader(), true);
+        FiscalEventCountResponse fiscalEventCountResponse = FiscalEventCountResponse.builder().responseHeader(responseHeader)
+                .count(count).build();
+
+        return new ResponseEntity<FiscalEventCountResponse>(fiscalEventCountResponse, HttpStatus.OK);
+    }
+
 }
