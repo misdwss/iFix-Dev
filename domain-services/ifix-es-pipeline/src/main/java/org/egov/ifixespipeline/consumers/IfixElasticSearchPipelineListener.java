@@ -36,6 +36,8 @@ public class IfixElasticSearchPipelineListener {
     @Value("${fiscal.event.es.push.topic}")
     private String indexFiscalEventsTopic;
 
+    @Value("${fiscal.event.kafka.push.topic}")
+    private String fiscalEventsNewRecordsTopic;
 
     /**
      * Kafka consumer
@@ -43,11 +45,15 @@ public class IfixElasticSearchPipelineListener {
      * @param record
      * @param topic
      */
-    @KafkaListener(topics = { "${fiscal.event.kafka.push.topic}"})
+    @KafkaListener(topics = { "${fiscal.event.kafka.push.topic}", "${fiscal.event.migration.origin.push.topic}"})
     public void listen(HashMap<String, Object> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
         try {
             FiscalEventRequest incomingData = objectMapper.convertValue(record, FiscalEventRequest.class);
-            fiscalDataEnrichmentService.enrichFiscalData(incomingData);
+
+            // Enrich hierarchy map in only new records. In case of migration records, skip enrichment as they are already getting enriched in migration toolkit.
+            if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic))
+                fiscalDataEnrichmentService.enrichFiscalData(incomingData);
+
             producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
