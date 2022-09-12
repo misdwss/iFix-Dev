@@ -46,6 +46,11 @@ config:
       - work-dir: "core/dashboard-analytics"
         image-name: "dashboard-analytics"
         dockerfile: "build/maven/Dockerfile"
+  - name: "builds/iFix/core/egov-mdms-service"
+    build:
+      - work-dir: "core/egov-mdms-service"
+        image-name: "egov-mdms-service"
+        dockerfile: "build/maven/Dockerfile"
   - name: "builds/iFix/domain-services/ifix-es-pipeline"
     build:
       - work-dir: "domain-services/ifix-es-pipeline"
