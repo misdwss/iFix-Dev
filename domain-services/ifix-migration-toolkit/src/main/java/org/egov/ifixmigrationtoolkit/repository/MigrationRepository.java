@@ -9,7 +9,7 @@ public class MigrationRepository {
 
     private static final String RESUME_FROM_QUERY = "SELECT COALESCE( (SELECT resumefrom FROM ifix_migration_progress WHERE tenantid = {TENANTID_PLACEHOLDER} ORDER BY createdtime DESC LIMIT 1\n" +
             ") , 0)";
-
+    /*
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -17,4 +17,5 @@ public class MigrationRepository {
         Integer resumeFrom = jdbcTemplate.queryForObject(RESUME_FROM_QUERY.replace("{TENANTID_PLACEHOLDER}", "'" + tenantId + "'"), Integer.class);
         return resumeFrom;
     }
+     */
 }

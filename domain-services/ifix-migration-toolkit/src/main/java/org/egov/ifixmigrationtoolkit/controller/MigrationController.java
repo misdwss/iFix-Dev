@@ -9,7 +9,6 @@ import org.egov.ifixmigrationtoolkit.service.MigrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,9 +23,6 @@ public class MigrationController {
 
     @Autowired
     ObjectMapper objectMapper;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
 
     @Autowired
     MigrationService migrationService;

@@ -95,7 +95,7 @@ public class MigrationService {
 
     public void migrateData(MigrationRequest request){
         hierarchyLevelVsLabelMap = loadDepartmentHierarchyLevel(request.getTenantId());
-        Integer resumeFrom = repository.getOffsetToResumeFrom(request.getTenantId());
+        Integer resumeFrom = 0;
         PlainsearchCriteria criteria = PlainsearchCriteria.builder().tenantId(request.getTenantId()).build();
         FiscalEventPlainSearchRequest plainSearchRequest = FiscalEventPlainSearchRequest.builder().criteria(criteria).build();
         plainSearchRequest.setRequestHeader(request.getRequestHeader());
