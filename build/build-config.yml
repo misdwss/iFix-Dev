@@ -36,10 +36,10 @@ config:
       - work-dir: "domain-services/ifix-es-pipeline"
         image-name: "ifix-es-pipeline"
         dockerfile: "build/maven/Dockerfile"
-  - name: "builds/iFix/domain-services/ifix-es-pipeline"
+  - name: "builds/iFix/domain-services/ifix-migration-toolkit"
     build:
-      - work-dir: "domain-services/ifix-es-pipeline"
-        image-name: "ifix-es-pipeline"
+      - work-dir: "domain-services/ifix-migration-toolkit"
+        image-name: "ifix-migration-toolkit"
         dockerfile: "build/maven/Dockerfile"
   - name: "builds/iFix/core/ifix-zuul"
     build:
