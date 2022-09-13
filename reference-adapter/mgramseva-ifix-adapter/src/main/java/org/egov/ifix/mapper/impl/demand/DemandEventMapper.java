@@ -67,7 +67,7 @@ public class DemandEventMapper implements EventMapper {
                         .referenceId(demandJO.get(ID).getAsString())
                         .parentEventId(null)
                         .parentReferenceId(null)
-                        .amountDetails(getAmountDetails(demandJO, data)).build();
+                        .amountDetails(getAmountDetails(demandJO)).build();
 
                 fiscalEventList.add(fiscalEvent);
             });
@@ -99,12 +99,12 @@ public class DemandEventMapper implements EventMapper {
         return referenceIdList;
     }
 
+
     /**
      * @param demand
-     * @param data
      * @return
      */
-    private List<Amount> getAmountDetails(JsonObject demand, JsonObject data) {
+    private List<Amount> getAmountDetails(JsonObject demand) {
         List<Amount> amountList = new ArrayList<>();
         Long taxPeriodFrom = demand.get(BILL_DEMAND_FROM_BILLING_PERIOD).getAsLong();
         Long taxPeriodTo = demand.get(BILL_DEMAND_TO_BILLING_PERIOD).getAsLong();
