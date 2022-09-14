@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 2.1.0 - 2022-09-14
+
+- It runs quartz cron job for regular event (PSPCL) check on fiscal event service.
+- After event (PSPCL) collection.
+  - It reaches to mgramseva echallan service for challan creation.
+  - It updates payment status by collection service.
+- It updates every event(PSPCL) status into table.
+
 ## 2.0.1 - 2022-05-11
 - Fixed EventTime mapping in the Event Mapper
 
