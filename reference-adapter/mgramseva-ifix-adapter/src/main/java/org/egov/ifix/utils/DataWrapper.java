@@ -5,12 +5,14 @@ import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +94,8 @@ public class DataWrapper {
 
     /**
      * It calculates time from cron job expression <strong>samplejob.frequency</strong>.
-     * It also check expression length - which is strict 6, any other length value will end up in exception.
+     * It also check expression length - which is strict 6.
+     * It does not throw exception in case of length is greater 6.
      *
      * @return it returns in millisecond with additional overlap minutes.
      */
@@ -105,27 +108,44 @@ public class DataWrapper {
         }else {
             Long overlapTime = Long.parseLong(plainTime) * 60 * 1000;
 
-            String cronExpression = applicationConfiguration.getSampleJobFrequency();
-            String[] fields = StringUtils.tokenizeToStringArray(cronExpression, " ");
+            String cronExpression = getValidatedCronExpression(applicationConfiguration.getSampleJobFrequency());
 
-            if (fields == null || fields.length != 6) {
-                log.error(String.format(">>>>> Cron expression must consist of 6 fields (found %d in \"%s\")",
-                        fields.length, cronExpression));
+            CronSequenceGenerator generator = new CronSequenceGenerator(cronExpression);
+            Date nextRunTime = generator.next(new Date());
 
-                throw new GenericCustomException("CRON_EXPRESSION",
-                        String.format("Cron expression must consist of 6 fields (found %d in \"%s\")",
-                                fields.length, cronExpression));
-            } else {
-                CronSequenceGenerator generator = new CronSequenceGenerator(cronExpression);
-                Date nextRunTime = generator.next(new Date());
+            Date nextToNextExecution = generator.next(nextRunTime);
+            Duration durationBetweenExecutions = Duration.between(nextRunTime.toInstant(),
+                    nextToNextExecution.toInstant());
 
-                Date nextToNextExecution = generator.next(nextRunTime);
-                Duration durationBetweenExecutions = Duration.between(nextRunTime.toInstant(),
-                        nextToNextExecution.toInstant());
-
-                return durationBetweenExecutions.toMillis() + overlapTime;
-            }
+            return durationBetweenExecutions.toMillis() + overlapTime;
         }
+    }
+
+
+    /**
+     * @param expression It can't be null, before breaking this condition cron job will crash.
+     * @return
+     */
+    private String getValidatedCronExpression(@NonNull String expression) {
+        StringBuilder cronExpBuilder = new StringBuilder();
+        String[] fields = StringUtils.tokenizeToStringArray(expression, " ");
+
+        if (fields.length > 6) {
+            log.warn(">>>>> Cron expression elements are more than six and we are considering only six element other " +
+                    "elements will be ignored");
+
+            for (int expIndex = 0; expIndex < fields.length - 1; expIndex++) {
+                if (expIndex < 5) {
+                    cronExpBuilder = cronExpBuilder.append(fields[expIndex] + " ");
+                }else {
+                    cronExpBuilder = cronExpBuilder.append(fields[expIndex]);
+                }
+            }
+        }else {
+            cronExpBuilder = cronExpBuilder.append(expression);
+        }
+
+        return cronExpBuilder.toString();
     }
 
 }
