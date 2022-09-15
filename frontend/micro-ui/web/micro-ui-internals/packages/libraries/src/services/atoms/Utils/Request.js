@@ -6,7 +6,7 @@ import Axios from "axios";
  * @author jagankumar-egov
  *
  */
-Axios.defaults.baseURL = 'https://mgramseva-qa.egov.org.in';
+// Axios.defaults.baseURL = 'https://mgramseva-qa.egov.org.in';
 Axios.interceptors.response.use(
   (res) => res,
   (err) => {
