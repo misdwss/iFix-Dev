@@ -82,7 +82,7 @@ public class FiscalEventRepository {
     private FiscalEventSearchRequestDTO wrapFiscalEventSearchRequest(String receiver, String eventType) {
         FiscalEventSearchRequestDTO fiscalEventSearchRequestDTO = new FiscalEventSearchRequestDTO();
 
-        Long intervalTimeInMilliSecond = dataWrapper.getValidSearchIntervalTime();
+        Long intervalTimeInMilliSecond = dataWrapper.translateCronExpressionIntoMilliSecond();
 
         Long toIngestionTime = System.currentTimeMillis();
         Long fromIngestionTime = toIngestionTime - intervalTimeInMilliSecond;
@@ -107,7 +107,7 @@ public class FiscalEventRepository {
         List<FiscalEvent> filteredFiscalEvent = new ArrayList<>();
 
         if (fiscalEventList != null && !fiscalEventList.isEmpty()) {
-            Long intervalTimeInMilliSecond = dataWrapper.getValidSearchIntervalTime();
+            Long intervalTimeInMilliSecond = dataWrapper.translateCronExpressionIntoMilliSecond();
             long endTime = System.currentTimeMillis();
             long startTime = endTime - intervalTimeInMilliSecond;
 

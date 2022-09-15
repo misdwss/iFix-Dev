@@ -5,9 +5,13 @@ import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.ErrorDataModel;
 import org.egov.ifix.models.FiscalEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.NotNull;
+import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -87,16 +91,40 @@ public class DataWrapper {
     }
 
     /**
-     * @return
+     * It calculates time from cron job expression <strong>samplejob.frequency</strong>.
+     * It also check expression length - which is strict 6, any other length value will end up in exception.
+     *
+     * @return it returns in millisecond with additional overlap minutes.
      */
-    public Long getValidSearchIntervalTime() {
-        String plainTime = applicationConfiguration.getIfixFiscalEventSearchTimeIntervalMinutes();
+    public @NotNull Long translateCronExpressionIntoMilliSecond() {
+        String plainTime = applicationConfiguration.getIfixFiscalEventSearchTimeOverlapMinutes();
 
         if (!org.apache.commons.lang3.StringUtils.isNumeric(plainTime)) {
-            log.error(">>>>> Ifix fiscal event search interval time value is invalid");
-            throw new GenericCustomException(TIME, "Ifix fiscal event search interval time value is invalid");
+            log.error(">>>>> Ifix fiscal event search overlap time value is invalid");
+            throw new GenericCustomException(TIME, "Ifix fiscal event search overlap time value is invalid");
         }else {
-            return Long.parseLong(plainTime) * 60 * 1000;
+            Long overlapTime = Long.parseLong(plainTime) * 60 * 1000;
+
+            String cronExpression = applicationConfiguration.getSampleJobFrequency();
+            String[] fields = StringUtils.tokenizeToStringArray(cronExpression, " ");
+
+            if (fields == null || fields.length != 6) {
+                log.error(String.format(">>>>> Cron expression must consist of 6 fields (found %d in \"%s\")",
+                        fields.length, cronExpression));
+
+                throw new GenericCustomException("CRON_EXPRESSION",
+                        String.format("Cron expression must consist of 6 fields (found %d in \"%s\")",
+                                fields.length, cronExpression));
+            } else {
+                CronSequenceGenerator generator = new CronSequenceGenerator(cronExpression);
+                Date nextRunTime = generator.next(new Date());
+
+                Date nextToNextExecution = generator.next(nextRunTime);
+                Duration durationBetweenExecutions = Duration.between(nextRunTime.toInstant(),
+                        nextToNextExecution.toInstant());
+
+                return durationBetweenExecutions.toMillis() + overlapTime;
+            }
         }
     }
 
