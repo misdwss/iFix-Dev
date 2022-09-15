@@ -62,8 +62,8 @@ public class ApplicationConfiguration {
     @Value("${pspcl.ifix.event.receiver.name}")
     private String pspclIfixEventReceiverName;
 
-    @Value("${ifix.fiscal.event.search.time.interval.minutes}")
-    private String ifixFiscalEventSearchTimeIntervalMinutes;
+    @Value("${ifix.fiscal.event.search.time.overlap.minutes}")
+    private String ifixFiscalEventSearchTimeOverlapMinutes;
 
     @Value("${adapter.master.data.host}")
     private String adapterMasterDataHost;
@@ -163,5 +163,8 @@ public class ApplicationConfiguration {
 
     @Value("${vendor.owner.locality.code}")
     private String vendorOwnerLocalityCode;
+
+    @Value("${samplejob.frequency}")
+    private String sampleJobFrequency;
 
 }
