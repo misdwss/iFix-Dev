@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -28,9 +29,9 @@ public class MigrationController {
     MigrationService migrationService;
 
     @RequestMapping(value="/v1/_migrate", method = RequestMethod.POST)
-    public ResponseEntity<FiscalEvent> migrateDataToES(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
-        migrationService.migrateData(request);
-        return new ResponseEntity<>(new FiscalEvent(), HttpStatus.OK);
+    public ResponseEntity<?> migrateDataToES(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
+        Map<String, Object> responseMap = migrationService.migrateData(request);
+        return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 
 }

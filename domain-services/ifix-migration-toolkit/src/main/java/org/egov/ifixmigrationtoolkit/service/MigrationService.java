@@ -9,13 +9,13 @@ import org.egov.ifixmigrationtoolkit.models.*;
 import org.egov.ifixmigrationtoolkit.producer.Producer;
 import org.egov.ifixmigrationtoolkit.repository.MigrationRepository;
 import org.egov.ifixmigrationtoolkit.repository.ServiceRequestRepository;
+import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -93,27 +93,77 @@ public class MigrationService {
         return uri;
     }
 
-    public void migrateData(MigrationRequest request){
+    public Map<String, Object>  migrateData(MigrationRequest request){
         hierarchyLevelVsLabelMap = loadDepartmentHierarchyLevel(request.getTenantId());
-        Integer resumeFrom = 0;
+        Integer resumeFrom = repository.getPageNumberToResumeFrom(request.getTenantId());
+        Long numberOfRecordsMigrated = repository.getTotalNumberOfRecordsMigrated(request.getTenantId());
         PlainsearchCriteria criteria = PlainsearchCriteria.builder().tenantId(request.getTenantId()).build();
         FiscalEventPlainSearchRequest plainSearchRequest = FiscalEventPlainSearchRequest.builder().criteria(criteria).build();
         plainSearchRequest.setRequestHeader(request.getRequestHeader());
         Object countResponse = serviceRequestRepository.fetchResult(new StringBuilder(ifixFiscalEventServiceHost + "fiscal-event-service/events/v1/_count"), plainSearchRequest);
         FiscalEventCountResponse finalCountResponse = objectMapper.convertValue(countResponse, FiscalEventCountResponse.class);
         Long totalNumberOfRecords = finalCountResponse.getCount();
-        log.info("Total number of records: " + totalNumberOfRecords);
-        for(int i = resumeFrom; i <= totalNumberOfRecords/batchSize; i += 1){
+        Integer lastPageNumber = resumeFrom;
+        Long totalNumberOfRecordsMigrated = numberOfRecordsMigrated;
+        Map<String, Object> responseMap = new HashMap<>();
+        int i = resumeFrom;
+        while (Boolean.TRUE) {
             log.info("At page: " + i);
-
             plainSearchRequest.getCriteria().setOffset(i);
             plainSearchRequest.getCriteria().setLimit(batchSize);
-            Object plainSearchResponse = serviceRequestRepository.fetchResult(new StringBuilder(ifixFiscalEventServiceHost + "fiscal-event-service/events/v1/_plainsearch"), plainSearchRequest);
-            FiscalEventResponse response = objectMapper.convertValue(plainSearchResponse, FiscalEventResponse.class);
-            enrichHierarchyMapForMigration(response.getFiscalEvent());
-            producer.push("ifix-fiscal-events-migrate", ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
+            FiscalEventResponse response = null;
+            try {
+                Object plainSearchResponse = serviceRequestRepository.fetchResult(new StringBuilder(ifixFiscalEventServiceHost + "fiscal-event-service/events/v1/_plainsearch"), plainSearchRequest);
+                response = objectMapper.convertValue(plainSearchResponse, FiscalEventResponse.class);
 
-            break;
+                if(CollectionUtils.isEmpty(response.getFiscalEvent()))
+                    break;
+
+                enrichHierarchyMapForMigration(response.getFiscalEvent());
+            }catch (Exception e){
+                log.error("IFIX_MIGRATION_ERR", "Some error occurred while migrating data");
+                responseMap.put("IFIX_MIGRATION_ERR", "Error occurred while migrating data on page index: " + i);
+                responseMap.put("IFIX_MIGRATION_INFO", "Number of records migrated: " + totalNumberOfRecordsMigrated);
+                // Commit page number to resume migration from in case of any error while migrating
+                commitMigrationProgress(request.getTenantId(), i, batchSize, totalNumberOfRecordsMigrated);
+                return responseMap;
+            }
+            if(i == resumeFrom && totalNumberOfRecordsMigrated < totalNumberOfRecords){
+                seekPointerToAvoidDuplication(response, totalNumberOfRecordsMigrated, batchSize);
+            }
+            totalNumberOfRecordsMigrated += response.getFiscalEvent().size();
+            producer.push("ifix-fiscal-events-migrate", ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
+            commitMigrationProgress(request.getTenantId(), i, batchSize, totalNumberOfRecordsMigrated);
+            i += 1;
+            lastPageNumber = i;
         }
+        log.info("Number of records migrated in current session: " + totalNumberOfRecordsMigrated);
+        responseMap.put("IFIX_MIGRATION_INFO", "Number of records migrated in current session: " + totalNumberOfRecordsMigrated);
+        commitMigrationProgress(request.getTenantId(), lastPageNumber, batchSize, totalNumberOfRecordsMigrated);
+        return responseMap;
+    }
+
+    private void seekPointerToAvoidDuplication(FiscalEventResponse response, Long totalNumberOfRecordsMigrated, Integer batchSize) {
+        List<FiscalEvent> listOfFiscalEvents = new ArrayList<>();
+        Long pointer = totalNumberOfRecordsMigrated % batchSize;
+        String stringPointer = String.valueOf(pointer);
+        for(int i = Integer.valueOf(stringPointer); i <response.getFiscalEvent().size(); i++){
+            listOfFiscalEvents.add(response.getFiscalEvent().get(i));
+        }
+        response.setFiscalEvent(listOfFiscalEvents);
+        log.info("No of records to be migrated post seeking pointer - " + response.getFiscalEvent().size());
+    }
+
+    private void commitMigrationProgress(String tenantId, Integer pageNumber, Integer batchSize, Long totalNumberOfRecordsMigrated){
+        MigrationCount migrationCount = MigrationCount.builder()
+                .id(UUID.randomUUID().toString())
+                .createdTime(System.currentTimeMillis())
+                .tenantId(tenantId)
+                .pageNumber(pageNumber)
+                .batchSize(batchSize)
+                .totalNumberOfRecordsMigrated(totalNumberOfRecordsMigrated)
+                .build();
+        producer.push("migration-progress-topic", MigrationCountWrapper.builder().migrationCount(migrationCount).build());
+
     }
 }
