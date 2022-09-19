@@ -25,6 +25,16 @@ const IfixFilters = ({
   const [hierarchyListMap, setHierarchyListMap] = useState({});
   const [selected, setSelected] = useState({});
   
+  const customStyle = {
+    filterInput: {
+      marginLeft: '0%',
+      marginRight: '2%'
+    },
+    filterInputLast: {
+      marginLeft: '0%',
+      flexBasis: "16%"
+    },
+  };
 
   useEffect(() => {
     if (departments && departments.length) {
@@ -179,11 +189,11 @@ const IfixFilters = ({
         </div>
       )}
       {showDateRange && (
-        <div className="filters-input ifix-filters-input">
+        <div className="filters-input" style={customStyle.filterInput}>
           <DateRange onFilterChange={handleFilterChange} values={value?.range} t={t} />
         </div>
       )}
-      <div className={"filters-input ifix-filters-input " + (departments && departments.length>1 ? "":"display-none")}>
+      <div className={"filters-input " + (departments && departments.length>1 ? "":"display-none")} style={customStyle.filterInput}>
         <div className="mbsm">{t("ES_DSS_DEPARTMENTS")}</div>
         <Dropdown
           option={departments}
@@ -195,22 +205,22 @@ const IfixFilters = ({
       </div>
 
       {hierarchyLevelMapList && hierarchyLevelMapList.map((hierarchyLevel) => {
-            return <div className="filters-input ifix-filters-input" key={hierarchyLevel?.level}>
+            return <div className="filters-input" style={customStyle.filterInput} key={hierarchyLevel?.level}>
               <div className="mbsm">{t(hierarchyLevel?.label)}</div>
               <MultiSelectDropdown
                 options={getFilteredHierarchy(hierarchyLevel)}
                 optionsKey="name"
                 onSelect={selectHierarchyFilter(hierarchyLevel)}
                 selected={selected[hierarchyLevel.label]}
-                defaultLabel={t("ES_DSS_ALL_"+ hierarchyLevel?.label)}
-                defaultUnit={t("ES_DSS_"+ hierarchyLevel?.label)}
+                defaultLabel={t("ALL "+ hierarchyLevel?.label)}
+                defaultUnit={t(hierarchyLevel?.label)}
               />
             </div>
         })
       }
 
       {!isNational && showModuleFilter && (
-        <div className="filters-input ifix-filters-input">
+        <div className="filters-input" style={customStyle.filterInput}>
           <div className="mbsm">{t("ES_DSS_SERVICES")}</div>
           <Dropdown
             option={services}
@@ -222,7 +232,7 @@ const IfixFilters = ({
         </div>
       )}
       {showDenomination && (
-        <div className="filters-input ifix-filters-input" style={{ flexBasis: "16%" }}>
+        <div className="filters-input" style={customStyle.filterInputLast}>
           <Switch onSelect={handleFilterChange} t={t} />
         </div>
       )}
