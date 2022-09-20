@@ -105,7 +105,6 @@ const DashBoard = ({ stateCode }) => {
 
   const { data: response, isLoading } = Digit.Hooks.dss.useDashboardConfig(moduleCode);
   const { data: ulbTenants, isLoading: isUlbLoading } = Digit.Hooks.useModuleTenants("DSS");
-  const { isLoading: isMdmsLoading, data: mdmsData } = Digit.Hooks.useCommonMDMS(stateCode, "FSM", "FSTPPlantInfo");
   const [showOptions, setShowOptions] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [tabState, setTabState] = useState("");
@@ -120,10 +119,9 @@ const DashBoard = ({ stateCode }) => {
       value: filters,
       setValue: handleFilters,
       ulbTenants: isNational ? nationalInfo : ulbTenants,
-      fstpMdmsData: mdmsData,
       screenConfig: screenConfig,
     }),
-    [filters, isUlbLoading, isMdmsLoading, isServicesLoading]
+    [filters, isUlbLoading, isServicesLoading]
   );
 
   const mobileView = window.Digit.Utils.browser.isMobile();
@@ -300,8 +298,7 @@ const DashBoard = ({ stateCode }) => {
         },
       },
     ];
-
-  if (isLoading || isUlbLoading || localizationLoading || isMdmsLoading || isLoadingNAT || isServicesLoading) {
+  if (isLoading || isUlbLoading || localizationLoading || isLoadingNAT || isServicesLoading) {
     return <Loader />;
   }
   return (

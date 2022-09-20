@@ -123,6 +123,7 @@ const IfixFilters = ({
       // reset all chields
       let hierarchyLevelMapUpdated = hierarchyLevelMapList.map((hierarchy, idx) => {
         if (hierarchy.level == hierarchyLevel.level) {
+          selectedDD[hierarchy.label] = selectedHierarchies;
           let nextLevel = hierarchy.level + 1;
           childHierarchyIdList[nextLevel] = []
           hierarchy['selectedCodes'] = selectedHierarchies.map((h) => {
@@ -194,7 +195,7 @@ const IfixFilters = ({
         </div>
       )}
       <div className={"filters-input " + (departments && departments.length>1 ? "":"display-none")} style={customStyle.filterInput}>
-        <div className="mbsm">{t("ES_DSS_DEPARTMENTS")}</div>
+        <div className="mbsm">{t("ES_DSS_IFIX_DEPARTMENTS")}</div>
         <Dropdown
           option={departments}
           optionKey="name"
@@ -206,14 +207,14 @@ const IfixFilters = ({
 
       {hierarchyLevelMapList && hierarchyLevelMapList.map((hierarchyLevel) => {
             return <div className="filters-input" style={customStyle.filterInput} key={hierarchyLevel?.level}>
-              <div className="mbsm">{t(hierarchyLevel?.label)}</div>
+              <div className="mbsm">{t("ES_DSS_IFIX_"+hierarchyLevel?.label)}</div>
               <MultiSelectDropdown
                 options={getFilteredHierarchy(hierarchyLevel)}
                 optionsKey="name"
                 onSelect={selectHierarchyFilter(hierarchyLevel)}
                 selected={selected[hierarchyLevel.label]}
-                defaultLabel={t("ALL "+ hierarchyLevel?.label)}
-                defaultUnit={t(hierarchyLevel?.label)}
+                defaultLabel={t("ES_DSS_IFIX_ALL_"+ hierarchyLevel?.label)}
+                defaultUnit={t("ES_DSS_IFIX_"+hierarchyLevel?.label)}
               />
             </div>
         })
