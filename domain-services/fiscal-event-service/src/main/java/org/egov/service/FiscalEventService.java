@@ -156,7 +156,7 @@ public class FiscalEventService {
     }
 
     public List<FiscalEvent> fiscalEventsV1PlainSearchPost(FiscalEventPlainSearchRequest fiscalEventGetRequest) {
-        validator.validateFiscalEventPlainSearch(fiscalEventGetRequest);
+        //validator.validateFiscalEventPlainSearch(fiscalEventGetRequest);
 
         PlainsearchCriteria searchCriteria = fiscalEventGetRequest.getCriteria();
 
