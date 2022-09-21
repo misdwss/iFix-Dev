@@ -83,19 +83,19 @@ public class FiscalDataEnrichmentService {
         if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Demand)){
             BigDecimal totalDemandAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalDemandAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
+                totalDemandAmount = totalDemandAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalDemandAmount);
         }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Bill)){
             BigDecimal totalBillAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalBillAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
+                totalBillAmount = totalBillAmount.subtract(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalBillAmount);
         }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Receipt)){
             BigDecimal totalCollectionAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalCollectionAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
+                totalCollectionAmount = totalCollectionAmount.subtract(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalCollectionAmount);
         }
