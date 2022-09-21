@@ -6,33 +6,33 @@ import Axios from "axios";
  * @author jagankumar-egov
  *
  */
-// Axios.defaults.baseURL = 'https://mgramseva-qa.egov.org.in';
+
 Axios.interceptors.response.use(
   (res) => res,
   (err) => {
-    // const isEmployee = window.location.pathname.split("/").includes("employee");
-    // if (err?.response?.data?.Errors) {
-    //   for (const error of err.response.data.Errors) {
-    //     if (error.message.includes("InvalidAccessTokenException")) {
-    //       localStorage.clear();
-    //       sessionStorage.clear();
-    //       window.location.href =
-    //         (isEmployee ? "/digit-ui/employee/user/login" : "/digit-ui/citizen/login") +
-    //         `?from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-    //     } else if (
-    //       error?.message?.toLowerCase()?.includes("internal server error") ||
-    //       error?.message?.toLowerCase()?.includes("some error occured")
-    //     ) {
-    //       window.location.href =
-    //         (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
-    //         `?type=maintenance&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-    //     } else if (error.message.includes("ZuulRuntimeException")) {
-    //       window.location.href =
-    //         (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
-    //         `?type=notfound&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-    //     }
-    //   }
-    // }
+    const isEmployee = window.location.pathname.split("/").includes("employee");
+    if (err?.response?.data?.Errors) {
+      for (const error of err.response.data.Errors) {
+        if (error.message.includes("InvalidAccessTokenException")) {
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href =
+            (isEmployee ? "/digit-ui/employee/user/login" : "/digit-ui/citizen/login") +
+            `?from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        } else if (
+          error?.message?.toLowerCase()?.includes("internal server error") ||
+          error?.message?.toLowerCase()?.includes("some error occured")
+        ) {
+          window.location.href =
+            (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
+            `?type=maintenance&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        } else if (error.message.includes("ZuulRuntimeException")) {
+          window.location.href =
+            (isEmployee ? "/digit-ui/employee/user/error" : "/digit-ui/citizen/error") +
+            `?type=notfound&from=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        }
+      }
+    }
     throw err;
   }
 );
