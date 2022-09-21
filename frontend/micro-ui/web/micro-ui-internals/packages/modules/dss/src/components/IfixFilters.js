@@ -117,6 +117,9 @@ const IfixFilters = ({
       hierarchyFilter[key] = []
       let selectedHierarchies = [] 
       e.forEach((appHierarchy) => { selectedHierarchies.push(appHierarchy[1]); hierarchyFilter[key].push(appHierarchy[1].code) })
+      // check is any change on filter
+      const isChanged = isHierarchyFilterChanged(selectedHierarchies, selected[key])
+      if (!isChanged) return;
       setValue({ ...value, filters: { ...hierarchyFilter, 'department':  selectedDept?.code } });
       let childHierarchyIdList = {};
       let selectedDD = selected; 
@@ -147,6 +150,19 @@ const IfixFilters = ({
       setSelected(selectedDD);
     }
   };
+
+  const isHierarchyFilterChanged = (selectedList, prevSelectedList) => {
+    if (selectedList && prevSelectedList) {
+      let selectedIds = selectedList.map(a => a.id);
+      let prevSelectedIds = prevSelectedList.map(a => a.id);
+      if (selectedIds.sort().join(',') === prevSelectedIds.sort().join(',')) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    return true;
+  }
 
   const selectedDDRs = useMemo(
     () =>
