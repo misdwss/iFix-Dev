@@ -81,21 +81,21 @@ public class FiscalDataEnrichmentService {
     public void enrichComputedFields(FiscalEventRequest incomingData) {
         Map<String, Object> computedFieldsMap = new HashMap<>();
         if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Demand)){
-            Long totalDemandAmount = 0l;
+            BigDecimal totalDemandAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalDemandAmount = totalDemandAmount + Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+                totalDemandAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalDemandAmount);
         }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Bill)){
-            Long totalBillAmount = 0l;
+            BigDecimal totalBillAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalBillAmount = totalBillAmount - Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+                totalBillAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalBillAmount);
         }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Receipt)){
-            Long totalCollectionAmount = 0l;
+            BigDecimal totalCollectionAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
-                totalCollectionAmount = totalCollectionAmount - Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+                totalCollectionAmount.add(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount());
             }
             computedFieldsMap.put("netAmount", totalCollectionAmount);
         }
