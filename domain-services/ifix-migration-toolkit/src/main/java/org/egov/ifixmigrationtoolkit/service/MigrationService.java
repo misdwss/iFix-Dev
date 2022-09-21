@@ -163,7 +163,7 @@ public class MigrationService {
                 .batchSize(batchSize)
                 .totalNumberOfRecordsMigrated(totalNumberOfRecordsMigrated)
                 .build();
-        producer.push("migration-progress-topic", MigrationCountWrapper.builder().migrationCount(migrationCount).build());
+        //producer.push("migration-progress-topic", MigrationCountWrapper.builder().migrationCount(migrationCount).build());
 
     }
 }
