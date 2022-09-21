@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,5 +76,29 @@ public class FiscalDataEnrichmentService {
         StringBuilder uri = new StringBuilder(ifixDeptEntityServiceHost);
         uri.append(ifixDeptEntityServiceSearchEndpoint);
         return uri;
+    }
+
+    public void enrichComputedFields(FiscalEventRequest incomingData) {
+        Map<String, Object> computedFieldsMap = new HashMap<>();
+        if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Demand)){
+            Long totalDemandAmount = 0l;
+            for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
+                totalDemandAmount = totalDemandAmount + Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+            }
+            computedFieldsMap.put("netDemandAmount", totalDemandAmount);
+        }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Bill)){
+            Long totalBillAmount = 0l;
+            for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
+                totalBillAmount = totalBillAmount - Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+            }
+            computedFieldsMap.put("netBillAmount", totalBillAmount);
+        }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Receipt)){
+            Long totalCollectionAmount = 0l;
+            for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++){
+                totalCollectionAmount = totalCollectionAmount - Long.valueOf(incomingData.getFiscalEvent().getAmountDetails().get(i).getAmount().toString());
+            }
+            computedFieldsMap.put("netCollectionAmount", totalCollectionAmount);
+        }
+        incomingData.getFiscalEvent().setComputedFields(computedFieldsMap);
     }
 }

@@ -37,6 +37,7 @@ public class TestController {
 //        IngestResponse response = IngestResponse.builder().responseInfo(responseInfo).responseHash(responseHash).build();
         FiscalEventRequest fiscalEventRequest = objectMapper.readValue(input.getJson(), FiscalEventRequest.class);
         fiscalDataEnrichmentService.enrichFiscalData(fiscalEventRequest);
+        fiscalDataEnrichmentService.enrichComputedFields(fiscalEventRequest);
         return new ResponseEntity<>(fiscalEventRequest.getFiscalEvent(), HttpStatus.OK);
     }
 }

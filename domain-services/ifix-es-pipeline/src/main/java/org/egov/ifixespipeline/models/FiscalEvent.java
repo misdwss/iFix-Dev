@@ -55,6 +55,9 @@ public class FiscalEvent {
     @JsonProperty("hierarchyMap")
     private Object hierarchyMap = null;
 
+    @JsonProperty("computedFields")
+    private Object computedFields = null;
+
     @JsonProperty("version")
     private String version = null;
 

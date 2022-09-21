@@ -54,6 +54,8 @@ public class IfixElasticSearchPipelineListener {
             if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic))
                 fiscalDataEnrichmentService.enrichFiscalData(incomingData);
 
+            fiscalDataEnrichmentService.enrichComputedFields(incomingData);
+
             producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
