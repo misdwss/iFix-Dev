@@ -39,6 +39,8 @@ public class IfixElasticSearchPipelineListener {
     @Value("${fiscal.event.kafka.push.topic}")
     private String fiscalEventsNewRecordsTopic;
 
+    private Long noOfRecordsMigrated = 0l;
+
     /**
      * Kafka consumer
      *
@@ -53,10 +55,13 @@ public class IfixElasticSearchPipelineListener {
             // Enrich hierarchy map in only new records. In case of migration records, skip enrichment as they are already getting enriched in migration toolkit.
             if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic))
                 fiscalDataEnrichmentService.enrichFiscalData(incomingData);
+            else
+                noOfRecordsMigrated += 1;
 
             fiscalDataEnrichmentService.enrichComputedFields(incomingData);
 
             producer.push(indexFiscalEventsTopic, incomingData);
+            log.info("Total no of migration records till now: " + noOfRecordsMigrated);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
         }
