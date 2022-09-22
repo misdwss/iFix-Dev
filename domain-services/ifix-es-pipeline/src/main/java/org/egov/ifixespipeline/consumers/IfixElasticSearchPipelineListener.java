@@ -15,10 +15,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -41,6 +38,8 @@ public class IfixElasticSearchPipelineListener {
 
     private Long noOfRecordsMigrated = 0l;
 
+    private HashSet<String> listOfUniqueIds;
+
     /**
      * Kafka consumer
      *
@@ -55,13 +54,15 @@ public class IfixElasticSearchPipelineListener {
             // Enrich hierarchy map in only new records. In case of migration records, skip enrichment as they are already getting enriched in migration toolkit.
             if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic))
                 fiscalDataEnrichmentService.enrichFiscalData(incomingData);
-            else
+            else {
                 noOfRecordsMigrated += 1;
+                listOfUniqueIds.add(incomingData.getFiscalEvent().getId());
+            }
 
             fiscalDataEnrichmentService.enrichComputedFields(incomingData);
 
             producer.push(indexFiscalEventsTopic, incomingData);
-            log.info("Total no of migration records till now: " + noOfRecordsMigrated);
+            log.info("Total no of migration records till now: " + listOfUniqueIds.size());
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
         }
