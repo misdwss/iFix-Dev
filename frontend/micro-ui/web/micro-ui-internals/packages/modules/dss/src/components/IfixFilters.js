@@ -6,7 +6,6 @@ import Switch from "./Switch";
 
 const IfixFilters = ({
   t,
-  ulbTenants,
   services,
   isOpen,
   closeFilters,
@@ -16,7 +15,6 @@ const IfixFilters = ({
   showDateRange = true,
   showDenomination = true,
   showModuleFilter = true,
-  isNational = false,
   changeDepartment,
 }) => {
   const { value, setValue } = useContext(FilterContext);
@@ -39,7 +37,7 @@ const IfixFilters = ({
   useEffect(() => {
     if (departments && departments.length) {
       setSelectedDept(departments[0])
-      setValue({ ...value, filters: {'department':  departments[0]?.code}});
+      setValue({ ...value, filters: {'Department':  departments[0]?.code}});
     }
     if (departments && departments.length && hierarchyLevels && hierarchyLevels.length && hierarchyList && hierarchyList.length) {
       let hierarchyLevelMap = {};
@@ -68,12 +66,6 @@ const IfixFilters = ({
   }, [departments, hierarchyLevels, hierarchyList])
 
 
-  useEffect(() => {
-    // setSelected(ulbTenants?.ulb?.filter((tenant) => value?.filters?.tenantId?.find((selectedTenant) => selectedTenant === tenant?.code)));
-    // TODO: updated selected filters on memory
-    
-  }, [value?.filters]);
-
   const [selectService, setSelectedService] = useState(() =>
     services?.filter((module) => value?.moduleLevel === module?.code)
   )
@@ -86,10 +78,6 @@ const IfixFilters = ({
     setValue({ ...value, ...data });
   };
 
-  const selectFilters = (e, data) => {
-    setValue({ ...value, filters: { tenantId: e.map((allPropsData) => allPropsData?.[1]?.code) } });
-  };
-
   const selectServicesFilters = (e, data) => {
     setValue({ ...value, moduleLevel: e?.code });
   };
@@ -98,7 +86,7 @@ const IfixFilters = ({
     setHierarchyLevelMapList([])
     setSelectedDept(e);
     changeDepartment(e);
-    setValue({ ...value, filters: {'department':  e?.code}});
+    setValue({ ...value, filters: {'Department':  e?.code}});
   };
 
   const selectHierarchyFilter = (hierarchyLevel) => {
@@ -120,7 +108,8 @@ const IfixFilters = ({
       // check is any change on filter
       const isChanged = isHierarchyFilterChanged(selectedHierarchies, selected[key])
       if (!isChanged) return;
-      setValue({ ...value, filters: { ...hierarchyFilter, 'department':  selectedDept?.code } });
+      // If change in filter update the filters
+      setValue({ ...value, filters: { ...hierarchyFilter, 'Department':  selectedDept?.code } });
       let childHierarchyIdList = {};
       let selectedDD = selected; 
       // reset all chields
@@ -163,15 +152,6 @@ const IfixFilters = ({
     }
     return true;
   }
-
-  const selectedDDRs = useMemo(
-    () =>
-      // selected
-      //   .map((ulb) => ulbTenants.ulb.filter((e) => e.code === ulb.code)[0])
-      //   .filter((item, i, arr) => i === arr.findIndex((t) => t.ddrKey === item.ddrKey)),
-      console.log('selected : ', selected, hierarchyLevelMapList),
-    [selected, hierarchyLevelMapList]
-  );
 
   const getFilteredHierarchy = (hierarchyLevel) => {
     if (hierarchyLevel["filterIds"].length) {
@@ -236,7 +216,7 @@ const IfixFilters = ({
         })
       }
 
-      {!isNational && showModuleFilter && (
+      {showModuleFilter && (
         <div className="filters-input" style={customStyle.filterInput}>
           <div className="mbsm">{t("ES_DSS_SERVICES")}</div>
           <Dropdown

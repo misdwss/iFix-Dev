@@ -8,7 +8,7 @@ const createProxy = createProxyMiddleware({
   changeOrigin: true,
 });
 const assetsProxy = createProxyMiddleware({
-  target: "https://ifix-qa.ifix.org.in",
+  target: process.env.REACT_APP_PROXY_ASSETS || "https://ifix-qa.ifix.org.in",
   changeOrigin: true,
 });
 module.exports = function (app) {

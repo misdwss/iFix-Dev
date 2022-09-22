@@ -4,10 +4,7 @@ import { DSSService } from "../../services/elements/DSS";
 const useGetDepartments = (tenantId, config = {}) => {
   let data = {
     "requestHeader": {
-      "ts": 1627193067,
-      "version": "2.0.0",
-      "msgId": "Unknown",
-      "signature": "NON"
+      "version": "2.0.0"
     },
     "criteria": {
       tenantId

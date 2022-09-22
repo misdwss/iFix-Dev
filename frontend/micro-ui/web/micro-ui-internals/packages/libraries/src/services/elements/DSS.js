@@ -21,7 +21,7 @@ export const DSSService = {
     }),
   getDepartments: (data) =>
     Request({
-      url: (globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_dept_master_data,
+      url: (window?.globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_dept_master_data,
       useCache: false,
       userService: false,
       method: "POST",
@@ -30,7 +30,7 @@ export const DSSService = {
     }),
   getHierarchyMetaData: (data) =>
     Request({
-      url: (globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_hierarchy_level,
+      url: (window?.globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_hierarchy_level,
       useCache: false,
       userService: false,
       method: "POST",
@@ -39,7 +39,7 @@ export const DSSService = {
     }),
   getHierarchyData: (data) =>
     Request({
-      url: (globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_dept_entity,
+      url: (window?.globalConfigs.getConfig('HIERARCHY_API_BASE_URL') || "").toString() + Urls.dss.search_ifix_dept_entity,
       useCache: false,
       userService: false,
       method: "POST",

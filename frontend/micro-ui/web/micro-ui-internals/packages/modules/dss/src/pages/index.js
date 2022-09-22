@@ -346,13 +346,11 @@ const DashBoard = ({ stateCode }) => {
               t={t}
               showModuleFilter={false}
               services={screenConfig}
-              ulbTenants={isNational ? nationalInfo : ulbTenants}
               departments={departments}
               hierarchyLevels={hierarchyLevels}
               hierarchyList={hierarchyList}
               isOpen={isFilterModalOpen}
               closeFilters={() => setIsFilterModalOpen(false)}
-              isNational={isNational}
               showDateRange={true}
               changeDepartment={changeDepartment}
             />
