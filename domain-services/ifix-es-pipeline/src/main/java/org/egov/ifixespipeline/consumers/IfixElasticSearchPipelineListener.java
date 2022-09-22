@@ -38,7 +38,7 @@ public class IfixElasticSearchPipelineListener {
 
     private Long noOfRecordsMigrated = 0l;
 
-    private HashSet<String> listOfUniqueIds;
+    private HashSet<String> listOfUniqueIds = new HashSet<>();
 
     /**
      * Kafka consumer
