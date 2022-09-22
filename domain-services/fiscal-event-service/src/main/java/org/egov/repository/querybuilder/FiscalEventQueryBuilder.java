@@ -43,10 +43,10 @@ public class FiscalEventQueryBuilder {
 
     public Query buildPlainSearchQuery(PlainsearchCriteria searchCriteria) {
         Criteria criteria = Criteria.where("tenantId").is(searchCriteria.getTenantId());
-        Query finalQuery = new Query(criteria).with(Sort.by(Sort.Direction.DESC, "id"));
+        Query finalQuery = new Query(criteria);
 
         if(!searchCriteria.getIsCountCall()) {
-            Pageable pageableRequest = PageRequest.of(searchCriteria.getOffset(), searchCriteria.getLimit());
+            Pageable pageableRequest = PageRequest.of(searchCriteria.getOffset(), searchCriteria.getLimit(), Sort.by(Sort.Direction.DESC, "ingestionTime"));
             return finalQuery.with(pageableRequest);
         }
 
