@@ -42,6 +42,8 @@ public class FiscalEventMapperUtil {
                 fiscalEvents.add(getFiscalEvent(node));
             }catch (Exception e){
                 e.printStackTrace();
+                log.info(node.toPrettyString());
+                continue;
             }
         }
         return fiscalEvents;
