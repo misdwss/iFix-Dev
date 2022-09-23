@@ -38,7 +38,11 @@ public class FiscalEventMapperUtil {
         List<FiscalEvent> fiscalEvents = new ArrayList<>();
         while (nodeIterator.hasNext()) {
             JsonNode node = nodeIterator.next();
-            fiscalEvents.add(getFiscalEvent(node));
+            try {
+                fiscalEvents.add(getFiscalEvent(node));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return fiscalEvents;
     }
