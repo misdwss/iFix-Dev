@@ -132,7 +132,7 @@ public class MigrationService {
                 seekPointerToAvoidDuplication(response, totalNumberOfRecordsMigrated, batchSize);
             }
             totalNumberOfRecordsMigrated += response.getFiscalEvent().size();
-            producer.push("ifix-fiscal-events-migrate", ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
+            producer.push("ifix-fiscal-events-migrate-new", ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
             commitMigrationProgress(request.getTenantId(), i, batchSize, totalNumberOfRecordsMigrated);
             i += 1;
             lastPageNumber = i;
