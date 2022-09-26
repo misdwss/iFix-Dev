@@ -54,6 +54,9 @@ public class IfixElasticSearchPipelineListener {
     @Value("${coa.operations.head.name}")
     private String operationsCoaHeadName;
 
+    @Value("${coa.salary.head.name}")
+    private String salaryCoaHeadName;
+
     private Map<String, HashSet<String>> expenditureTypeVsUuidsMap;
 
     /**
@@ -102,6 +105,8 @@ public class IfixElasticSearchPipelineListener {
                 expenditureTypeVsUuidsMap.get(electricityCoaHeadName).add(chartOfAccount.getId());
             else if(expenditureTypeVsUuidsMap.containsKey(operationsCoaHeadName))
                 expenditureTypeVsUuidsMap.get(operationsCoaHeadName).add(chartOfAccount.getId());
+            else if(expenditureTypeVsUuidsMap.containsKey(salaryCoaHeadName))
+                expenditureTypeVsUuidsMap.get(salaryCoaHeadName).add(chartOfAccount.getId());
             else
                 expenditureTypeVsUuidsMap.get("Others").add(chartOfAccount.getId());
 

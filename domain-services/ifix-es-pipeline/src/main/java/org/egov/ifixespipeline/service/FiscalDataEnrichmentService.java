@@ -36,6 +36,9 @@ public class FiscalDataEnrichmentService {
     @Value("${coa.operations.head.name}")
     private String operationsCoaHeadName;
 
+    @Value("${coa.salary.head.name}")
+    private String salaryCoaHeadName;
+
     private HashMap<Integer, String> loadDepartmentHierarchyLevel(String tenantId){
         DepartmentHierarchyLevelSearchCriteria criteria = DepartmentHierarchyLevelSearchCriteria.builder().tenantId(tenantId).build();
         DepartmentHierarchyLevelSearchRequest request = DepartmentHierarchyLevelSearchRequest.builder().criteria(criteria).requestHeader(new RequestHeader()).build();
@@ -106,6 +109,7 @@ public class FiscalDataEnrichmentService {
 
         BigDecimal electricityHeadAmount = new BigDecimal(0);
         BigDecimal operationsHeadAmount = new BigDecimal(0);
+        BigDecimal salaryHeadAmount = new BigDecimal(0);
         BigDecimal otherHeadAmount = new BigDecimal(0);
 
         for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++) {
@@ -114,12 +118,15 @@ public class FiscalDataEnrichmentService {
                 electricityHeadAmount = electricityHeadAmount.add(amount.getAmount());
             else if(expenditureTypeVsUuidsMap.get(operationsCoaHeadName).contains(amount.getCoaId()))
                 operationsHeadAmount = operationsHeadAmount.add(amount.getAmount());
+            else if(expenditureTypeVsUuidsMap.get(salaryCoaHeadName).contains(amount.getCoaId()))
+                salaryHeadAmount = salaryHeadAmount.add(amount.getAmount());
             else
                 otherHeadAmount = otherHeadAmount.add(amount.getAmount());
         }
 
         computedFieldsMap.put("electricityHeadAmount", electricityHeadAmount);
         computedFieldsMap.put("operationsHeadAmount", operationsHeadAmount);
+        computedFieldsMap.put("salaryHeadAmount", salaryHeadAmount);
         computedFieldsMap.put("otherHeadAmount", otherHeadAmount);
 
         incomingData.getFiscalEvent().setComputedFields(computedFieldsMap);
