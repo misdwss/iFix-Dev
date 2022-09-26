@@ -87,6 +87,9 @@ public class FiscalEventMapperUtil {
                         .fromBillingPeriod(amountNode.get("fromBillingPeriod") != null ? amountNode.get("fromBillingPeriod").asLong() : null)
                         .toBillingPeriod(amountNode.get("toBillingPeriod") != null ? amountNode.get("toBillingPeriod").asLong() : null)
                         .build();
+                if(amountNode.get("coaId") != null){
+                    amount.setCoaId(amountNode.get("coaId").asText());
+                }
 
                 amountDetails.add(amount);
             }
