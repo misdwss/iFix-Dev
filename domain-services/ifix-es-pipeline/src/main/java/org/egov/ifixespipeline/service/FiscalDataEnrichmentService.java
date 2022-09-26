@@ -8,13 +8,11 @@ import org.egov.ifixespipeline.repository.ServiceRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -31,6 +29,12 @@ public class FiscalDataEnrichmentService {
 
     @Value("${ifix.department.entity.search.endpoint}")
     private String ifixDeptEntityServiceSearchEndpoint;
+
+    @Value("${coa.electricity.head.name}")
+    private String electricityCoaHeadName;
+
+    @Value("${coa.operations.head.name}")
+    private String operationsCoaHeadName;
 
     private HashMap<Integer, String> loadDepartmentHierarchyLevel(String tenantId){
         DepartmentHierarchyLevelSearchCriteria criteria = DepartmentHierarchyLevelSearchCriteria.builder().tenantId(tenantId).build();
@@ -78,7 +82,7 @@ public class FiscalDataEnrichmentService {
         return uri;
     }
 
-    public void enrichComputedFields(FiscalEventRequest incomingData) {
+    public void enrichComputedFields(FiscalEventRequest incomingData, Map<String, HashSet<String>> expenditureTypeVsUuidsMap) {
         Map<String, Object> computedFieldsMap = new HashMap<>();
         if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Demand)){
             BigDecimal totalDemandAmount = new BigDecimal(0);
@@ -99,6 +103,25 @@ public class FiscalDataEnrichmentService {
             }
             computedFieldsMap.put("netAmount", totalCollectionAmount);
         }
+
+        BigDecimal electricityHeadAmount = new BigDecimal(0);
+        BigDecimal operationsHeadAmount = new BigDecimal(0);
+        BigDecimal otherHeadAmount = new BigDecimal(0);
+
+        for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++) {
+            Amount amount = incomingData.getFiscalEvent().getAmountDetails().get(i);
+            if(expenditureTypeVsUuidsMap.get(electricityCoaHeadName).contains(amount.getCoaId()))
+                electricityHeadAmount = electricityHeadAmount.add(amount.getAmount());
+            else if(expenditureTypeVsUuidsMap.get(operationsCoaHeadName).contains(amount.getCoaId()))
+                operationsHeadAmount = operationsHeadAmount.add(amount.getAmount());
+            else
+                otherHeadAmount = otherHeadAmount.add(amount.getAmount());
+        }
+
+        computedFieldsMap.put("electricityHeadAmount", electricityHeadAmount);
+        computedFieldsMap.put("operationsHeadAmount", operationsHeadAmount);
+        computedFieldsMap.put("otherHeadAmount", otherHeadAmount);
+
         incomingData.getFiscalEvent().setComputedFields(computedFieldsMap);
     }
 }

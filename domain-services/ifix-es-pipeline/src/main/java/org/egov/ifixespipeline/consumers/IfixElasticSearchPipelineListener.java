@@ -1,12 +1,13 @@
 package org.egov.ifixespipeline.consumers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.egov.ifixespipeline.models.Ancestry;
-import org.egov.ifixespipeline.models.FiscalEventRequest;
-import org.egov.ifixespipeline.models.ProducerPOJO;
+import org.egov.common.contract.request.RequestHeader;
+import org.egov.ifixespipeline.models.*;
 import org.egov.ifixespipeline.producer.Producer;
+import org.egov.ifixespipeline.repository.ServiceRequestRepository;
 import org.egov.ifixespipeline.service.FiscalDataEnrichmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service
@@ -28,6 +31,9 @@ public class IfixElasticSearchPipelineListener {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private ServiceRequestRepository serviceRequestRepository;
+
+    @Autowired
     private Producer producer;
 
     @Value("${fiscal.event.es.push.topic}")
@@ -36,9 +42,19 @@ public class IfixElasticSearchPipelineListener {
     @Value("${fiscal.event.kafka.push.topic}")
     private String fiscalEventsNewRecordsTopic;
 
-    private Long noOfRecordsMigrated = 0l;
+    @Value("${ifix.master.data.service.host}")
+    private String ifixMasterDataServiceHost;
 
-    private HashSet<String> listOfUniqueIds = new HashSet<>();
+    @Value("${ifix.master.data.service.search.endpoint}")
+    private String ifixMasterDataServiceSearchEndpoint;
+
+    @Value("${coa.electricity.head.name}")
+    private String electricityCoaHeadName;
+
+    @Value("${coa.operations.head.name}")
+    private String operationsCoaHeadName;
+
+    private Map<String, HashSet<String>> expenditureTypeVsUuidsMap;
 
     /**
      * Kafka consumer
@@ -52,19 +68,50 @@ public class IfixElasticSearchPipelineListener {
             FiscalEventRequest incomingData = objectMapper.convertValue(record, FiscalEventRequest.class);
 
             // Enrich hierarchy map in only new records. In case of migration records, skip enrichment as they are already getting enriched in migration toolkit.
-            if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic))
+            if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic)) {
+                expenditureTypeVsUuidsMap = loadExpenditureTypeVsUuidMap(incomingData.getFiscalEvent().getTenantId());
                 fiscalDataEnrichmentService.enrichFiscalData(incomingData);
-            else {
-                noOfRecordsMigrated += 1;
-                listOfUniqueIds.add(incomingData.getFiscalEvent().getId());
+            }else{
+                // Load expenditureTypeVsUuidsMap only once for migration to avoid unnecessary network calls
+                if(CollectionUtils.isEmpty(expenditureTypeVsUuidsMap)){
+                    expenditureTypeVsUuidsMap = loadExpenditureTypeVsUuidMap(incomingData.getFiscalEvent().getTenantId());
+                }
             }
 
-            fiscalDataEnrichmentService.enrichComputedFields(incomingData);
+            fiscalDataEnrichmentService.enrichComputedFields(incomingData, expenditureTypeVsUuidsMap);
 
-            producer.push(indexFiscalEventsTopic, incomingData);
-            log.info("Total no of migration records till now: " + listOfUniqueIds.size());
+            //producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
         }
+    }
+
+    private HashMap<String, HashSet<String>> loadExpenditureTypeVsUuidMap(String tenantId){
+        COASearchCriteria criteria = COASearchCriteria.builder().tenantId(tenantId).build();
+        COASearchRequest request = COASearchRequest.builder().requestHeader(new RequestHeader()).criteria(criteria).build();
+        Object result = serviceRequestRepository.fetchResult(getIfixMasterDataUri(), request);
+        COAResponse response = objectMapper.convertValue(result, COAResponse.class);
+        HashMap<String, HashSet<String>> expenditureTypeVsUuidsMap = new HashMap<>();
+        expenditureTypeVsUuidsMap.put("Others", new HashSet<>());
+        expenditureTypeVsUuidsMap.put(electricityCoaHeadName, new HashSet<>());
+        expenditureTypeVsUuidsMap.put(operationsCoaHeadName, new HashSet<>());
+
+        response.getChartOfAccounts().forEach(chartOfAccount -> {
+
+            if(expenditureTypeVsUuidsMap.containsKey(electricityCoaHeadName))
+                expenditureTypeVsUuidsMap.get(electricityCoaHeadName).add(chartOfAccount.getId());
+            else if(expenditureTypeVsUuidsMap.containsKey(operationsCoaHeadName))
+                expenditureTypeVsUuidsMap.get(operationsCoaHeadName).add(chartOfAccount.getId());
+            else
+                expenditureTypeVsUuidsMap.get("Others").add(chartOfAccount.getId());
+
+        });
+        return expenditureTypeVsUuidsMap;
+    }
+
+    private StringBuilder getIfixMasterDataUri() {
+        StringBuilder uri = new StringBuilder(ifixMasterDataServiceHost);
+        uri.append(ifixMasterDataServiceSearchEndpoint);
+        return uri;
     }
 }
