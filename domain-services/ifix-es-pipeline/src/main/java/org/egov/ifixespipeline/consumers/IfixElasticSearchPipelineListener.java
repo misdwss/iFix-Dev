@@ -83,7 +83,7 @@ public class IfixElasticSearchPipelineListener {
 
             fiscalDataEnrichmentService.enrichComputedFields(incomingData, expenditureTypeVsUuidsMap);
 
-            //producer.push(indexFiscalEventsTopic, incomingData);
+            producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {
             log.error("Exception while reading from the queue: ", e);
         }
