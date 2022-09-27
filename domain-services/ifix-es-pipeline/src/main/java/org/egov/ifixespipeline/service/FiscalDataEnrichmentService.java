@@ -47,7 +47,7 @@ public class FiscalDataEnrichmentService {
         HashMap<Integer, String> hierarchyLevelVsLabelMap = new HashMap<>();
         response.getDepartmentHierarchyLevel().forEach(hierarchyObject -> {
             if(!hierarchyLevelVsLabelMap.containsKey(hierarchyObject.getLevel()))
-                hierarchyLevelVsLabelMap.put(hierarchyObject.getLevel(), hierarchyObject.getLabel());
+                hierarchyLevelVsLabelMap.put(hierarchyObject.getLevel(), hierarchyObject.getLabel().replaceAll(" ", "_"));
         });
         return hierarchyLevelVsLabelMap;
     }
