@@ -213,7 +213,7 @@ const DashBoard = ({ stateCode }) => {
     }
   }, [tabArray]);
 
-  let isEnableIFixFilter = !isLoading && dashboardConfig?.[0]?.name.includes("DSS_IFIX_DASHBOARD") ? true : false;
+  let isEnableIFixFilter = !isLoading && Digit.Utils.dss.isIFixDashboard(dashboardConfig);
   
   const { data: departments, isLoading: isDeptLoading } = Digit.Hooks.dss.useGetDepartments(stateCode, {
     enabled: isEnableIFixFilter,
@@ -353,7 +353,7 @@ const DashBoard = ({ stateCode }) => {
         },
       },
     ];
-  if (isLoading || isUlbLoading || localizationLoading || isLoadingNAT || isServicesLoading) {
+  if (isLoading || isUlbLoading || localizationLoading || isLoadingNAT || isServicesLoading || (isEnableIFixFilter && (isHierarchyLoading || isDeptLoading || isHierarchyMetaLoading))) {
     return <Loader />;
   }
   return (
@@ -599,7 +599,7 @@ const DashBoard = ({ stateCode }) => {
             </div>
           )}
         </div>
-        {dashboardConfig?.[0]?.visualizations
+        {(!isEnableIFixFilter || (!isDeptLoading && isEnableIFixFilter)) && dashboardConfig?.[0]?.visualizations
           .filter((row) => row.name === tabState)
           .map((row, key) => {
             return <Layout rowData={row} key={key} services={screenConfig} configName={dashboardConfig?.[0]?.name} />;
