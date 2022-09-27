@@ -31,14 +31,15 @@ const getInitialRange = () => {
   const denomination = data?.denomination || "Lac";
   const tenantId = data?.filters?.tenantId || [];
   const moduleLevel = data?.moduleLevel || "";
-  return { startDate, endDate, title, interval, denomination, tenantId, moduleLevel };
+  const preFilters = data?.filters || {};
+  return { startDate, endDate, title, interval, denomination, tenantId, moduleLevel, preFilters };
 };
 
 const DashBoard = ({ stateCode }) => {
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const { t } = useTranslation();
   const [filters, setFilters] = useState(() => {
-    const { startDate, endDate, title, interval, denomination, tenantId, moduleLevel } = getInitialRange();
+    const { startDate, endDate, title, interval, denomination, tenantId, moduleLevel, preFilters } = getInitialRange();
     return {
       denomination,
       range: { startDate, endDate, title, interval },
@@ -49,7 +50,8 @@ const DashBoard = ({ stateCode }) => {
         title: title,
       },
       filters: {
-        tenantId,
+        ...preFilters,
+        tenantId
       },
       moduleLevel: moduleLevel,
     };
@@ -57,7 +59,7 @@ const DashBoard = ({ stateCode }) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const isNational = checkCurrentScreen();
   const { moduleCode } = useParams();
-  const [department, setDepartnemt] = useState({});
+  const [department, setDepartment] = useState({});
 
   const language = Digit.StoreData.getCurrentLanguage();
 
@@ -177,6 +179,26 @@ const DashBoard = ({ stateCode }) => {
     handleFilters({ ...filters, moduleLevel: "" });
   };
 
+  const removeHierarchy = (id) => {
+    let elem = appliedHierarchyChips[id];
+    let appliedFilters= filters?.filters;
+    hierarchyLevels.forEach((hLevel) => {
+      if (hLevel.level == elem.level) appliedFilters[elem.label] = appliedFilters[elem.label].filter((el) => el !== elem.code)
+      else if (hLevel.level > elem.level) delete appliedFilters[hLevel.label];
+    })
+    if (!appliedFilters[elem.label]?.length) delete appliedFilters[elem.label];
+    handleFilters({...filters, filters: { ...appliedFilters }});
+  };
+
+  const clearAllHierarchy = () => {
+    let appliedFilters= filters?.filters;
+    // Remove all filters from hierarchy
+    hierarchyLevels.forEach((hLevel) => {
+      if (hLevel.level) delete appliedFilters[hLevel.label];
+    })
+    handleFilters({...filters, filters: { ...appliedFilters }});
+  };
+
   const dashboardConfig = response?.responseData;
   let tabArrayObj =
     dashboardConfig?.[0]?.visualizations?.reduce((curr, acc) => {
@@ -199,8 +221,16 @@ const DashBoard = ({ stateCode }) => {
       if (data.department) {
         // let deptList = data.department.filter((dept) => { if (!dept.parent) return dept; });
         let deptList = data.department;
-        setDepartnemt(deptList[0]);
-        setFilters({...filters, department: deptList?.[0]?.code})
+        if (filters?.filters?.['Department']) {
+          let idx = deptList.findIndex(p => p.code==filters?.filters?.['Department']);
+          setDepartment(deptList[idx]);
+        } else  {
+          setDepartment(deptList[0]);
+          handleFilters({
+            ...filters,
+            filters: { ...filters?.filters, 'Department': deptList?.[0]?.code },
+          })
+        }
         return deptList;
       };
       return [];
@@ -211,7 +241,7 @@ const DashBoard = ({ stateCode }) => {
     enabled: isEnableIFixFilter && !isDeptLoading,
     select: (data) => {
       if (data.departmentHierarchyLevel) {
-        return data.departmentHierarchyLevel
+        return _.sortBy(data.departmentHierarchyLevel, 'level')
       };
       return [];
     },
@@ -221,15 +251,40 @@ const DashBoard = ({ stateCode }) => {
     enabled: isEnableIFixFilter && !isDeptLoading,
     select: (data) => {
       if (data.departmentEntity) {
-        return data.departmentEntity
+        return _.sortBy(data.departmentEntity, 'hierarchyLevel')
       };
       return [];
     },
   });
 
   const changeDepartment = (e) => {
-    setDepartnemt(e);
+    setDepartment(e);
   }
+
+  const [appliedHierarchyChips, setAppliedHierarchyChips] = useState([]);
+  useEffect(() => {
+    if (filters?.filters && hierarchyLevels?.length && hierarchyList?.length) {
+      let filtersChips = [];
+      hierarchyLevels.forEach((hierarchy) => {
+        let appliedFilterCodes = filters.filters?.[hierarchy.label];
+        if (hierarchy.level && appliedFilterCodes) {
+          let filteredHierarchies = _.filter(hierarchyList, (hierarchyVal) => {return appliedFilterCodes.indexOf(hierarchyVal.code) != -1 && hierarchyVal.hierarchyLevel == hierarchy.level})
+          _.forEach(appliedFilterCodes, (code) => {
+            filtersChips.push({
+              id: hierarchy.id,
+              level: hierarchy.level,
+              label: hierarchy.label,
+              code,
+              name: _.result(_.find(filteredHierarchies, (obj) => { return obj.code === code; }), 'name') || code
+            })
+          })
+        }
+      })
+      setAppliedHierarchyChips(filtersChips);
+    } else {
+      setAppliedHierarchyChips([])
+    }
+  }, [filters?.filters, hierarchyLevels, hierarchyList]);
 
   const shareOptions =
     // navigator.share
@@ -492,6 +547,22 @@ const DashBoard = ({ stateCode }) => {
           </div>
         )}
 
+        {appliedHierarchyChips?.length > 0 && (
+          <div className="tag-container">
+            {!showFilters &&
+              appliedHierarchyChips
+                .map((filter, id) => (
+                  <RemoveableTag
+                    key={id}
+                    text={`${t(filter?.label)}: ${t(filter?.name)}`}
+                    onClick={() => removeHierarchy(id)}
+                  />
+                ))}
+            <p className="clearText cursorPointer" onClick={clearAllHierarchy}>
+              {t(`DSS_FILTER_CLEAR`)}
+            </p>
+          </div>
+        )}
         {mobileView ? (
           <div className="options-m">
             <div>
