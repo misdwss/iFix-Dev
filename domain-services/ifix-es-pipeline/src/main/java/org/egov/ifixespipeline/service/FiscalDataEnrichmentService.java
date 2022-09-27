@@ -129,6 +129,24 @@ public class FiscalDataEnrichmentService {
         computedFieldsMap.put("salaryHeadAmount", salaryHeadAmount);
         computedFieldsMap.put("otherHeadAmount", otherHeadAmount);
 
+        if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Payment)){
+            BigDecimal electricityPaymentAmount = new BigDecimal(0);
+            for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++) {
+                Amount amount = incomingData.getFiscalEvent().getAmountDetails().get(i);
+                if(expenditureTypeVsUuidsMap.get(electricityCoaHeadName).contains(amount.getCoaId()))
+                    electricityPaymentAmount = electricityPaymentAmount.subtract(amount.getAmount());
+            }
+            computedFieldsMap.put("electricityPaymentAmount", electricityPaymentAmount);
+        }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Bill)){
+            BigDecimal electricityBillAmount = new BigDecimal(0);
+            for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++) {
+                Amount amount = incomingData.getFiscalEvent().getAmountDetails().get(i);
+                if(expenditureTypeVsUuidsMap.get(electricityCoaHeadName).contains(amount.getCoaId()))
+                    electricityBillAmount = electricityBillAmount.add(amount.getAmount());
+            }
+            computedFieldsMap.put("electricityBillAmount", electricityBillAmount);
+        }
+
         incomingData.getFiscalEvent().setComputedFields(computedFieldsMap);
     }
 }
