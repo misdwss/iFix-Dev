@@ -136,7 +136,7 @@ public class FiscalDataEnrichmentService {
                 if(expenditureTypeVsUuidsMap.get(electricityCoaHeadName).contains(amount.getCoaId()))
                     electricityPaymentAmount = electricityPaymentAmount.subtract(amount.getAmount());
             }
-            computedFieldsMap.put("electricityPaymentAmount", electricityPaymentAmount);
+            computedFieldsMap.put("electricityExpenseNetAmount", electricityPaymentAmount);
         }else if(incomingData.getFiscalEvent().getEventType().equals(FiscalEvent.EventTypeEnum.Bill)){
             BigDecimal electricityBillAmount = new BigDecimal(0);
             for(int i = 0; i < incomingData.getFiscalEvent().getAmountDetails().size(); i++) {
@@ -144,7 +144,7 @@ public class FiscalDataEnrichmentService {
                 if(expenditureTypeVsUuidsMap.get(electricityCoaHeadName).contains(amount.getCoaId()))
                     electricityBillAmount = electricityBillAmount.add(amount.getAmount());
             }
-            computedFieldsMap.put("electricityBillAmount", electricityBillAmount);
+            computedFieldsMap.put("electricityExpenseNetAmount", electricityBillAmount);
         }
 
         incomingData.getFiscalEvent().setComputedFields(computedFieldsMap);
