@@ -109,7 +109,7 @@ public class ReceiptEventMapper implements EventMapper {
                     String coaCode = billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_CODE).getAsString();
 
                     if (new BigDecimal(0).compareTo(
-                            billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal()) == 0) {
+                            billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal()) != 0) {
 
                         Amount amount = Amount.builder()
                                 .amount(billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal())
