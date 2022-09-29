@@ -214,7 +214,7 @@ const DashBoard = ({ stateCode }) => {
   }, [tabArray]);
 
   let isEnableIFixFilter = !isLoading && Digit.Utils.dss.isIFixDashboard(dashboardConfig);
-  
+  debugger;
   const { data: departments, isLoading: isDeptLoading } = Digit.Hooks.dss.useGetDepartments(stateCode, {
     enabled: isEnableIFixFilter,
     select: (data) => {
@@ -238,7 +238,7 @@ const DashBoard = ({ stateCode }) => {
   });
 
   const { data: hierarchyLevels, isLoading: isHierarchyMetaLoading } =  Digit.Hooks.dss.useGetHierarchyMetaData(stateCode, department?.id, {
-    enabled: isEnableIFixFilter && !isDeptLoading,
+    enabled: isEnableIFixFilter && !isDeptLoading && department?.id ? true : false,
     select: (data) => {
       if (data.departmentHierarchyLevel) {
         return _.sortBy(data.departmentHierarchyLevel, 'level')
@@ -248,7 +248,7 @@ const DashBoard = ({ stateCode }) => {
   });
   
   const { data: hierarchyList, isLoading: isHierarchyLoading } = Digit.Hooks.dss.useGetHierarchy(stateCode, department?.id, {
-    enabled: isEnableIFixFilter && !isDeptLoading,
+    enabled: isEnableIFixFilter && !isDeptLoading && department?.id ? true : false,
     select: (data) => {
       if (data.departmentEntity) {
         return _.sortBy(data.departmentEntity, 'hierarchyLevel')
