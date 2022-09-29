@@ -214,7 +214,6 @@ const DashBoard = ({ stateCode }) => {
   }, [tabArray]);
 
   let isEnableIFixFilter = !isLoading && Digit.Utils.dss.isIFixDashboard(dashboardConfig);
-  debugger;
   const { data: departments, isLoading: isDeptLoading } = Digit.Hooks.dss.useGetDepartments(stateCode, {
     enabled: isEnableIFixFilter,
     select: (data) => {
