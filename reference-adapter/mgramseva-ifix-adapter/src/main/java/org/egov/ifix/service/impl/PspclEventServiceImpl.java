@@ -206,7 +206,7 @@ public class PspclEventServiceImpl implements PspclEventService {
                         "PSPCL account number is missing from attributes section of fiscal event");
                 throw new GenericCustomException(PSPCL, "PSPCL account number is missing from attributes section");
             } else {
-                return objectNodeAttribute.get("pspclAccountNumber").asText();
+                return StringUtils.trimAllWhitespace(objectNodeAttribute.get("pspclAccountNumber").asText());
             }
         } catch (JsonProcessingException e) {
             pspclEventPersistenceService.saveFailedPspclEventDetail(NA, NA, NA,
