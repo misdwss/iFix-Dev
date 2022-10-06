@@ -36,6 +36,12 @@ public class MigrationService {
     @Value("${ifix.migration.batch.size}")
     private Integer batchSize;
 
+    @Value("${ifix.migration.batch.push.topic}")
+    private String batchMigrationPushTopic;
+
+    @Value("${ifix.migration.progress.topic}")
+    private String saveMigrationProgressTopic;
+
     @Value("${ifix.department.entity.service.host}")
     private String ifixDeptEntityServiceHost;
 
@@ -132,7 +138,7 @@ public class MigrationService {
                 seekPointerToAvoidDuplication(response, totalNumberOfRecordsMigrated, batchSize);
             }
             totalNumberOfRecordsMigrated += response.getFiscalEvent().size();
-            producer.push("ifix-fiscal-events-migrate-latest", ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
+            producer.push(batchMigrationPushTopic, ProducerPOJO.builder().requestInfo(new RequestInfo()).records(response.getFiscalEvent()).build());
             commitMigrationProgress(request.getTenantId(), i, batchSize, totalNumberOfRecordsMigrated);
             i += 1;
             lastPageNumber = i;
@@ -147,7 +153,7 @@ public class MigrationService {
         List<FiscalEvent> listOfFiscalEvents = new ArrayList<>();
         Long pointer = totalNumberOfRecordsMigrated % batchSize;
         String stringPointer = String.valueOf(pointer);
-        for(int i = Integer.valueOf(stringPointer); i <response.getFiscalEvent().size(); i++){
+        for(int i = Integer.valueOf(stringPointer); i < response.getFiscalEvent().size(); i++){
             listOfFiscalEvents.add(response.getFiscalEvent().get(i));
         }
         response.setFiscalEvent(listOfFiscalEvents);
@@ -163,7 +169,7 @@ public class MigrationService {
                 .batchSize(batchSize)
                 .totalNumberOfRecordsMigrated(totalNumberOfRecordsMigrated)
                 .build();
-        //producer.push("migration-progress-topic", MigrationCountWrapper.builder().migrationCount(migrationCount).build());
+        producer.push(saveMigrationProgressTopic, MigrationCountWrapper.builder().migrationCount(migrationCount).build());
 
     }
 }
