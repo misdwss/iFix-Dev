@@ -41,7 +41,8 @@ public class EventConstants {
     public static final String PAYMENT_RECEIPT_TRANSACTION_DATE = "transactionDate";
     public static final String PAYMENT_RECEIPT_FROM_BILLING_PERIOD = "fromPeriod";
     public static final String PAYMENT_RECEIPT_TO_BILLING_PERIOD = "toPeriod";
-    public static final String PAYMENT_RECEIPT_CLIENT_COA_AMOUNT = "adjustedAmount";
+    public static final String PAYMENT_RECEIPT_CLIENT_COA_ADJUSTED_AMOUNT = "adjustedAmount";
+    public static final String PAYMENT_RECEIPT_CLIENT_COA_AMOUNT = "amount";
     public static final String BILL_ACCOUNT_DETAILS = "billAccountDetails";
     public static final String PAYMENT_RECEIPT_CLIENT_COA_CODE = "taxHeadCode";
     public static final String CONSUMER_CODE = "consumerCode";
@@ -88,5 +89,6 @@ public class EventConstants {
     public static final String CLIENT_SECRET = "client_secret";
     public static final String CLIENT_ID = "client_id";
     public static final String OWNER_ROLE_CITIZEN = "CITIZEN";
+    public static final String ADVANCE_TAX_HEAD_CODE_SUBSTRING = "ADVANCE";
 
 }

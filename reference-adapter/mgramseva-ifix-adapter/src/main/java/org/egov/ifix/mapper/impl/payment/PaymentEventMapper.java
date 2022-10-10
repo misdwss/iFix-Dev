@@ -15,7 +15,6 @@ import org.egov.ifix.utils.EventConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +107,7 @@ public class PaymentEventMapper implements EventMapper {
                     String coaCode = billAccountDetailsJO.get(PAYMENT_RECEIPT_CLIENT_COA_CODE).getAsString();
 
                     Amount amount = Amount.builder()
-                            .amount(billAccountDetailsJO.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal())
+                            .amount(billAccountDetailsJO.get(PAYMENT_RECEIPT_CLIENT_COA_ADJUSTED_AMOUNT).getAsBigDecimal())
                             .coaCode(chartOfAccountService.getResolvedChartOfAccountCode(coaCode))
                             .fromBillingPeriod(taxPeriodFrom)
                             .toBillingPeriod(taxPeriodTo).build();
