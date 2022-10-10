@@ -22,6 +22,7 @@ const IfixFilters = ({
   const [hierarchyLevelMapList, setHierarchyLevelMapList] = useState([]);
   const [hierarchyListMap, setHierarchyListMap] = useState({});
   const [selected, setSelected] = useState({});
+  const [isFilterLoaded, setIsFilterLoaded] = useState(false);
   
   const customStyle = {
     filterInput: {
@@ -36,34 +37,76 @@ const IfixFilters = ({
 
   useEffect(() => {
     if (departments && departments.length) {
-      setSelectedDept(departments[0])
-      setValue({ ...value, filters: {'Department':  departments[0]?.code}});
+      if (value?.filters?.['Department']) {
+        let idx = departments.findIndex(p => p.code==value?.filters?.['Department']);
+        setSelectedDept(departments[idx]);
+      } else 
+        setSelectedDept(departments[0]);
     }
     if (departments && departments.length && hierarchyLevels && hierarchyLevels.length && hierarchyList && hierarchyList.length) {
       let hierarchyLevelMap = {};
-      let hierarchyKeyMap = {};
+
       let hierarchyListMapById = {}
       hierarchyLevels.forEach((hLevel) => {
-          if (hLevel.level) {
-            hLevel['hierarchies'] = []
-            hLevel['filterIds'] = [];
-            hLevel['selectedCodes'] = [];
-            hierarchyLevelMap[hLevel.level] = hLevel
+        if (hLevel.level) {
+          hierarchyLevelMap[hLevel.level] = {
+            ...hLevel,
+            hierarchies: [],
+            filterIds: [],
+            selectedCodes: []
           }
-        });
-        hierarchyList.forEach((data, idx) => {
-          // create hierarchy list's map by id
-          hierarchyListMapById[data?.id] = data;
-          if (data.hierarchyLevel && hierarchyLevelMap[data.hierarchyLevel])
-            hierarchyLevelMap[data.hierarchyLevel]['hierarchies'].push(data)
-        })
-        hierarchyLevelMap = Object.values(hierarchyLevelMap);
-        hierarchyLevelMap = hierarchyLevelMap.sort((x, y) => x?.hierarchyLevel?.localeCompare(y?.hierarchyLevel))
-        setHierarchyLevelMapList(hierarchyLevelMap);
-        setSelected(hierarchyKeyMap);
-        setHierarchyListMap(hierarchyListMapById);
+        }
+      });
+      hierarchyList.forEach((data, idx) => {
+        // create hierarchy list's map by id
+        hierarchyListMapById[data?.id] = data;
+        if (data.hierarchyLevel && hierarchyLevelMap[data.hierarchyLevel]) {
+          hierarchyLevelMap[data.hierarchyLevel]['hierarchies'].push(data)
+        }
+      })
+      hierarchyLevelMap = Object.values(hierarchyLevelMap);
+      hierarchyLevelMap = hierarchyLevelMap.sort((x, y) => x?.hierarchyLevel?.localeCompare(y?.hierarchyLevel))
+      setHierarchyLevelMapList(hierarchyLevelMap);
+      setHierarchyListMap(hierarchyListMapById);
+      setIsFilterLoaded(true)
     }
   }, [departments, hierarchyLevels, hierarchyList])
+
+  const loadPreAppliedFilters = () => {
+    let selectedFilters = {};
+    let childHierarchyIdList = {};
+    let hierarchyLevelMapUpdated = hierarchyLevelMapList.map((hierarchyMap, idx) => {
+      selectedFilters[hierarchyMap.label] = [];
+      let filterCodes = value?.filters?.[hierarchyMap.label] || [];
+      if (filterCodes?.length) selectedFilters[hierarchyMap.label] = _.filter(hierarchyMap['hierarchies'], (hierarchyVal) => {return filterCodes.indexOf(hierarchyVal.code) != -1})
+      
+      // set list of chields based on selected filters
+      hierarchyMap['selectedCodes'] = filterCodes;
+      let nextLevel = hierarchyMap.level + 1;
+      childHierarchyIdList[nextLevel] = []
+      if (selectedFilters[hierarchyMap.label]?.length) {
+        selectedFilters[hierarchyMap.label].forEach((h) => {
+          if (h.children) childHierarchyIdList[nextLevel] = childHierarchyIdList[nextLevel].concat(h.children);
+        })
+      } else if (childHierarchyIdList[hierarchyMap.level]?.length) {
+        childHierarchyIdList[hierarchyMap.level].forEach(id => {
+          // Prepare child list for next level
+          if (hierarchyListMap[id] && hierarchyListMap[id]?.children) childHierarchyIdList[nextLevel] = childHierarchyIdList[nextLevel].concat(hierarchyListMap[id].children);
+        });
+      }
+      hierarchyMap['filterIds'] = childHierarchyIdList[hierarchyMap.level];
+      return hierarchyMap;
+    })
+    setHierarchyLevelMapList(hierarchyLevelMapUpdated);
+    setSelected(selectedFilters);
+  }
+
+  useEffect(() => {
+    if (isFilterLoaded) {
+      // set pre applied filters
+      loadPreAppliedFilters()
+    }
+  }, [value?.filters, isFilterLoaded]);
 
 
   const [selectService, setSelectedService] = useState(() =>
@@ -84,6 +127,7 @@ const IfixFilters = ({
 
   const selectDepartmentFilters = (e, data) => {
     setHierarchyLevelMapList([])
+    setIsFilterLoaded(false)
     setSelectedDept(e);
     changeDepartment(e);
     setValue({ ...value, filters: {'Department':  e?.code}});
@@ -102,41 +146,29 @@ const IfixFilters = ({
     if (hierarchyLevel) {
       let key = hierarchyLevel['label'];
       let hierarchyFilter = {};
-      hierarchyFilter[key] = []
       let selectedHierarchies = [] 
-      e.forEach((appHierarchy) => { selectedHierarchies.push(appHierarchy[1]); hierarchyFilter[key].push(appHierarchy[1].code) })
+      e.forEach((appHierarchy) => { selectedHierarchies.push(appHierarchy[1]); })
       // check is any change on filter
       const isChanged = isHierarchyFilterChanged(selectedHierarchies, selected[key])
       if (!isChanged) return;
-      // If change in filter update the filters
-      setValue({ ...value, filters: { ...hierarchyFilter, 'Department':  selectedDept?.code } });
-      let childHierarchyIdList = {};
-      let selectedDD = selected; 
       // reset all chields
       let hierarchyLevelMapUpdated = hierarchyLevelMapList.map((hierarchy, idx) => {
         if (hierarchy.level == hierarchyLevel.level) {
-          selectedDD[hierarchy.label] = selectedHierarchies;
-          let nextLevel = hierarchy.level + 1;
-          childHierarchyIdList[nextLevel] = []
           hierarchy['selectedCodes'] = selectedHierarchies.map((h) => {
-            if (h.children) childHierarchyIdList[nextLevel] = childHierarchyIdList[nextLevel].concat(h.children);
             return h.code;
           })
-        } else if (hierarchy.level > hierarchyLevel.level && childHierarchyIdList[hierarchy.level]) {
-          // Set filterIds list 
-          hierarchy['filterIds'] = childHierarchyIdList[hierarchy.level];
-          selectedDD[hierarchy.label] = [];
-          let nextLevel = hierarchy.level + 1;
-          childHierarchyIdList[nextLevel] = [];
-          childHierarchyIdList[hierarchy.level].forEach(id => {
-            // Prepare child list for next level
-            if (hierarchyListMap[id] && hierarchyListMap[id]?.children) childHierarchyIdList[nextLevel] = childHierarchyIdList[nextLevel].concat(hierarchyListMap[id].children);
-          });
+        } else if (hierarchy.level > hierarchyLevel.level) {
+          hierarchy['selectedCodes'] = [];
         }
         return hierarchy;
       })
-      setHierarchyLevelMapList(hierarchyLevelMapUpdated);
-      setSelected(selectedDD);
+      _.forEach(hierarchyLevelMapUpdated, (hierarchyMap) => {
+        if (hierarchyMap?.selectedCodes?.length) {
+          hierarchyFilter[hierarchyMap.label] = hierarchyMap.selectedCodes;
+        }
+      })
+      // If change in filter update the filters
+      setValue({ ...value, filters: { ...hierarchyFilter, 'Department':  selectedDept?.code } });
     }
   };
 
@@ -154,7 +186,7 @@ const IfixFilters = ({
   }
 
   const getFilteredHierarchy = (hierarchyLevel) => {
-    if (hierarchyLevel["filterIds"].length) {
+    if (hierarchyLevel?.["filterIds"]?.length) {
       return hierarchyLevel["hierarchies"].filter((hierarchy) => hierarchyLevel["filterIds"].indexOf(hierarchy.id) != -1)
     }
     return hierarchyLevel["hierarchies"];

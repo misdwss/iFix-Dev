@@ -105,3 +105,8 @@ export const getCitiesAvailable = (e, selectedDDRs) => {
     return false;
   }
 };
+
+// Check ifix dashboard from dashboard config
+export const isIFixDashboard = (config) => {
+  return config?.[0]?.name.includes("DSS_IFIX_DASHBOARD") ? true : false;
+}
