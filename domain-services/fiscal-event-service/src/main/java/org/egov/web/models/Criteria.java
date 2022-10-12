@@ -51,6 +51,11 @@ public class Criteria {
 
     @JsonProperty("toIngestionTime")
     private Long toIngestionTime = null;
+    
+    @JsonProperty("offset")
+    private Long offSet;
+    @JsonProperty("limit")
+	private Long limit;
 
 
     public Criteria addIdsItem(String idsItem) {
