@@ -15,7 +15,8 @@ import org.egov.ifix.utils.EventConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,17 +108,35 @@ public class ReceiptEventMapper implements EventMapper {
                     JsonObject billAccountDetailsJB = billAccountDetailsJE.getAsJsonObject();
                     String coaCode = billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_CODE).getAsString();
 
-                    Amount amount = Amount.builder()
-                            .amount(billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal())
-                            .coaCode(chartOfAccountService.getResolvedChartOfAccountCode(coaCode))
-                            .fromBillingPeriod(taxPeriodFrom)
-                            .toBillingPeriod(taxPeriodTo).build();
+                    BigDecimal calculatedAmount = getBillAccountDetailAmount(coaCode, billAccountDetailsJB);
 
-                    amountList.add(amount);
+                    if (new BigDecimal(0).compareTo(calculatedAmount) != 0) {
+
+                        Amount amount = Amount.builder()
+                                .amount(calculatedAmount)
+                                .coaCode(chartOfAccountService.getResolvedChartOfAccountCode(coaCode))
+                                .fromBillingPeriod(taxPeriodFrom)
+                                .toBillingPeriod(taxPeriodTo).build();
+
+                        amountList.add(amount);
+                    }
                 });
             });
         }
 
         return amountList;
+    }
+
+    /**
+     * @param taxHeadCode
+     * @param billAccountDetailsJB
+     * @return
+     */
+    private BigDecimal getBillAccountDetailAmount(@NotNull String taxHeadCode, @NotNull JsonObject billAccountDetailsJB) {
+        if (taxHeadCode.contains(ADVANCE_TAX_HEAD_CODE_SUBSTRING)) {
+            return billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_AMOUNT).getAsBigDecimal();
+        }else {
+            return billAccountDetailsJB.get(PAYMENT_RECEIPT_CLIENT_COA_ADJUSTED_AMOUNT).getAsBigDecimal();
+        }
     }
 }
