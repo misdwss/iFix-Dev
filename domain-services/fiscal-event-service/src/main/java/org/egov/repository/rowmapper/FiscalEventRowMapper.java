@@ -105,7 +105,7 @@ public class FiscalEventRowMapper implements ResultSetExtractor<List<FiscalEvent
 			if(Objects.isNull(pGobject) || Objects.isNull(pGobject.getValue()))
 				return null;
 			else
-				return mapper.readTree( pGobject.getValue());
+				return mapper.readTree(pGobject.getValue());
 		} catch (IOException e) {
 			throw new CustomException("SERVER_ERROR","Exception occurred while parsing the additionalDetail json : "+ e
 					.getMessage());

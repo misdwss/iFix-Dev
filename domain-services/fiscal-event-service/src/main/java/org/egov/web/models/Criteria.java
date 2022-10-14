@@ -54,6 +54,7 @@ public class Criteria {
     
     @JsonProperty("offset")
     private Long offSet;
+
     @JsonProperty("limit")
 	private Long limit;
 

@@ -32,19 +32,21 @@ public class FiscalEventRepository {
     private JdbcTemplate jdbcTemplate;
     
     public List<FiscalEvent> searchFiscalEvent(Criteria searchCriteria) {
-        //Query searchQuery = eventQueryBuilder.buildSearchQuery(searchCriteria);
-        //return (mongoTemplate.find(searchQuery, Object.class, "fiscal_event"));
-		List<FiscalEvent> fiscalEvents = new ArrayList<>();
-
+    	List<FiscalEvent> fiscalEvents = new ArrayList<>();
     	List<Object> preparedStmtList = new ArrayList<>();
+
     	try {
-    	String fiscalEventSearchQuery = eventQueryBuilder.buildSearchQuery(searchCriteria, preparedStmtList);
-    	log.info("Fiscal event serach query:"+fiscalEventSearchQuery);
-    	fiscalEvents = jdbcTemplate.query(fiscalEventSearchQuery, preparedStmtList.toArray(), fiscalEventRowMapper);
+    		String fiscalEventSearchQuery = eventQueryBuilder.buildSearchQuery(searchCriteria, preparedStmtList);
+    		log.info("Fiscal event search query: " + fiscalEventSearchQuery);
+    		fiscalEvents = jdbcTemplate.query(fiscalEventSearchQuery, preparedStmtList.toArray(), fiscalEventRowMapper);
     	} catch(Exception e) {
+
+    		// DOUBT - EXCEPTION SHOULD BE THROWN INSTEAD OF RETURNING EMPTY LIST IN CASE OF ERROR ??
+
     		log.error("Exception while fetching data from DB: " + e);
 			return fiscalEvents;
     	}
+
     	return fiscalEvents;
     }
 }

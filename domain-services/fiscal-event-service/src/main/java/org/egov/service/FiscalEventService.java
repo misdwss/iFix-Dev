@@ -1,6 +1,7 @@
 package org.egov.service;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -53,13 +55,13 @@ public class FiscalEventService {
         //TODO: Enrich API version with data  
         enricher.enrichFiscalEventPushPost(fiscalEventRequest);
 
-        if (fiscalEventRequest.getFiscalEvent() != null && !fiscalEventRequest.getFiscalEvent().isEmpty()) {
+        if (!CollectionUtils.isEmpty(fiscalEventRequest.getFiscalEvent())) {
+            //push with request header details
+            producer.push(eventConfiguration.getFiscalPushRequest(), fiscalEventRequest);
+            //push without request header details
+            producer.push(eventConfiguration.getFiscalEventPushToMongoSink(), fiscalEventRequest);
+        }
 
-                //push with request header details
-                producer.push(eventConfiguration.getFiscalPushRequest(), fiscalEventRequest);
-                //push without request header details
-                producer.push(eventConfiguration.getFiscalEventPushToMongoSink(), fiscalEventRequest);
-            }
         return fiscalEventRequest;
     }
 

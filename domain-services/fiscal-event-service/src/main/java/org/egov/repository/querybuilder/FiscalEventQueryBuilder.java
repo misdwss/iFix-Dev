@@ -48,7 +48,7 @@ public class FiscalEventQueryBuilder {
 			query.append(")");
 		}
 		if (StringUtils.isNotBlank(searchCriteria.getReceiver())) {
-			query.append(" AND (fiscal_event.receivers)::jsonb @> "+"'\""+searchCriteria.getReceiver()+"\"'");
+			query.append(" AND (fiscal_event.receivers)::jsonb @> " + "'\""+searchCriteria.getReceiver()+"\"'");
 //			preparedStmtList.add("'"+searchCriteria.getReceiver()+"'");
 
 		}
