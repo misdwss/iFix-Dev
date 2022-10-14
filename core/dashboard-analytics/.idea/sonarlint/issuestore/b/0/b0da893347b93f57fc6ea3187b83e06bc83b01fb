@@ -1,0 +1,14 @@
+
+[	java:S112."FDefine and throw a dedicated exception instead of using a generic one.(‚³÷”
+q	java:S116""\Rename this field "RESOURCE_LOCATION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ä¿þÙ
+V	java:S125$"<This block of commented-out lines of code should be removed.(ªîß×ùÿÿÿÿ
+V
+java:S34576"AFormat specifiers should be used instead of string concatenation.(¹ô²
+U
+java:S4719Z":Replace Charset.forName() call with StandardCharsets.UTF_8(Ï­Å¥ùÿÿÿÿ
+W
+java:S3457]"AFormat specifiers should be used instead of string concatenation.(Ü©—
+|
+java:S1488J"aImmediately return this expression instead of assigning it to the temporary variable "resources".(°•¤Úýÿÿÿÿ
+q
+java:S26296"\Invoke method(s) only conditionally. Use the built-in formatting to construct this argument.(¹ô²
