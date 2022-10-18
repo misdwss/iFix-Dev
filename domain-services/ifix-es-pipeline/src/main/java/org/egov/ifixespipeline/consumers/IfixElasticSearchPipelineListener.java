@@ -57,7 +57,7 @@ public class IfixElasticSearchPipelineListener {
     @Value("${coa.salary.head.name}")
     private String salaryCoaHeadName;
 
-    private Map<String, HashSet<String>> expenditureTypeVsUuidsMap;
+    private Map<String, Map<String, HashSet<String>>> tenantIdVsExpenditureTypeVsUuidsMap = new HashMap<>();
 
     /**
      * Kafka consumer
@@ -70,18 +70,12 @@ public class IfixElasticSearchPipelineListener {
         try {
             FiscalEventRequest incomingData = objectMapper.convertValue(record, FiscalEventRequest.class);
 
-            // Enrich hierarchy map in only new records. In case of migration records, skip enrichment as they are already getting enriched in migration toolkit.
-            if(topic.equalsIgnoreCase(fiscalEventsNewRecordsTopic)) {
-                expenditureTypeVsUuidsMap = loadExpenditureTypeVsUuidMap(incomingData.getFiscalEvent().getTenantId());
-                fiscalDataEnrichmentService.enrichFiscalData(incomingData);
-            }else{
-                // Load expenditureTypeVsUuidsMap only once for migration to avoid unnecessary network calls
-                if(CollectionUtils.isEmpty(expenditureTypeVsUuidsMap)){
-                    expenditureTypeVsUuidsMap = loadExpenditureTypeVsUuidMap(incomingData.getFiscalEvent().getTenantId());
-                }
-            }
+            // Enrich hierarchy map according to the tenantid encountered by this pipeline to avoid redundant network calls
+            if(!tenantIdVsExpenditureTypeVsUuidsMap.containsKey(incomingData.getFiscalEvent().getTenantId()))
+                tenantIdVsExpenditureTypeVsUuidsMap.put(incomingData.getFiscalEvent().getTenantId(), loadExpenditureTypeVsUuidMap(incomingData.getFiscalEvent().getTenantId()));
 
-            fiscalDataEnrichmentService.enrichComputedFields(incomingData, expenditureTypeVsUuidsMap);
+            fiscalDataEnrichmentService.enrichFiscalData(incomingData);
+            fiscalDataEnrichmentService.enrichComputedFields(incomingData, tenantIdVsExpenditureTypeVsUuidsMap.get(incomingData.getFiscalEvent().getTenantId()));
 
             producer.push(indexFiscalEventsTopic, incomingData);
         }catch(Exception e) {

@@ -39,6 +39,8 @@ public class FiscalDataEnrichmentService {
     @Value("${coa.salary.head.name}")
     private String salaryCoaHeadName;
 
+    Map<String, HashMap<Integer, String>> tenantIdVshierarchyLevelVsLabelMap = new HashMap<>();
+
     private HashMap<Integer, String> loadDepartmentHierarchyLevel(String tenantId){
         DepartmentHierarchyLevelSearchCriteria criteria = DepartmentHierarchyLevelSearchCriteria.builder().tenantId(tenantId).build();
         DepartmentHierarchyLevelSearchRequest request = DepartmentHierarchyLevelSearchRequest.builder().criteria(criteria).requestHeader(new RequestHeader()).build();
@@ -67,11 +69,13 @@ public class FiscalDataEnrichmentService {
 
         HashMap<String, String> hierarchyMap = new HashMap<>();
 
-        HashMap<Integer, String> hierarchyLevelVsLabelMap = loadDepartmentHierarchyLevel(incomingData.getFiscalEvent().getTenantId());
+        if(!tenantIdVshierarchyLevelVsLabelMap.containsKey(incomingData.getFiscalEvent().getTenantId())){
+            tenantIdVshierarchyLevelVsLabelMap.put(incomingData.getFiscalEvent().getTenantId(), loadDepartmentHierarchyLevel(incomingData.getFiscalEvent().getTenantId()));
+        }
 
         ancestryList.forEach(ancestry -> {
             if(ancestry.containsKey("hierarchyLevel") && ancestry.containsKey("code"))
-                hierarchyMap.put(hierarchyLevelVsLabelMap.get(ancestry.get("hierarchyLevel")), (String)ancestry.get("code"));
+                hierarchyMap.put(tenantIdVshierarchyLevelVsLabelMap.get(incomingData.getFiscalEvent().getTenantId()).get(ancestry.get("hierarchyLevel")), (String)ancestry.get("code"));
         });
 
         incomingData.getFiscalEvent().setHierarchyMap(hierarchyMap);
