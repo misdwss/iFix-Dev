@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -30,7 +31,9 @@ public class MigrationController {
 
     @RequestMapping(value="/v1/_migrate", method = RequestMethod.POST)
     public ResponseEntity<?> migrateDataToES(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
-        Map<String, Object> responseMap = migrationService.migrateData(request);
+        migrationService.migrateData(request);
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("SUCCESS", "Fiscal data migration job created successfully");
         return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 

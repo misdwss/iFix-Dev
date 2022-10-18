@@ -42,12 +42,6 @@ public class MigrationService {
     @Value("${ifix.migration.progress.topic}")
     private String saveMigrationProgressTopic;
 
-    @Value("${ifix.department.entity.service.host}")
-    private String ifixDeptEntityServiceHost;
-
-    @Value("${ifix.department.entity.search.endpoint}")
-    private String ifixDeptEntityServiceSearchEndpoint;
-
     @Value("${ifix.fiscal.event.service.host}")
     private String ifixFiscalEventServiceHost;
 
