@@ -36,7 +36,7 @@ public class ChartOfAccountQueryBuilder {
 		
 		if (StringUtils.isNotBlank(searchCriteria.getMajorHead())) {
 			query.append(" AND majorhead = ?");
-		preparedStmtList.add(searchCriteria.getMajorHead());
+			preparedStmtList.add(searchCriteria.getMajorHead());
 		}
 		if (StringUtils.isNotBlank(searchCriteria.getMinorHead())) {
 			query.append(" AND minorhead = ?");
@@ -45,7 +45,7 @@ public class ChartOfAccountQueryBuilder {
 
 		if (StringUtils.isNotBlank(searchCriteria.getGroupHead())) {
 			query.append(" AND grouphead = ?");
-		preparedStmtList.add(searchCriteria.getGroupHead());
+			preparedStmtList.add(searchCriteria.getGroupHead());
 		}
 
 		if (StringUtils.isNotBlank(searchCriteria.getObjectHead())) {
