@@ -29,9 +29,13 @@ const IfixFilters = ({
       marginLeft: '0%',
       marginRight: '2%'
     },
+    marginBottom24: {
+      marginBottom: '24px'
+    },
     filterInputLast: {
       marginLeft: '0%',
-      flexBasis: "16%"
+      flexBasis: "16%",
+      marginBottom: '24px'
     },
   };
 
@@ -233,8 +237,8 @@ const IfixFilters = ({
         />
       </div>
 
-      {hierarchyLevelMapList && hierarchyLevelMapList.map((hierarchyLevel) => {
-            return <div className="filters-input" style={customStyle.filterInput} key={hierarchyLevel?.level}>
+      {hierarchyLevelMapList && hierarchyLevelMapList.map((hierarchyLevel, idx) => {
+            return <div className="filters-input" style={idx>3 ? {...customStyle.filterInput, ...customStyle.marginBottom24}:customStyle.filterInput} key={hierarchyLevel?.level}>
               <div className="mbsm">{t("ES_DSS_IFIX_"+hierarchyLevel?.label)}</div>
               <MultiSelectDropdown
                 options={getFilteredHierarchy(hierarchyLevel)}

@@ -360,7 +360,7 @@ const DashBoard = ({ stateCode }) => {
       <div ref={fullPageRef} id="divToPrint">
         <div className="options">
           <Header styles={mobileView ? { marginLeft: "0px", whiteSpace: "pre-line" } : { marginBottom: "0px", whiteSpace: "pre" }}>
-            {t(dashboardConfig?.[0]?.name)}
+            {!isEnableIFixFilter && t(dashboardConfig?.[0]?.name)}
           </Header>
           {mobileView ? null : (
             <div className="divToBeHidden">
