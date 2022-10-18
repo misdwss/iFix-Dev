@@ -19,7 +19,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class MigrationService {
+public class FiscalEventMigrationService {
 
     @Autowired
     private MigrationRepository repository;
