@@ -1,27 +1,0 @@
-
-m
-java:S3776S"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(²±°‘ûÿÿÿÿ
-1
-java:S3626m"Remove this redundant jump.(ÉŠ©ƒ
-2
-java:S3626¯"Remove this redundant jump.(ÉŠ©ƒ
-`
-java:S1858·"D"jsonString" returns a string, there's no need to call "toString()".(ÅıÙ†ùÿÿÿÿ
-n
-java:S3776Ã"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(û“µÕÿÿÿÿÿ
-2
-java:S3626ã"Remove this redundant jump.(ÉŠ©ƒ
-h
-java:S3776ô"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(Äà¶#
-2
-java:S3626›"Remove this redundant jump.(ÉŠ©ƒ
-V
-java:S1117õ":Rename "mapper" which hides the field declared at line 70.(ĞÏáúÿÿÿÿ
-9
-java:S1128"Remove this duplicated import.(Õë±Äøÿÿÿÿ
-9
-java:S1128"Remove this duplicated import.(¼è½Òşÿÿÿÿ
-t	java:S135Å"YReduce the total number of break and continue statements in this loop to use at most one.(«·Œëüÿÿÿÿ
-o	java:S135÷"YReduce the total number of break and continue statements in this loop to use at most one.(Ğóª´
-K
-java:S1066’"/Merge this if statement with the enclosing one.(¯¼ö°şÿÿÿÿ
