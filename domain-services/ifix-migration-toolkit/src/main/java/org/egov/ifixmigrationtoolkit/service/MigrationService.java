@@ -46,8 +46,8 @@ public class MigrationService {
     private String ifixFiscalEventServiceHost;
 
     public Map<String, Object>  migrateData(MigrationRequest request){
-        Integer resumeFrom = repository.getPageNumberToResumeFrom(request.getTenantId());
-        Long numberOfRecordsMigrated = repository.getTotalNumberOfRecordsMigrated(request.getTenantId());
+        Integer resumeFrom = 0;
+        Long numberOfRecordsMigrated = 0l;
         PlainsearchCriteria criteria = PlainsearchCriteria.builder().tenantId(request.getTenantId()).build();
         FiscalEventPlainSearchRequest plainSearchRequest = FiscalEventPlainSearchRequest.builder().criteria(criteria).build();
         plainSearchRequest.setRequestHeader(request.getRequestHeader());
