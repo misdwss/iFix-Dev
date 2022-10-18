@@ -51,56 +51,7 @@ public class MigrationService {
     @Value("${ifix.fiscal.event.service.host}")
     private String ifixFiscalEventServiceHost;
 
-    private HashMap<Integer, String> loadDepartmentHierarchyLevel(String tenantId){
-        DepartmentHierarchyLevelSearchCriteria criteria = DepartmentHierarchyLevelSearchCriteria.builder().tenantId(tenantId).build();
-        DepartmentHierarchyLevelSearchRequest request = DepartmentHierarchyLevelSearchRequest.builder().criteria(criteria).requestHeader(new RequestHeader()).build();
-        Object result = serviceRequestRepository.fetchResult(getIfixDepartmentEntityUri(), request);
-        DepartmentHierarchyLevelResponse response = objectMapper.convertValue(result, DepartmentHierarchyLevelResponse.class);
-        HashMap<Integer, String> hierarchyLevelVsLabelMap = new HashMap<>();
-        response.getDepartmentHierarchyLevel().forEach(hierarchyObject -> {
-            if(!hierarchyLevelVsLabelMap.containsKey(hierarchyObject.getLevel()))
-                hierarchyLevelVsLabelMap.put(hierarchyObject.getLevel(), hierarchyObject.getLabel().replaceAll(" ", "_"));
-        });
-        return hierarchyLevelVsLabelMap;
-    }
-
-    private HashMap<Integer, String> hierarchyLevelVsLabelMap;
-
-    public void enrichHierarchyMapForMigration(List<FiscalEvent> listOfFiscalEvents){
-
-        listOfFiscalEvents.forEach(incomingData->{
-            HashMap<String, Object> attributes = (HashMap<String, Object>) incomingData.getAttributes();
-
-            HashMap<String, Object> departmentEntity = new HashMap<>();
-
-            if(attributes.containsKey("departmentEntity"))
-                departmentEntity = (HashMap<String, Object>) attributes.get("departmentEntity");
-
-            List<HashMap<String, Object>> ancestryList = new ArrayList<>();
-
-            if(departmentEntity.containsKey("ancestry"))
-                ancestryList = (List<HashMap<String, Object>>) departmentEntity.get("ancestry");
-
-            HashMap<String, String> hierarchyMap = new HashMap<>();
-
-            ancestryList.forEach(ancestry -> {
-                if(ancestry.containsKey("hierarchyLevel") && ancestry.containsKey("code"))
-                    hierarchyMap.put(hierarchyLevelVsLabelMap.get(ancestry.get("hierarchyLevel")), (String)ancestry.get("code"));
-            });
-
-            incomingData.setHierarchyMap(hierarchyMap);
-
-        });
-    }
-
-    private StringBuilder getIfixDepartmentEntityUri(){
-        StringBuilder uri = new StringBuilder(ifixDeptEntityServiceHost);
-        uri.append(ifixDeptEntityServiceSearchEndpoint);
-        return uri;
-    }
-
     public Map<String, Object>  migrateData(MigrationRequest request){
-        hierarchyLevelVsLabelMap = loadDepartmentHierarchyLevel(request.getTenantId());
         Integer resumeFrom = repository.getPageNumberToResumeFrom(request.getTenantId());
         Long numberOfRecordsMigrated = repository.getTotalNumberOfRecordsMigrated(request.getTenantId());
         PlainsearchCriteria criteria = PlainsearchCriteria.builder().tenantId(request.getTenantId()).build();
@@ -124,8 +75,6 @@ public class MigrationService {
 
                 if(CollectionUtils.isEmpty(response.getFiscalEvent()))
                     break;
-
-                enrichHierarchyMapForMigration(response.getFiscalEvent());
             }catch (Exception e){
                 log.error("IFIX_MIGRATION_ERR", "Some error occurred while migrating data");
                 responseMap.put("IFIX_MIGRATION_ERR", "Error occurred while migrating data on page index: " + i);
