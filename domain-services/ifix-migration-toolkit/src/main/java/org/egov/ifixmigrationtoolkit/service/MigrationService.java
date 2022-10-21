@@ -85,6 +85,7 @@ public class MigrationService {
             commitMigrationProgress(request.getTenantId(), i, batchSize, totalNumberOfRecordsMigrated);
             i += 1;
             lastPageNumber = i;
+            break;
         }
         log.info("Number of records migrated in current session: " + totalNumberOfRecordsMigrated);
         responseMap.put("IFIX_MIGRATION_INFO", "Number of records migrated in current session: " + totalNumberOfRecordsMigrated);
@@ -112,7 +113,7 @@ public class MigrationService {
                 .batchSize(batchSize)
                 .totalNumberOfRecordsMigrated(totalNumberOfRecordsMigrated)
                 .build();
-        producer.push(saveMigrationProgressTopic, MigrationCountWrapper.builder().migrationCount(migrationCount).build());
+        //producer.push(saveMigrationProgressTopic, MigrationCountWrapper.builder().migrationCount(migrationCount).build());
 
     }
 }
