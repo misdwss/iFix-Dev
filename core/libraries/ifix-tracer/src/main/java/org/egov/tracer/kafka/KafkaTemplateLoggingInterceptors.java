@@ -113,14 +113,27 @@ public class KafkaTemplateLoggingInterceptors<K, V> implements ConsumerIntercept
         try {
             Map<String, Object> requestMap = objectMapper.convertValue(value, Map.class);
 
-            Object requestHeader = requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
-                    (REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_HEADER_IN_CAMEL_CASE);
+            if(requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) || requestMap.containsKey(REQUEST_HEADER_IN_CAMEL_CASE)) {
+                Object requestHeader = requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
+                        (REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_HEADER_IN_CAMEL_CASE);
 
-            if (isNull(requestHeader))
-                return null;
-            else {
-                if (requestHeader instanceof Map) {
-                    correlationId = (String) ((Map) requestHeader).get(CORRELATION_ID_FIELD_NAME);
+                if (isNull(requestHeader))
+                    return null;
+                else {
+                    if (requestHeader instanceof Map) {
+                        correlationId = (String) ((Map) requestHeader).get(CORRELATION_ID_FIELD_NAME);
+                    }
+                }
+            }else{
+                Object requestInfo = requestMap.containsKey(REQUEST_INFO_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
+                        (REQUEST_INFO_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_INFO_IN_CAMEL_CASE);
+
+                if (isNull(requestInfo))
+                    return null;
+                else {
+                    if (requestInfo instanceof Map) {
+                        correlationId = (String) ((Map) requestInfo).get(CORRELATION_ID_FIELD_NAME);
+                    }
                 }
             }
         } catch (Exception ignored) {

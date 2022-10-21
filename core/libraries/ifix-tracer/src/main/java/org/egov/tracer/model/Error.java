@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * Error object will be returned as a part of reponse body in conjunction with
- * responseHeader as part of ErrorResponse whenever the request processing status
- * in the responseHeader is FAILED.
+ * responseHeader/responseInfo as part of ErrorResponse whenever the request processing status
+ * in the responseHeader/responseInfo is FAILED.
  */
 @Setter
 @Getter
