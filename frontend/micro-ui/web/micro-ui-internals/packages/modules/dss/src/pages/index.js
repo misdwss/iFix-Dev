@@ -250,6 +250,10 @@ const DashBoard = ({ stateCode }) => {
     enabled: isEnableIFixFilter && !isDeptLoading && department?.id ? true : false,
     select: (data) => {
       if (data.departmentEntity) {
+        let idValueMap = {};
+        // This is for demo only to represent the data of table with text.
+        data.departmentEntity.forEach((hierarchy) => idValueMap[hierarchy.code] = hierarchy.name)
+        localStorage.setItem("Digit.dss.iFixCodeNameMap", JSON.stringify(idValueMap));
         return _.sortBy(data.departmentEntity, 'hierarchyLevel')
       };
       return [];

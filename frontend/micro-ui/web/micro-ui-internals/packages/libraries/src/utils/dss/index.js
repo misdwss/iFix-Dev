@@ -110,3 +110,13 @@ export const getCitiesAvailable = (e, selectedDDRs) => {
 export const isIFixDashboard = (config) => {
   return config?.[0]?.name.includes("DSS_IFIX_DASHBOARD") ? true : false;
 }
+
+/**
+ * This is for demo only needs to be remove, funciton which checks the ifix key is exists then it returns the value
+ */
+export const getIfixMapedName = (key)  => {
+  if (key)
+    return JSON.parse(localStorage.getItem("Digit.dss.iFixCodeNameMap") || {})[key] || key;
+  else 
+    return null;
+}
