@@ -43,7 +43,7 @@ public class TableChartResponseHandler implements IResponseHandler {
         String plotLabel = chartNode.get(PLOT_LABEL).asText();
         ArrayNode pathDataTypeMap = (ArrayNode) chartNode.get(TYPE_MAPPING);
         ArrayNode aggrsPaths = (ArrayNode) chartNode.get(IResponseHandler.AGGS_PATH);
-        Map<String, Map<String, Plot>> mappings = new HashMap<>();
+        Map<String, Map<String, Plot>> mappings = new LinkedHashMap<>();
         List<JsonNode> aggrNodes = aggregationNode.findValues(BUCKETS);
 
         int[] idx = { 1 };
