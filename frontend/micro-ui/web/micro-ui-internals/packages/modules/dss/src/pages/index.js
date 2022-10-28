@@ -63,6 +63,11 @@ const DashBoard = ({ stateCode }) => {
 
   const language = Digit.StoreData.getCurrentLanguage();
 
+  // For updating the ifix dashboard on title
+  useEffect(() => {
+    document.title = "iFIX Dashboard"
+  }, []);
+
   const { isLoading: localizationLoading, data: store } = Digit.Services.useStore({ stateCode, moduleCode, language });
   const { data: screenConfig, isLoading: isServicesLoading } = Digit.Hooks.dss.useMDMS(stateCode, "dss-dashboard", "DssDashboard", {
     select: (data) => {
