@@ -373,7 +373,7 @@ const DashBoard = ({ stateCode }) => {
           </Header>
           {mobileView ? null : (
             <div className="divToBeHidden">
-              <div className="mrlg divToBeHidden">
+              {/* <div className="mrlg divToBeHidden">
                 <MultiLink
                   className="multilink-block-wrapper divToBeHidden"
                   label={t(`ES_DSS_SHARE`)}
@@ -387,7 +387,7 @@ const DashBoard = ({ stateCode }) => {
                   displayOptions={showOptions}
                   options={shareOptions}
                 />
-              </div>
+              </div> */}
               <div className="mrsm divToBeHidden" onClick={handlePrint}>
                 <DownloadIcon className="mrsm divToBeHidden" />
                 {t(`ES_DSS_DOWNLOAD`)}
