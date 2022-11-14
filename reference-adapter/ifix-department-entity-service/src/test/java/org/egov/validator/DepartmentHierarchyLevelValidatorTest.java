@@ -3,7 +3,6 @@ package org.egov.validator;
 import org.egov.common.contract.request.RequestHeader;
 import org.egov.common.contract.request.UserInfo;
 import org.egov.config.TestDataFormatter;
-import org.egov.repository.DepartmentHierarchyLevelRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentUtil;
 import org.egov.web.models.*;
@@ -28,9 +27,6 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class DepartmentHierarchyLevelValidatorTest {
 
-    @Mock
-    private DepartmentHierarchyLevelRepository departmentHierarchyLevelRepository;
-
     @InjectMocks
     private DepartmentHierarchyLevelValidator departmentHierarchyLevelValidator;
 
@@ -41,14 +37,14 @@ class DepartmentHierarchyLevelValidatorTest {
     private TestDataFormatter testDataFormatter;
 
     private DepartmentHierarchyLevelRequest hierarchyLevelRequest;
-    private DepartmentHierarchyLevel hierarchyLevel;
+    private DepartmentHierarchyLevelDTO hierarchyLevel;
     private DepartmentHierarchyLevelSearchRequest hierarchyLevelSearchRequest;
     private DepartmentHierarchyLevelResponse searchHierarchyLevelResponse;
 
     @BeforeEach
     void init() throws IOException {
         hierarchyLevelRequest = testDataFormatter.getDeptHierarchyCreateRequestData();
-        hierarchyLevel = hierarchyLevelRequest.getDepartmentHierarchyLevel();
+        hierarchyLevel = hierarchyLevelRequest.getDepartmentHierarchyLevelDTO();
         hierarchyLevelSearchRequest = testDataFormatter.getDeptHierarchySearchRequestData();
         searchHierarchyLevelResponse = testDataFormatter.getDeptHierarchySearchResponseData();
     }
@@ -63,17 +59,17 @@ class DepartmentHierarchyLevelValidatorTest {
     void testValidateHierarchyLevelCreatePostWithDefaultRequestHeader() {
         RequestHeader requestHeader = new RequestHeader();
         assertThrows(CustomException.class, () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(
-                new DepartmentHierarchyLevelRequest(requestHeader, new DepartmentHierarchyLevel())));
+                new DepartmentHierarchyLevelRequest(requestHeader, new DepartmentHierarchyLevelDTO())));
     }
 
     @Test
     void testValidateHierarchyLevelCreatePostWithDefaultHierarchyLevelInRequest() {
         DepartmentHierarchyLevelRequest departmentHierarchyLevelRequest = mock(DepartmentHierarchyLevelRequest.class);
         when(departmentHierarchyLevelRequest.getRequestHeader()).thenReturn(new RequestHeader());
-        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevel()).thenReturn(new DepartmentHierarchyLevel());
+        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevelDTO()).thenReturn(new DepartmentHierarchyLevelDTO());
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(departmentHierarchyLevelRequest));
-        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevel();
+        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevelDTO();
         verify(departmentHierarchyLevelRequest).getRequestHeader();
     }
 
@@ -82,10 +78,10 @@ class DepartmentHierarchyLevelValidatorTest {
         DepartmentHierarchyLevelRequest departmentHierarchyLevelRequest = mock(DepartmentHierarchyLevelRequest.class);
         when(departmentHierarchyLevelRequest.getRequestHeader())
                 .thenReturn(hierarchyLevelRequest.getRequestHeader());
-        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevel()).thenReturn(new DepartmentHierarchyLevel());
+        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevelDTO()).thenReturn(new DepartmentHierarchyLevelDTO());
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(departmentHierarchyLevelRequest));
-        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevel();
+        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevelDTO();
         verify(departmentHierarchyLevelRequest).getRequestHeader();
     }
 
@@ -95,10 +91,10 @@ class DepartmentHierarchyLevelValidatorTest {
         when(requestHeader.getUserInfo()).thenReturn(new UserInfo());
         DepartmentHierarchyLevelRequest departmentHierarchyLevelRequest = mock(DepartmentHierarchyLevelRequest.class);
         when(departmentHierarchyLevelRequest.getRequestHeader()).thenReturn(requestHeader);
-        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevel()).thenReturn(null);
+        when(departmentHierarchyLevelRequest.getDepartmentHierarchyLevelDTO()).thenReturn(null);
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(departmentHierarchyLevelRequest));
-        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevel();
+        verify(departmentHierarchyLevelRequest).getDepartmentHierarchyLevelDTO();
         verify(departmentHierarchyLevelRequest).getRequestHeader();
         verify(requestHeader, atLeast(1)).getUserInfo();
     }
@@ -128,7 +124,7 @@ class DepartmentHierarchyLevelValidatorTest {
     void testValidateHierarchyLevelCreatePostWithNullTenant() {
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
-        hierarchyLevelRequest.getDepartmentHierarchyLevel().setTenantId(null);
+        hierarchyLevelRequest.getDepartmentHierarchyLevelDTO().setTenantId(null);
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(hierarchyLevelRequest));
     }
@@ -137,7 +133,7 @@ class DepartmentHierarchyLevelValidatorTest {
     void testValidateHierarchyLevelCreatePostWithEmptyTenantId() {
         when(this.departmentUtil.getDepartmentFromDepartmentService((String) any(), (String) any(), (RequestHeader) any()))
                 .thenReturn(new ArrayList<>());
-        hierarchyLevelRequest.getDepartmentHierarchyLevel().setTenantId("");
+        hierarchyLevelRequest.getDepartmentHierarchyLevelDTO().setTenantId("");
         assertThrows(CustomException.class,
                 () -> this.departmentHierarchyLevelValidator.validateHierarchyLevelCreatePost(hierarchyLevelRequest));
     }

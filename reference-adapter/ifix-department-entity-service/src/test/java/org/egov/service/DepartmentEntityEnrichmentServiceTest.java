@@ -46,20 +46,20 @@ class DepartmentEntityEnrichmentServiceTest {
         this.departmentEntityEnrichmentService.enrichDepartmentEntityData(departmentEntityRequest);
         verify(this.departmentEntityUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any());
         assertNotNull(departmentEntityRequest);
-        assertNotNull(departmentEntityRequest.getDepartmentEntity());
-        assertNotNull(departmentEntityRequest.getDepartmentEntity().getAuditDetails());
+        assertNotNull(departmentEntityRequest.getDepartmentEntityDTO());
+        assertNotNull(departmentEntityRequest.getDepartmentEntityDTO().getAuditDetails());
     }
 
     @Test
     void testEnrichDepartmentEntityDataWithAuditDetails() {
         when(this.departmentEntityUtil.enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any()))
                 .thenReturn(auditDetails);
-        departmentEntityRequest.getDepartmentEntity().setAuditDetails(auditDetails);
+        departmentEntityRequest.getDepartmentEntityDTO().setAuditDetails(auditDetails);
         this.departmentEntityEnrichmentService.enrichDepartmentEntityData(departmentEntityRequest);
         verify(this.departmentEntityUtil).enrichAuditDetails((String) any(), (AuditDetails) any(), (Boolean) any());
         assertNotNull(departmentEntityRequest);
-        assertNotNull(departmentEntityRequest.getDepartmentEntity());
-        assertNotNull(departmentEntityRequest.getDepartmentEntity().getAuditDetails());
+        assertNotNull(departmentEntityRequest.getDepartmentEntityDTO());
+        assertNotNull(departmentEntityRequest.getDepartmentEntityDTO().getAuditDetails());
     }
 }
 

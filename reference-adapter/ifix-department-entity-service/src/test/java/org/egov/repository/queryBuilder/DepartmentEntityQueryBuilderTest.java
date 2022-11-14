@@ -1,13 +1,13 @@
 package org.egov.repository.queryBuilder;
 
-import org.bson.Document;
+//import org.bson.Document;
 import org.egov.web.models.DepartmentEntitySearchCriteria;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.query.Meta;
-import org.springframework.data.mongodb.core.query.Query;
+//import org.springframework.data.mongodb.core.query.Meta;
+//import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -22,7 +22,7 @@ class DepartmentEntityQueryBuilderTest {
     @InjectMocks
     private DepartmentEntityQueryBuilder departmentEntityQueryBuilder;
 
-    @Test
+    /*@Test
     void testBuildPlainSearchQueryWithDefaultSearchCriteria() {
         Query actualBuildPlainSearchQueryResult = this.departmentEntityQueryBuilder
                 .buildPlainSearchQuery(new DepartmentEntitySearchCriteria());
@@ -155,6 +155,6 @@ class DepartmentEntityQueryBuilderTest {
         ArrayList<String> stringList = new ArrayList<>();
         stringList.add("7bdf9514-e2e5-4563-bfea-f5aaa41b2137");
         assertFalse(this.departmentEntityQueryBuilder.buildChildrenValidationQuery(stringList, null).isPresent());
-    }
+    }*/
 }
 

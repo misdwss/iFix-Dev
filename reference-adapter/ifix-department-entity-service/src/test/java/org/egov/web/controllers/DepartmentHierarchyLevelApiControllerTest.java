@@ -89,7 +89,7 @@ public class DepartmentHierarchyLevelApiControllerTest {
 
     @Test
     public void departmentEntityHierarchyLevelV1SearchPostSuccess() throws Exception {
-        doReturn(hierarchyLevelResponse.getDepartmentHierarchyLevel()).when(hierarchyLevelService)
+        doReturn(hierarchyLevelResponse.getDepartmentHierarchyLevelDTO()).when(hierarchyLevelService)
                 .searchDepartmentEntityHierarchyLevel(hierarchyLevelSearchRequest);
 
         doReturn(new ResponseHeader()).when(responseHeaderCreator)
