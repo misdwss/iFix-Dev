@@ -28,7 +28,9 @@ export const formatter = (value, symbol, unit, commaSeparated = true, t) => {
         return parseInt(value);
       }
       const Nformatter = new Intl.NumberFormat("en-IN");
-      return Nformatter.format(Math.round(value));
+      // Commenting round because it doesn't give exact value, should display decimal upto 2 places
+      // return Nformatter.format(Math.round(value));
+      return Nformatter.format(value);
     case "percentage":
       const Pformatter = new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 });
       return `${Pformatter.format(value.toFixed(2))} %`;
@@ -109,4 +111,14 @@ export const getCitiesAvailable = (e, selectedDDRs) => {
 // Check ifix dashboard from dashboard config
 export const isIFixDashboard = (config) => {
   return config?.[0]?.name.includes("DSS_IFIX_DASHBOARD") ? true : false;
+}
+
+/**
+ * This is for demo only needs to be remove, funciton which checks the ifix key is exists then it returns the value
+ */
+export const getIfixMapedName = (key)  => {
+  if (key)
+    return JSON.parse(localStorage.getItem("Digit.dss.iFixCodeNameMap") || {})[key] || key;
+  else 
+    return null;
 }

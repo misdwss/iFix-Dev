@@ -76,7 +76,7 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
     return response?.responseData?.data?.map((rows, id) => {
       const lyData = lastYearResponse?.responseData?.data?.find((lyRow) => lyRow?.headerName === rows?.headerName);
       return rows?.plots?.reduce((acc, row, currentIndex) => {
-        let cellValue = row?.value !== null ? row?.value : row?.label || "";
+        let cellValue = row?.value !== null ? row?.value : Digit.Utils.dss.getIfixMapedName(row?.label) || "";
         if (row?.strValue && row?.symbol === "string" && !row?.label) {
           cellValue = row?.strValue;
         }
@@ -128,7 +128,7 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
       const result = tableData?.map((row) => {
         return Object.keys(row).reduce((acc, key) => {
           if (key === "key") return acc;
-          acc[key] = typeof row?.[key] === "object" ? row?.[key]?.value : row?.[key];
+          acc[key] = typeof row?.[key] === "object" ? row?.[key]?.value : Digit.Utils.dss.getIfixMapedName(row?.[key]);
           return acc;
         }, {});
       });

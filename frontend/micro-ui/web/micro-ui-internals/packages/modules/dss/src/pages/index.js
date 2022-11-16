@@ -63,6 +63,11 @@ const DashBoard = ({ stateCode }) => {
 
   const language = Digit.StoreData.getCurrentLanguage();
 
+  // For updating the ifix dashboard on title
+  useEffect(() => {
+    document.title = "iFIX Dashboard"
+  }, []);
+
   const { isLoading: localizationLoading, data: store } = Digit.Services.useStore({ stateCode, moduleCode, language });
   const { data: screenConfig, isLoading: isServicesLoading } = Digit.Hooks.dss.useMDMS(stateCode, "dss-dashboard", "DssDashboard", {
     select: (data) => {
@@ -250,6 +255,10 @@ const DashBoard = ({ stateCode }) => {
     enabled: isEnableIFixFilter && !isDeptLoading && department?.id ? true : false,
     select: (data) => {
       if (data.departmentEntity) {
+        let idValueMap = {};
+        // This is for demo only to represent the data of table with text.
+        data.departmentEntity.forEach((hierarchy) => idValueMap[hierarchy.code] = hierarchy.name)
+        localStorage.setItem("Digit.dss.iFixCodeNameMap", JSON.stringify(idValueMap));
         return _.sortBy(data.departmentEntity, 'hierarchyLevel')
       };
       return [];
@@ -364,7 +373,7 @@ const DashBoard = ({ stateCode }) => {
           </Header>
           {mobileView ? null : (
             <div className="divToBeHidden">
-              <div className="mrlg divToBeHidden">
+              {/* <div className="mrlg divToBeHidden">
                 <MultiLink
                   className="multilink-block-wrapper divToBeHidden"
                   label={t(`ES_DSS_SHARE`)}
@@ -378,7 +387,7 @@ const DashBoard = ({ stateCode }) => {
                   displayOptions={showOptions}
                   options={shareOptions}
                 />
-              </div>
+              </div> */}
               <div className="mrsm divToBeHidden" onClick={handlePrint}>
                 <DownloadIcon className="mrsm divToBeHidden" />
                 {t(`ES_DSS_DOWNLOAD`)}
