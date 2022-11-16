@@ -5,11 +5,11 @@ const amountFormatter = (value, denomination, t) => {
 
   switch (denomination) {
     case "Lac":
-      return `₹ ${currencyFormatter.format((value / 100000).toFixed(2) || 0)} ${t("ES_DSS_LAC")}`;
+      return `₹ ${currencyFormatter.format(parseFloat((value / 100000).toFixed(2)) || 0)} ${t("ES_DSS_LAC")}`;
     case "Cr":
-      return `₹ ${currencyFormatter.format((value / 10000000).toFixed(2) || 0)} ${t("ES_DSS_CR")}`;
+      return `₹ ${currencyFormatter.format(parseFloat((value / 10000000).toFixed(2)) || 0)} ${t("ES_DSS_CR")}`;
     case "Unit":
-      return `₹ ${currencyFormatter.format(value?.toFixed(2) || 0)}`;
+      return `₹ ${currencyFormatter.format(parseFloat(value?.toFixed(2)) || 0)}`;
     default:
       return "";
   }
