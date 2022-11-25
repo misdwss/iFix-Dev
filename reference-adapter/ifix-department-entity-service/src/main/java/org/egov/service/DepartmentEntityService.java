@@ -154,6 +154,12 @@ public class DepartmentEntityService {
             }
 
             if (isModified) {
+                String userUUID = departmentEntityRequest.getRequestHeader().getUserInfo() != null
+                                    ? departmentEntityRequest.getRequestHeader().getUserInfo().getUuid()
+                                    : null;
+
+                existingDepartmentEntity.setLastModifiedBy(userUUID);
+
                 existingDepartmentEntity.setLastModifiedTime(new Date().getTime());
 
                 PersisterDepartmentEntityRequest persisterDepartmentEntityRequest = PersisterDepartmentEntityRequest.builder()
