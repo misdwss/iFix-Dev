@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 
 public class DepartmentQueryCriteria {
+    private static String DEPARTMENT_ENTITY_SELECT_ALL = "SELECT * FROM department_entity";
+    private static String DEPARTMENT_HIERARCHY_SELECT_ALL = "SELECT * FROM department_hierarchy_level";
 
     private StringBuilder criteriaQuery = new StringBuilder();
 
@@ -21,11 +23,11 @@ public class DepartmentQueryCriteria {
     public static DepartmentQueryCriteria builder(Class<? extends Object> entityClass) {
 
         if (DepartmentEntity.class.getTypeName().equals(entityClass.getTypeName())) {
-            return new DepartmentQueryCriteria(new StringBuilder("SELECT * FROM department_entity"));
+            return new DepartmentQueryCriteria(new StringBuilder(DEPARTMENT_ENTITY_SELECT_ALL));
         }
 
         if (DepartmentHierarchyLevel.class.getTypeName().equals(entityClass.getTypeName())) {
-            return new DepartmentQueryCriteria(new StringBuilder("SELECT * FROM department_hierarchy_level"));
+            return new DepartmentQueryCriteria(new StringBuilder(DEPARTMENT_HIERARCHY_SELECT_ALL));
         }
 
         return null;
