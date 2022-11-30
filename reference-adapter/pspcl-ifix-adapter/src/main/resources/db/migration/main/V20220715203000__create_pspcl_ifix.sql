@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS pspcl_event_posting_detail;
 
 CREATE TABLE pspcl_bill_detail
 (
-    id                           bigint NOT NULL,
+    id                           BIGSERIAL,
     account_no                   character varying(255),
     bill_issue_date              timestamp,
     bill_no                      character varying(255),
@@ -27,7 +27,7 @@ CREATE TABLE pspcl_bill_detail
 
 CREATE TABLE pspcl_payment_detail
 (
-    id              bigint NOT NULL,
+    id              BIGSERIAL,
     acno            character varying(255),
     amt             character varying(255),
     bilcyc          character varying(255),
@@ -51,7 +51,7 @@ CREATE TABLE pspcl_payment_detail
 
 CREATE TABLE pspcl_event_posting_detail
 (
-    id                  bigint NOT NULL,
+    id                  BIGSERIAL,
     created_date        timestamp without time zone,
     error               character varying(255),
     event_type          character varying(255),
