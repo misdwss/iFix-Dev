@@ -21,13 +21,13 @@ public class SearchJob extends QuartzJobBean {
         log.info(">>>>>>>>>>>> JOB started :: " + new Date(System.currentTimeMillis()) + " <<<<<<<<<<<<<<<<");
 
         try {
-            pspclEventService.processPspclEventForMgramseva("Demand");
+//            pspclEventService.processPspclEventForMgramseva("Demand");
         } catch (Exception e) {
             log.error("Issues while processing demand", e);
         }
 
         try {
-            pspclEventService.processPspclEventForMgramseva("Receipt");
+//            pspclEventService.processPspclEventForMgramseva("Receipt");
         } catch (Exception e) {
             log.error("Issues while processing Receipt", e);
         }
