@@ -2,7 +2,7 @@ package org.egov.service;
 
 import org.egov.config.IfixDepartmentEntityConfig;
 import org.egov.config.TestDataFormatter;
-import org.egov.repository.DepartmentEntityRepository;
+//import org.egov.repository.DepartmentEntityRepository;
 import org.egov.tracer.model.CustomException;
 import org.egov.util.DepartmentEntityAncestryUtil;
 import org.egov.validator.DepartmentEntityValidator;
@@ -34,8 +34,8 @@ class DepartmentEntityServiceTest {
     @Mock
     private DepartmentEntityEnrichmentService departmentEntityEnrichmentService;
 
-    @Mock
-    private DepartmentEntityRepository departmentEntityRepository;
+//    @Mock
+//    private DepartmentEntityRepository departmentEntityRepository;
 
     @InjectMocks
     private DepartmentEntityService departmentEntityService;
