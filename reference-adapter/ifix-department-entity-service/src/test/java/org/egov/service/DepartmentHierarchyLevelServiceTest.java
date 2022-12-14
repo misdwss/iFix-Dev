@@ -1,8 +1,10 @@
 package org.egov.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Disabled("TODO: Need to work on it")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class DepartmentHierarchyLevelServiceTest {
