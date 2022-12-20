@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.egov.repository.querybuilder.FiscalEventQueryBuilder;
 import org.egov.repository.rowmapper.FiscalEventRowMapper;
+import org.egov.tracer.model.CustomException;
 import org.egov.web.models.Criteria;
 import org.egov.web.models.FiscalEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,8 @@ public class FiscalEventRepository {
     		log.info("Fiscal event search query: " + fiscalEventSearchQuery);
     		fiscalEvents = jdbcTemplate.query(fiscalEventSearchQuery, preparedStmtList.toArray(), fiscalEventRowMapper);
     	} catch(Exception e) {
-
-    		// DOUBT - EXCEPTION SHOULD BE THROWN INSTEAD OF RETURNING EMPTY LIST IN CASE OF ERROR ??
-
     		log.error("Exception while fetching data from DB: " + e);
-			return fiscalEvents;
+			throw new CustomException("IFIX_FISCAL_EVENTS_SEARCH_ERR", "Some error occurred while running search operation.");
     	}
 
     	return fiscalEvents;
