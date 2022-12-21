@@ -37,7 +37,7 @@ public class DepartmentEntityQueryBuilder {
             departmentQueryCriteria.and(HIERARCHY_LEVEL).is(departmentEntitySearchCriteria.getHierarchyLevel());
         }
 
-        if (departmentEntitySearchCriteria.getIds() != null || !departmentEntitySearchCriteria.getIds().isEmpty()) {
+        if (departmentEntitySearchCriteria.getIds() != null && !departmentEntitySearchCriteria.getIds().isEmpty()) {
             departmentQueryCriteria.and(ID).in(departmentEntitySearchCriteria.getIds());
         }
 
