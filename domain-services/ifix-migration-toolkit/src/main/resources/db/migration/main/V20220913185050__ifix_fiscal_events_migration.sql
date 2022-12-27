@@ -6,6 +6,7 @@ CREATE TABLE ifix_fiscal_events_migration (
   batchsize bigint NOT NULL,
   totalnumberofrecordsmigrated bigint NOT NULL,
   createdtime bigint NOT NULL,
+  service_type character varying(255),
 
   CONSTRAINT pk_ifix_fiscal_events_migration_id PRIMARY KEY(id)
 );
