@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.ifixmigrationtoolkit.models.FiscalEvent;
 import org.egov.ifixmigrationtoolkit.models.MigrationRequest;
+import org.egov.ifixmigrationtoolkit.service.DepartmentEntityMigrationService;
+import org.egov.ifixmigrationtoolkit.service.DepartmentHierarchyLevelMigrationService;
 import org.egov.ifixmigrationtoolkit.service.MigrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,11 +31,33 @@ public class MigrationController {
     @Autowired
     MigrationService migrationService;
 
+    @Autowired
+    private DepartmentEntityMigrationService departmentEntityMigrationService;
+
+    @Autowired
+    private DepartmentHierarchyLevelMigrationService departmentHierarchyLevelMigrationService;
+
     @RequestMapping(value="/v1/_migrate", method = RequestMethod.POST)
     public ResponseEntity<?> migrateDataToES(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
         migrationService.migrateData(request);
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("SUCCESS", "Fiscal data migration job created successfully");
+        responseMap.put("SUCCESS", "Department Entity data migration job created successfully");
+        return new ResponseEntity<>(responseMap, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/v1/_migrate/department_entity", method = RequestMethod.POST)
+    public ResponseEntity<?> migrateDepartmentEntityToPostgres(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
+        departmentEntityMigrationService.migrateDepartmentEntityData(request);
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("SUCCESS", "Department entity data migration job created successfully");
+        return new ResponseEntity<>(responseMap, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/v1/_migrate/department_hierarchy", method = RequestMethod.POST)
+    public ResponseEntity<?> migrateDepartmentHierarchyToPostgres(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
+        departmentHierarchyLevelMigrationService.migrateDepartmentHieraryLevelData(request);
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("SUCCESS", "Department hierarchy level data migration job created successfully");
         return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 
