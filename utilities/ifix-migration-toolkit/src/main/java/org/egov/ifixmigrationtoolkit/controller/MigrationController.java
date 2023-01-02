@@ -7,6 +7,7 @@ import org.egov.ifixmigrationtoolkit.models.FiscalEvent;
 import org.egov.ifixmigrationtoolkit.models.MigrationRequest;
 import org.egov.ifixmigrationtoolkit.service.DepartmentEntityMigrationService;
 import org.egov.ifixmigrationtoolkit.service.DepartmentHierarchyLevelMigrationService;
+import org.egov.ifixmigrationtoolkit.service.MasterDataMigrationService;
 import org.egov.ifixmigrationtoolkit.service.MigrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +30,16 @@ public class MigrationController {
     ObjectMapper objectMapper;
 
     @Autowired
-    MigrationService migrationService;
+    private MigrationService migrationService;
 
     @Autowired
     private DepartmentEntityMigrationService departmentEntityMigrationService;
 
     @Autowired
     private DepartmentHierarchyLevelMigrationService departmentHierarchyLevelMigrationService;
+
+    @Autowired
+    private MasterDataMigrationService masterDataMigrationService;
 
     @RequestMapping(value="/v1/_migrate", method = RequestMethod.POST)
     public ResponseEntity<?> migrateDataToES(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
@@ -58,6 +62,14 @@ public class MigrationController {
         departmentHierarchyLevelMigrationService.migrateDepartmentHieraryLevelData(request);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("SUCCESS", "Department hierarchy level data migration job created successfully");
+        return new ResponseEntity<>(responseMap, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/coa/v1/_migrate", method = RequestMethod.POST)
+    public ResponseEntity<?> migrateMasterDataToPostgres(@RequestBody @Valid MigrationRequest request) throws JsonProcessingException {
+        masterDataMigrationService.migrateMasterData(request);
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("SUCCESS", "Migration job for migrating coa data to postgres is successfully created.");
         return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 
