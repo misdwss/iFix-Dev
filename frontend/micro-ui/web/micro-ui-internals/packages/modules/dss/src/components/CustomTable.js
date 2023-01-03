@@ -355,9 +355,9 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
       case "Unit":
         return val;
       case "Lac":
-        return Number((val / 100000).toFixed(2));
+        return Number(parseFloat((val / 100000).toFixed(2)) || 0);
       case "Cr":
-        return Number((val / 10000000).toFixed(2));
+        return Number(parseFloat((val / 10000000).toFixed(2)) || 0);
       default:
         return val;
     }
