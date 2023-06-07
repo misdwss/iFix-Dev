@@ -314,7 +314,8 @@ class PspclBillAndPaymentReconcileServiceImplTest {
         List<ReconcileVO> reconcileVOS = new ArrayList<>();
 
         ReconcileVO reconcileVO = new ReconcileVO();
-        reconcileVO.setCurrentPspclPaymentDetails(null);
+        List<PspclPaymentDetail> pspclPaymentDetailList = new ArrayList<>();
+        reconcileVO.setCurrentPspclPaymentDetails(pspclPaymentDetailList);
         reconcileVO.setCurrentPspclBillDetail(new PspclBillDetail());
         reconcileVO.setDepartmentEntityName("BARUWAL");
         reconcileVO.setDepartmentEntityCode("7234");
