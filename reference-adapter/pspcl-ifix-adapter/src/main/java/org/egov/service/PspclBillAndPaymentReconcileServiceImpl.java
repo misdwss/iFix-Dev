@@ -102,7 +102,6 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                 String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                 log.info("last bill date Date in string formated:" + lastBillIssueDate);
                 paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
-                log.info("reconcileVO after sort by Payment reconcile" + reconcileVO.getCurrentPspclPaymentDetails().size());
                 Date lastBillIssueInDate = pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillIssueDate);
                 pspclPaymentResults = paymentReconcileService.getPaymentsDoneAfterGivenDate(pspclPaymentResults, lastBillIssueInDate);
                 pspclPaymentResults =paymentReconcileService.getPaymentsDoneBeforeGivenDate(pspclPaymentResults,currentPspclBillDetail.getBILL_ISSUE_DATE());
