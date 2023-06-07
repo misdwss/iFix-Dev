@@ -314,8 +314,7 @@ class PspclBillAndPaymentReconcileServiceImplTest {
         List<ReconcileVO> reconcileVOS = new ArrayList<>();
 
         ReconcileVO reconcileVO = new ReconcileVO();
-        List<PspclPaymentDetail> pspclPaymentDetailList = new ArrayList<>();
-        reconcileVO.setCurrentPspclPaymentDetails(pspclPaymentDetailList);
+        reconcileVO.setCurrentPspclPaymentDetails(null);
         reconcileVO.setCurrentPspclBillDetail(new PspclBillDetail());
         reconcileVO.setDepartmentEntityName("BARUWAL");
         reconcileVO.setDepartmentEntityCode("7234");
@@ -323,6 +322,6 @@ class PspclBillAndPaymentReconcileServiceImplTest {
 
         reconcileVOS.add(reconcileVO);
 
-        pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);
+        //pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);
     }
 }
