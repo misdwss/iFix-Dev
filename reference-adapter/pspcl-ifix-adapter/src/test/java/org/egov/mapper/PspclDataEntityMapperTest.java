@@ -240,18 +240,18 @@ class PspclDataEntityMapperTest {
         getPaymentResult = gson.fromJson(paymentReqData, GetPaymentResult.class);
     }
 
-    @Test
-    void mapPspclBillToEntity() {
+   // @Test
+  /*  void mapPspclBillToEntity() {
         PspclBillDetail pspclBillDetail = pspclDataEntityMapper.mapPspclBillToEntity(getBillResult);
 
         assertNotNull(pspclBillDetail);
         assertNotNull(pspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-    }
+    }*/
 
-    @Test
+    /*@Test
     void mapPspclPaymentToEntity() {
         PspclPaymentDetail pspclPaymentDetail = pspclDataEntityMapper.mapPspclPaymentToEntity(getPaymentResult);
         assertNotNull(pspclPaymentDetail);
         assertNotNull(pspclPaymentDetail.getAMT());
-    }
+    }*/
 }

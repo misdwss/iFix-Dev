@@ -73,5 +73,16 @@ public class PspclIfixAdapterConfiguration {
     @Value("${egov.mdms.search.endpoint}")
     private String egovMdmsSearchUrl;
 
+    @Value("${ifix.pspcl.saltKey}")
+    private String pspclSaltkey;
+
+    @Value("${ifix.pspcl.username}")
+    private String pspclUsername;
+
+    @Value("${ifix.pspcl.password}")
+    private String pspclPassword;
+
+
+
 }
 

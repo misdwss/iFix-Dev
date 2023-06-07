@@ -64,49 +64,53 @@ public class FiscalEventUtil {
         FiscalEvent paymentFiscalEvent = null;
         List<Amount> amounts = new ArrayList<>();
 
-        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetail() != null) {
-            PspclPaymentDetail pspclPaymentDetail = billAndPaymentEventDetail.getCurrentPspclPaymentDetail();
+        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetails() != null) {
+            List<PspclPaymentDetail> pspclPaymentDetails = billAndPaymentEventDetail.getCurrentPspclPaymentDetails();
 
-            //mandatory condition check
-            if (StringUtils.isBlank(adapterConfiguration.getReceiptCoaCode())
-                    && StringUtils.isBlank(adapterConfiguration.getTenantId())
-                    && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
-                    && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
-                return paymentFiscalEvent;
-            }
-            paymentFiscalEvent = new FiscalEvent();
+            if(!pspclPaymentDetails.isEmpty()) {
+              for(PspclPaymentDetail pspclPaymentDetail : pspclPaymentDetails) {
 
-            Amount paymentAmount = new Amount();
-            if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
-                paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
-            }
+                  //mandatory condition check
+                  if (StringUtils.isBlank(adapterConfiguration.getReceiptCoaCode())
+                          && StringUtils.isBlank(adapterConfiguration.getTenantId())
+                          && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
+                          && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
+                      return paymentFiscalEvent;
+                  }
+                  paymentFiscalEvent = new FiscalEvent();
+
+                  Amount paymentAmount = new Amount();
+                  if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
+                      paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
+                  }
 //            paymentAmount.setFromBillingPeriod();//missing
 //            paymentAmount.setToBillingPeriod();//missing
-            paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
-            amounts.add(paymentAmount);
+                  paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
+                  amounts.add(paymentAmount);
 
-            if (pspclPaymentDetail.getTXNDATE() != null) {
-                paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
+                  if (pspclPaymentDetail.getTXNDATE() != null) {
+                      paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
+                  }
+                  paymentFiscalEvent.setEventType(EVENT_TYPE_RECEIPT);
+                  paymentFiscalEvent.setReferenceId(pspclPaymentDetail.getTXNID());
+                  paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
+
+                  List<String> receivers = new ArrayList<>();
+                  receivers.add(adapterConfiguration.getFiscalEventReceiver());
+                  paymentFiscalEvent.setReceivers(receivers);
+
+                  ObjectNode additionalAttributes = objectMapper.createObjectNode();
+                  ObjectNode departmentEntity = objectMapper.createObjectNode();
+                  departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE, billAndPaymentEventDetail.getDepartmentEntityCode());
+                  departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_NAME, billAndPaymentEventDetail.getDepartmentEntityName());
+
+                  additionalAttributes.put(FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER, pspclPaymentDetail.getACNO());
+                  additionalAttributes.set(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY, departmentEntity);
+
+                  paymentFiscalEvent.setAttributes(additionalAttributes);
+                  paymentFiscalEvent.setAmountDetails(amounts);
+              }
             }
-            paymentFiscalEvent.setEventType(EVENT_TYPE_RECEIPT);
-            paymentFiscalEvent.setReferenceId(pspclPaymentDetail.getTXNID());
-            paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
-
-            List<String> receivers = new ArrayList<>();
-            receivers.add(adapterConfiguration.getFiscalEventReceiver());
-            paymentFiscalEvent.setReceivers(receivers);
-
-            ObjectNode additionalAttributes = objectMapper.createObjectNode();
-            ObjectNode departmentEntity = objectMapper.createObjectNode();
-            departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE, billAndPaymentEventDetail.getDepartmentEntityCode());
-            departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_NAME, billAndPaymentEventDetail.getDepartmentEntityName());
-
-            additionalAttributes.put(FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER, pspclPaymentDetail.getACNO());
-            additionalAttributes.set(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY, departmentEntity);
-
-            paymentFiscalEvent.setAttributes(additionalAttributes);
-            paymentFiscalEvent.setAmountDetails(amounts);
-
         }
         return paymentFiscalEvent;
     }
@@ -183,6 +187,8 @@ public class FiscalEventUtil {
         //request
         HttpEntity<FiscalEventRequest> request = new HttpEntity<>(eventRequest, headers);
 
+        log.info("fiscal request  : " + request.toString());
+
         if (eventRequest != null && eventRequest.getFiscalEvent() != null && !eventRequest.getFiscalEvent().isEmpty()) {
             try {
                 ResponseEntity<FiscalEventResponse> responseEntity = restTemplate.postForEntity(getIfixPublishUrl(), request, FiscalEventResponse.class);
@@ -190,7 +196,7 @@ public class FiscalEventUtil {
                 eventPostingDetailList = wrapEventResponse(responseEntity, eventRequest);
                 log.info("Posting to iFix - status : " + responseEntity.getStatusCode());
             } catch (RestClientException e) {
-                log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR + e.getMessage(), e);
+                log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR + e.getMessage(), e.getCause());
 
                 eventPostingDetailList = composeEventPostingDetail(eventRequest.getFiscalEvent(), HttpStatus.BAD_REQUEST,
                         e.getMessage());

@@ -1,14 +1,16 @@
 package org.egov.service;
 
+import client.stub.BillResultData;
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
+import client.stub.PaymentsResultData;
 import org.egov.model.ReconcileVO;
 
 import java.util.List;
 
 public interface PspclBillAndPaymentReconcileService {
 
-    ReconcileVO reconcile(List<GetBillResult> pspclBillResults, List<GetPaymentResult> pspclPaymentResults);
+    ReconcileVO reconcile(List<BillResultData> pspclBillResults, List<PaymentsResultData> pspclPaymentResults);
 
     void publishFiscalEvent(List<ReconcileVO> reconcileVOS);
 }
