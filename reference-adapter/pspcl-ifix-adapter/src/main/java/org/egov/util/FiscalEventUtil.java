@@ -83,8 +83,8 @@ public class FiscalEventUtil {
                   if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
                       paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
                   }
-//            paymentAmount.setFromBillingPeriod();//missing
-//            paymentAmount.setToBillingPeriod();//missing
+                  paymentAmount.setFromBillingPeriod(pspclPaymentDetail.getBILISSDT().getTime());//missing
+                  paymentAmount.setToBillingPeriod(pspclPaymentDetail.getBILISSDT().getTime());//missing
                   paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
                   amounts.add(paymentAmount);
 

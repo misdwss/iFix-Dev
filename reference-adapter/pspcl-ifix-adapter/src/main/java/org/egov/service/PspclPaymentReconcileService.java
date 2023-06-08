@@ -14,6 +14,7 @@ import org.egov.repository.PspclPaymentDetailRepository;
 import org.egov.util.PspclIfixAdapterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +69,9 @@ public class PspclPaymentReconcileService {
                         .findByTXNIDAndAccountNumber(paymentsResultData.getTransactionId(), paymentsResultData.getAccountumber());
                 if (!optionalPspclPaymentDetail.isPresent()) {
                     PspclPaymentDetail currentPspclPaymentDetail = pspclDataEntityMapper.mapPspclPaymentToEntity(paymentsResultData);
+                    if(ObjectUtils.isEmpty(currentPspclPaymentDetail.getBILISSDT()) || currentPspclPaymentDetail.getBILISSDT() !=null) {
+                        currentPspclPaymentDetail.setBILISSDT(latestBillIssueDate);
+                    }
                     newPaymentsResults.add(currentPspclPaymentDetail) ;
                 }
             }
