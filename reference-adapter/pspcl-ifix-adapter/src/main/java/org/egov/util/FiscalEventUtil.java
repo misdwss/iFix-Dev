@@ -140,9 +140,13 @@ public class FiscalEventUtil {
             billAmount.setAmount(billAndPaymentEventDetail.getCurrentCalculatedBillAmt());
             if (pspclBillDetail.getDATE_READING_PREV() != null) {
                 billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_PREV()).getTime());
+            } else {
+                billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getBILL_ISSUE_DATE()).getTime());
             }
             if (pspclBillDetail.getDATE_READING_CURR() != null) {
                 billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_CURR()).getTime());
+            } else {
+                billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getBILL_ISSUE_DATE()).getTime());
             }
             billAmount.setCoaCode(adapterConfiguration.getDemandCoaCode());
             amounts.add(billAmount);

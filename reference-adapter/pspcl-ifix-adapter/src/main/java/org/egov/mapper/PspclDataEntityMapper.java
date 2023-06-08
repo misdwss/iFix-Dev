@@ -46,7 +46,7 @@ public class PspclDataEntityMapper {
 
         pspclBillDetail.setDATE_READING_CURR(pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, currentMonthBill.getBillIssueDate()));
 
-        //pspclBillDetail.setDATE_READING_PREV(pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, currentMonthBill.getDATE_READING_PREV()));
+        pspclBillDetail.setDATE_READING_PREV(pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, currentMonthBill.getBillIssueDate()));
 
         pspclBillDetail.setDUE_DATE_CASH_ONLINE(currentMonthBill.getDueDateByCash());
         pspclBillDetail.setDUE_DATE_CHEQUE_DD(currentMonthBill.getDueDateByCheque());
