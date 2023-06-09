@@ -60,7 +60,8 @@ public class FiscalEventUtil {
      * @param billAndPaymentEventDetail
      * @return
      */
-    public FiscalEvent getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
+    public List<FiscalEvent> getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
+        List<FiscalEvent> paymentFiscalEvents = new ArrayList<>();
         FiscalEvent paymentFiscalEvent = null;
         List<Amount> amounts = new ArrayList<>();
 
@@ -75,7 +76,7 @@ public class FiscalEventUtil {
                           && StringUtils.isBlank(adapterConfiguration.getTenantId())
                           && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
                           && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
-                      return paymentFiscalEvent;
+                      return paymentFiscalEvents;
                   }
                   paymentFiscalEvent = new FiscalEvent();
 
@@ -109,10 +110,11 @@ public class FiscalEventUtil {
 
                   paymentFiscalEvent.setAttributes(additionalAttributes);
                   paymentFiscalEvent.setAmountDetails(amounts);
+                  paymentFiscalEvents.add(paymentFiscalEvent);
               }
             }
         }
-        return paymentFiscalEvent;
+        return paymentFiscalEvents;
     }
 
     /**

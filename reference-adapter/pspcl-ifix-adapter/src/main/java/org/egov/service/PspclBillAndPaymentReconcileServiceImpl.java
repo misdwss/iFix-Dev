@@ -165,13 +165,15 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         for (dataIndex = chunkPointer; dataIndex < (chunkPointer + chunkSize); dataIndex++) {
             ReconcileVO billAndPaymentEventDetail = reconcileVOS.get(dataIndex);
             FiscalEvent billFiscalEvent = fiscalEventUtil.getDemandFiscalEvent(billAndPaymentEventDetail);
-            FiscalEvent paymentFiscalEvent = fiscalEventUtil.getReceiptFiscalEvent(billAndPaymentEventDetail);
+            List<FiscalEvent> paymentFiscalEvents = fiscalEventUtil.getReceiptFiscalEvent(billAndPaymentEventDetail);
 
             if (billFiscalEvent != null) {
                 fiscalEvents.add(billFiscalEvent);
             }
-            if (paymentFiscalEvent != null) {
-                fiscalEvents.add(paymentFiscalEvent);
+            if (paymentFiscalEvents != null) {
+                for (FiscalEvent paymentFiscalEvent : paymentFiscalEvents) {
+                    fiscalEvents.add(paymentFiscalEvent);
+                }
             }
         }
 
