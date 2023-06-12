@@ -63,7 +63,7 @@ public class FiscalEventUtil {
     public List<FiscalEvent> getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
         List<FiscalEvent> paymentFiscalEvents = new ArrayList<>();
         FiscalEvent paymentFiscalEvent = null;
-        List<Amount> amounts = new ArrayList<>();
+
 
         if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetails() != null) {
             List<PspclPaymentDetail> pspclPaymentDetails = billAndPaymentEventDetail.getCurrentPspclPaymentDetails();
@@ -79,7 +79,7 @@ public class FiscalEventUtil {
                       return paymentFiscalEvents;
                   }
                   paymentFiscalEvent = new FiscalEvent();
-
+                  List<Amount> amounts = new ArrayList<>();
                   Amount paymentAmount = new Amount();
                   if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
                       paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
