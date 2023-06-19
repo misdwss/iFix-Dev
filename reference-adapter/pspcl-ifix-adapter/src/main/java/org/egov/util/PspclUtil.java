@@ -65,23 +65,15 @@ public class PspclUtil {
                     + NOT_APPLICABLE + SEPERATOR
                     + NOT_APPLICABLE + SEPERATOR
                     + SEARCH_BY_ACCOUNT_NUMBER;
-            log.info("Plain Text :: " + plaintext);
             String saltKey =pspclIfixAdapterConfiguration.getPspclSaltkey();
             String hashedSequence = encryptStringUsingAES256Padding7(plaintext,saltKey);
-            String hashedSequencePadding5 = encryptStringUsingAES256(plaintext,saltKey);
-            log.info("hashed Sequence paddinng 7:" + hashedSequence);
-            log.info("hashed Sequencepaddinng 5:" + hashedSequencePadding5);
             String reqFetchPspclBill = pspclIfixAdapterUtil.getFileAsString(PATH_FETCH_PSPCL_BILL_NEW);
             if (StringUtils.isBlank(reqFetchPspclBill)) {
                 return Collections.emptyList();
             }
             reqFetchPspclBill = reqFetchPspclBill.replace(PLACEHOLDER_ACCOUNT_NO, hashedSequence);
             reqFetchPspclBill =reqFetchPspclBill.replace(PLACEHOLDER_USERNAME, pspclIfixAdapterConfiguration.getPspclUsername());
-            System.out.println("PSPCL XML :" +reqFetchPspclBill);
 
-
-          /*  APIClient apiClient =new APIClient();
-            apiClient.makeApiCall();*/
 
             String outputString = soapServiceRequestRepository.fetchResult(reqFetchPspclBill,
                     pspclIfixAdapterConfiguration.getUrlForFetchPspclBill()).toString();
@@ -113,18 +105,13 @@ public class PspclUtil {
                     + NOT_APPLICABLE + SEPERATOR
                     + NOT_APPLICABLE + SEPERATOR
                     + SEARCH_BY_ACCOUNT_NUMBER;
-            log.info("Plain Text :: " + plaintext);
             String saltKey =pspclIfixAdapterConfiguration.getPspclSaltkey();
             String hashedSequence = encryptStringUsingAES256Padding7(plaintext,saltKey);
-            String hashedSequencePadding5 = encryptStringUsingAES256(plaintext,saltKey);
-            log.info("hashed Sequence paddinng 7:" + hashedSequence);
-            log.info("hashed Sequencepaddinng 5:" + hashedSequencePadding5);
             if (StringUtils.isBlank(reqFetchPspclPayment)) {
                 return Collections.emptyList();
             }
             reqFetchPspclPayment = reqFetchPspclPayment.replace(PLACEHOLDER_ACCOUNT_NO, hashedSequence);
             reqFetchPspclPayment =reqFetchPspclPayment.replace(PLACEHOLDER_USERNAME, pspclIfixAdapterConfiguration.getPspclUsername());
-            System.out.println("PSPCL XML :" +reqFetchPspclPayment);
             String outputString = soapServiceRequestRepository.fetchResult(reqFetchPspclPayment,
                     pspclIfixAdapterConfiguration.getUrlForFetchPspclPayment()).toString();
 

@@ -60,9 +60,7 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
                     log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
                     List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
                     List<PaymentsResultData> pspclPaymentResultData = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
-
                     ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResultData, pspclPaymentResultData);
-
                     reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
                     reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 
