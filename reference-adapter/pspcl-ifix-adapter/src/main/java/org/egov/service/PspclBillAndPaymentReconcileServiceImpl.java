@@ -101,36 +101,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                 DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
                 String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                 paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
-                if(pspclPaymentResults.isEmpty()){
-                    Date lastBillIssueInDate = pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillIssueDate);
-                    pspclPaymentResults = paymentReconcileService.getPaymentsDoneAfterGivenDate(pspclPaymentResults, lastBillIssueInDate);
-                    pspclPaymentResults =paymentReconcileService.getPaymentsDoneBeforeGivenDate(pspclPaymentResults,currentPspclBillDetail.getBILL_ISSUE_DATE());
-                    lastPaymentAmt = pspclPaymentResults.stream()
-                            .map(pspclPaymentResultDetail -> new BigDecimal(pspclPaymentResultDetail.getAmount()))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-                    currentBillAmt = new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-                    if (lastBillDetail != null) {
-                        lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-                    } else {
-                        lastBillAmt = new BigDecimal("0");
-                    }
-                    //3. calculate the current bill and current payment
-                    currentMonthBillAmt = (currentBillAmt.subtract(lastBillAmt.subtract(lastPaymentAmt)));
-                    reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
-                    return reconcileVO;
-
-                } else {
-
-                    reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
-                    return reconcileVO;
-
-
-                }
-
-            }
-            // if current bill present in db, Check for any new payments done after the current bill date
-            else {
-                    paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO,pspclBillResults.get(0).getBillIssueDate());
+                currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults,lastBillIssueDate);
+                reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
+                return reconcileVO;
+            } else {
+                // if current bill present in db, Check for any new payments done after the current bill date
+                paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO,pspclBillResults.get(0).getBillIssueDate());
 
                 }
             }
@@ -249,5 +225,37 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
             }
             return 0;
         });
+    }
+
+    private BigDecimal getCurrentBillAmount(PspclBillDetail currentPspclBillDetail, List<PaymentsResultData> pspclPaymentResults, String lastBillIssueDate ) {
+        // it will fetch the last generated bill only
+        PspclBillDetail lastBillDetail = getLastBillDetailByAccountNumber(currentPspclBillDetail.getACCOUNT_NO());
+        BigDecimal  lastBillAmt ;
+        BigDecimal currentMonthBillAmt;
+        BigDecimal currentBillAmt ;
+        BigDecimal lastPaymentAmt = new BigDecimal(0);
+        Date lastBillIssueInDate = pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillIssueDate);
+        if(!pspclPaymentResults.isEmpty()) {
+            pspclPaymentResults = paymentReconcileService.getPaymentsDoneAfterGivenDate(pspclPaymentResults, lastBillIssueInDate);
+            pspclPaymentResults =paymentReconcileService.getPaymentsDoneBeforeGivenDate(pspclPaymentResults,currentPspclBillDetail.getBILL_ISSUE_DATE());
+             lastPaymentAmt = pspclPaymentResults.stream()
+                    .map(pspclPaymentResultDetail -> new BigDecimal(pspclPaymentResultDetail.getAmount()))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        currentBillAmt = new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+        if (lastBillDetail != null) {
+            lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+        } else {
+            lastBillAmt = new BigDecimal("0");
+        }
+        //3. calculate the current bill and current payment
+        if(lastBillAmt.subtract(lastPaymentAmt).doubleValue() < 0) {
+            //to handle advance case
+            currentMonthBillAmt = currentBillAmt;
+        } else {
+            currentMonthBillAmt = (currentBillAmt.subtract(lastBillAmt.subtract(lastPaymentAmt)));
+        }
+        return currentMonthBillAmt;
     }
 }
