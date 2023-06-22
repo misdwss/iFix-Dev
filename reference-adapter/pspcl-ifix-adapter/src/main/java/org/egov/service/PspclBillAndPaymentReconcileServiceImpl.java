@@ -84,32 +84,34 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         sortPaymentResultsWRTTXNDate(pspclPaymentResults);
         log.info("pspclPaymentResults after sort by issue date" + pspclPaymentResults);
         //Check if it is the first bill inn the system . if yes only send annd save bill  fiscal event  no need to save and send payment fisacal  event
-        if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
-            billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-            reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
-        } else {
-            //Do reconcile bill to check if current bill already present in db
-            billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-            log.info("reconcileVO after Bill Reconcile" + reconcileVO.isBillReconcile());
-            // if current bill is not present in db
-            if (reconcileVO.getCurrentPspclBillDetail() != null && !reconcileVO.isBillReconcile()) {
-                PspclBillDetail currentPspclBillDetail = reconcileVO.getCurrentPspclBillDetail();
-                String accountNumber = currentPspclBillDetail != null ? currentPspclBillDetail.getACCOUNT_NO() : null;
-                // we will send only the one result ill from db as it will be desc order and limit 1
-                lastBillDetail = getLastBillDetailByAccountNumber(accountNumber);
-                log.info("last bill date Date :" +lastBillDetail.getBILL_ISSUE_DATE().toString());
-                DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-                String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
-                paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
-                currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults,lastBillIssueDate);
-                reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
-                return reconcileVO;
+        if(!pspclBillResults.isEmpty()) {
+            if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
+                billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
+                reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
             } else {
-                // if current bill present in db, Check for any new payments done after the current bill date
-                paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO,pspclBillResults.get(0).getBillIssueDate());
+                //Do reconcile bill to check if current bill already present in db
+                billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
+                log.info("reconcileVO after Bill Reconcile" + reconcileVO.isBillReconcile());
+                // if current bill is not present in db
+                if (reconcileVO.getCurrentPspclBillDetail() != null && !reconcileVO.isBillReconcile()) {
+                    PspclBillDetail currentPspclBillDetail = reconcileVO.getCurrentPspclBillDetail();
+                    String accountNumber = currentPspclBillDetail != null ? currentPspclBillDetail.getACCOUNT_NO() : null;
+                    // we will send only the one result ill from db as it will be desc order and limit 1
+                    lastBillDetail = getLastBillDetailByAccountNumber(accountNumber);
+                    log.info("last bill date Date :" + lastBillDetail.getBILL_ISSUE_DATE().toString());
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+                    String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
+                    paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
+                    currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults, lastBillIssueDate);
+                    reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
+                    return reconcileVO;
+                } else {
+                    // if current bill present in db, Check for any new payments done after the current bill date
+                    paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, pspclBillResults.get(0).getBillIssueDate());
 
                 }
             }
+        }
 
 
         return reconcileVO;
