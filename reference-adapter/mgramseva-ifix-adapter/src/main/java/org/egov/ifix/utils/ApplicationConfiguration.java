@@ -167,4 +167,7 @@ public class ApplicationConfiguration {
     @Value("${samplejob.frequency}")
     private String sampleJobFrequency;
 
+    @Value("${vendor.owner.number}")
+    private String vendorNumber;
+
 }
