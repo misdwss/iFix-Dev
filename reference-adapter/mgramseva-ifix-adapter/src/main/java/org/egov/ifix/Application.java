@@ -5,11 +5,13 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.egov.tracer.config.TracerConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 @SpringBootApplication
 @EnableScheduling
+@Import({ TracerConfiguration.class })
 public class Application {
 
 	public static void main(String[] args) {
