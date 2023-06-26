@@ -66,6 +66,7 @@ public class EventConstants {
     public static final String ACCESS_TOKEN = "Access Token";
     public static final String CACHED_MGRAMSEVA_ACCESS_TOKEN = "mgramsevaAccessToken";
     public static final String CREATE_CHALLAN = "Create Challan";
+    public static final String UPDATE_CHALLAN = "Update Challan";
     public static final String PSPCL = "PSPCL";
     public static final String MGRAMSEVA_TENANT_ID = "tenantId";
     public static final String MGRAMSEVA_EXPENSE_TYPE = "expenseType";

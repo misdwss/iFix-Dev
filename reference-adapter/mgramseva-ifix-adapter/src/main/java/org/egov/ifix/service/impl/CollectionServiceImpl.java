@@ -10,6 +10,7 @@ import org.egov.ifix.repository.BillingServiceRepository;
 import org.egov.ifix.repository.CollectionServiceRepository;
 import org.egov.ifix.service.AuthTokenService;
 import org.egov.ifix.service.CollectionService;
+import org.egov.ifix.service.MgramsevaChallanService;
 import org.egov.ifix.service.PspclEventPersistenceService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,10 @@ public class CollectionServiceImpl implements CollectionService {
     @Autowired
     private PspclEventPersistenceService pspclEventPersistenceService;
 
+    @Autowired
+    private MgramsevaChallanService mgramsevaChallanService;
+
+
     @Override
     public void makePspclPaymentByCollectionService(String eventType, FiscalEvent fiscalEvent, String mgramsevaTenantId,
                                                     @NotNull String billConsumerCode) {
@@ -57,7 +62,22 @@ public class CollectionServiceImpl implements CollectionService {
                         CreatePaymentRequestDTO createPaymentRequestDTO = wrapCreatePaymentRequest(
                                 mgramsevaTenantId, billId, fiscalEventAmount.getAmount().doubleValue());
 
-                        collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
+                        CreatePaymentResponseDTO createPaymentResponseDTO = collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
+                        log.info("Create Payment response : " + createPaymentResponseDTO.toString());
+
+                        if(createPaymentResponseDTO!=null && !createPaymentResponseDTO.getPayments().isEmpty()) {
+                            if(createPaymentResponseDTO.getPayments().get(0).getTotalDue()!=null && createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid()!=null) {
+                                Double dueAmount= createPaymentResponseDTO.getPayments().get(0).getTotalDue().doubleValue();
+                                Double totalPaidAmount= createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid();
+                                if(totalPaidAmount.equals(dueAmount)) {
+                                    if(!createPaymentRequestDTO.getPayment().getPaymentDetails().isEmpty())
+                                        if( !createPaymentRequestDTO.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().isEmpty()) {
+                                            mgramsevaChallanService.updateChallan(eventType,fiscalEvent,mgramsevaTenantId,billConsumerCode,
+                                                    createPaymentRequestDTO.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0));
+                                        }
+                                }
+                            }
+                        }
 
                         pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
                                 eventType, fiscalEvent.getId(), billConsumerCode,

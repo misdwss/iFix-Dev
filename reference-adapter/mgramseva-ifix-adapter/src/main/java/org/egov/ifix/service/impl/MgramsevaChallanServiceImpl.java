@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.fiscalEvent.FiscalEvent;
 import org.egov.ifix.models.fiscalEvent.FiscalEventAmountDTO;
-import org.egov.ifix.models.mgramseva.AmountDTO;
-import org.egov.ifix.models.mgramseva.ChallanRequestDTO;
-import org.egov.ifix.models.mgramseva.CreateChallanRequestDTO;
-import org.egov.ifix.models.mgramseva.RequestInfoDTO;
+import org.egov.ifix.models.mgramseva.*;
 import org.egov.ifix.repository.MgramsevaChallanRepository;
 import org.egov.ifix.repository.MgramsevaVendorRepository;
 import org.egov.ifix.service.AuthTokenService;
@@ -18,10 +15,12 @@ import org.egov.ifix.service.PspclEventPersistenceService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static org.egov.ifix.utils.EventConstants.*;
 
@@ -49,6 +48,8 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
 
     @Autowired
     private PspclEventPersistenceService pspclEventPersistenceService;
+
+    public static final String CHALLAN_NUMBER = "challanNo";
 
     /**
      * TODO: As of now, vendor id is mandatory to create challan.
@@ -93,6 +94,57 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                 pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
                         eventType, fiscalEvent.getId(), pspclAccountNumber,
                         fiscalEventAmount.getAmount().doubleValue());
+            }
+        } else {
+            throw new GenericCustomException(PSPCL, "Content missing from fiscal event " + fiscalEvent);
+        }
+    }
+
+
+    @Override
+    public void updateChallan(String eventType, FiscalEvent fiscalEvent, String mgramsevaTenantId,
+                              @NotNull String pspclAccountNumber, BillDetailDTO billDetailDTO) {
+        if (fiscalEvent != null && fiscalEvent.getAmountDetails() != null && !fiscalEvent.getAmountDetails().isEmpty()
+                && !StringUtils.isEmpty(mgramsevaTenantId)) {
+
+            for (FiscalEventAmountDTO fiscalEventAmount : fiscalEvent.getAmountDetails()) {
+                ChallanRequestDTO challanRequestDTO = new ChallanRequestDTO();
+                challanRequestDTO.setTenantId(mgramsevaTenantId);
+                challanRequestDTO.setBusinessService(applicationConfiguration.getMgramsevaPspclBusinessService());
+                challanRequestDTO.setConsumerType(applicationConfiguration.getMgramsevaPspclConsumerType());
+                challanRequestDTO.setTypeOfExpense(applicationConfiguration.getMgramsevaPspclTypeOfExpense());
+                challanRequestDTO.setVendor(mgramsevaVendorService.getVendorIdByTenantId(mgramsevaTenantId,
+                        applicationConfiguration.getMgramsevaPspclVendorName()));
+                challanRequestDTO.setVendorName(applicationConfiguration.getMgramsevaPspclVendorName());
+                challanRequestDTO.setBillDate(fiscalEventAmount.getFromBillingPeriod());
+                challanRequestDTO.setIsBillPaid(true);
+                challanRequestDTO.setApplicationStatus("PAID");
+                if(!ObjectUtils.isEmpty(billDetailDTO.getAdditionalDetails())) {
+                    HashMap<String, Object> additionalDetails = objectMapper.convertValue(billDetailDTO.getAdditionalDetails(),
+                            HashMap.class);
+                    if (additionalDetails.getOrDefault(CHALLAN_NUMBER, null) != null) {
+                        challanRequestDTO.setChallanNo(additionalDetails.get(CHALLAN_NUMBER).toString());
+                    }
+                }
+
+                challanRequestDTO.setPaidDate(fiscalEvent.getEventTime());
+                challanRequestDTO.setTaxPeriodFrom(fiscalEventAmount.getFromBillingPeriod());
+                challanRequestDTO.setTaxPeriodTo(fiscalEventAmount.getFromBillingPeriod());
+                challanRequestDTO.setReferenceId(pspclAccountNumber);
+
+                AmountDTO amountDTO = new AmountDTO();
+                amountDTO.setTaxHeadCode(applicationConfiguration.getMgramsevaPspclTaxHeadCode());
+                amountDTO.setAmount(fiscalEventAmount.getAmount().doubleValue());
+
+                challanRequestDTO.setAmount(Collections.singletonList(amountDTO));
+
+                if(challanRequestDTO.getChallanNo()!=null) {
+
+                }
+
+                mgramsevaChallanRepository.pushMgramsevaUpdateChallanAPI(
+                        new CreateChallanRequestDTO(getMgramsevaRequestInfo(), challanRequestDTO));
+
             }
         } else {
             throw new GenericCustomException(PSPCL, "Content missing from fiscal event " + fiscalEvent);

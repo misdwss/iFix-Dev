@@ -82,11 +82,11 @@ public class MgramsevaChallanRepository {
             createChallanResponseDTO = response.getBody();
 
             if (createChallanResponseDTO == null) {
-                throw new HttpCustomException(CREATE_CHALLAN, "Unable get response from update challan",
+                throw new HttpCustomException(UPDATE_CHALLAN, "Unable get response from update challan",
                         HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            throw new HttpCustomException(CREATE_CHALLAN, "Exception while sending request to update challan",
+            throw new HttpCustomException(UPDATE_CHALLAN, "Exception while sending request to update challan",
                     e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return createChallanResponseDTO;
