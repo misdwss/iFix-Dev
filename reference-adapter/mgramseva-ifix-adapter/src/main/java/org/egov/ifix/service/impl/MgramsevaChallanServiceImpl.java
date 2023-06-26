@@ -7,7 +7,6 @@ import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.fiscalEvent.FiscalEvent;
 import org.egov.ifix.models.fiscalEvent.FiscalEventAmountDTO;
 import org.egov.ifix.models.mgramseva.*;
-import org.egov.ifix.producer.Producer;
 import org.egov.ifix.repository.MgramsevaChallanRepository;
 import org.egov.ifix.repository.MgramsevaVendorRepository;
 import org.egov.ifix.service.AuthTokenService;
@@ -22,7 +21,6 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.egov.ifix.utils.EventConstants.*;
 
@@ -53,8 +51,6 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
 
     public static final String CHALLAN_NUMBER = "challanNo";
 
-    @Autowired
-    Producer producer;
 
     /**
      * TODO: As of now, vendor id is mandatory to create challan.
@@ -160,7 +156,7 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                        }
                     }
                    if(!ObjectUtils.isEmpty(challanRequestDTO.getId())) {
-                       producer.push(applicationConfiguration.getUpdateChallanTopic(),challanRequestDTO);
+                       mgramsevaChallanRepository.pushMgramsevaUpdateChallanAPI( new CreateChallanRequestDTO(getMgramsevaRequestInfo(), challanRequestDTO));
                    }
 
                 }

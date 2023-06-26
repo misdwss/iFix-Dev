@@ -75,8 +75,8 @@ public class CollectionServiceImpl implements CollectionService {
                                         PaymentDetailDTO paymentDetailDTO = createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().get(0);
                                         log.info("Payments details:" + paymentDetailDTO);
                                         if (!ObjectUtils.isEmpty(paymentDetailDTO.getBill()) && !paymentDetailDTO.getBill().getBillDetails().isEmpty()) {
-                                            mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
-                                                    paymentDetailDTO.getBill().getBillDetails().get(0));
+                                            //mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
+                                                   // paymentDetailDTO.getBill().getBillDetails().get(0));
                                         }
                                     }
                                 }
@@ -125,6 +125,39 @@ public class CollectionServiceImpl implements CollectionService {
 
         return billIdSet;
     }
+
+    private List<BillDTO> getBills(String tenantId, String consumerCode) {
+        Set<String> billIdSet = new HashSet<>();
+
+        if (!StringUtils.isEmpty(tenantId)) {
+            Optional<FetchBillResponseDTO> fetchBillResponseDTOOptional = billingServiceRepository
+                    .fetchBillFromBillingService(tenantId, consumerCode);
+
+            if (!fetchBillResponseDTOOptional.isPresent() || fetchBillResponseDTOOptional.get().getBill() == null
+                    || fetchBillResponseDTOOptional.get().getBill().isEmpty()) {
+
+                throw new GenericCustomException(BILLING_SERVICE_FETCH_BILL, "Unable to get data or /invalid data " +
+                        "from fetch bill of Billing Service");
+            } else {
+                FetchBillResponseDTO fetchBillResponseDTO = fetchBillResponseDTOOptional.get();
+                List<BillDTO> billDTOList = fetchBillResponseDTO.getBill();
+
+                billIdSet = billDTOList.stream()
+                        .peek(billDTO -> {
+                            if (billDTO.getBillDetails() == null || billDTO.getBillDetails().isEmpty()) {
+                                log.error("Bill details is missing from Bill - while calling fetch bill");
+                            }
+                        })
+                        .filter(billDTO -> billDTO.getBillDetails() != null)
+                        .flatMap(billDTO -> billDTO.getBillDetails().stream())
+                        .map(BillDetailDTO::getBillId)
+                        .collect(Collectors.toSet());
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * @param tenantId
