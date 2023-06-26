@@ -2,10 +2,12 @@ package org.egov.ifix.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.egov.common.contract.AuditDetails;
 import org.egov.ifix.exception.GenericCustomException;
 import org.egov.ifix.models.fiscalEvent.FiscalEvent;
 import org.egov.ifix.models.fiscalEvent.FiscalEventAmountDTO;
 import org.egov.ifix.models.mgramseva.*;
+import org.egov.ifix.producer.Producer;
 import org.egov.ifix.repository.MgramsevaChallanRepository;
 import org.egov.ifix.repository.MgramsevaVendorRepository;
 import org.egov.ifix.service.AuthTokenService;
@@ -19,10 +21,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.egov.ifix.utils.EventConstants.*;
@@ -53,6 +52,9 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
     private PspclEventPersistenceService pspclEventPersistenceService;
 
     public static final String CHALLAN_NUMBER = "challanNo";
+
+    @Autowired
+    Producer producer;
 
     /**
      * TODO: As of now, vendor id is mandatory to create challan.
@@ -140,6 +142,12 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                 amountDTO.setAmount(fiscalEventAmount.getAmount().doubleValue());
 
                 challanRequestDTO.setAmount(Collections.singletonList(amountDTO));
+                AuditDetails auditDetails = new AuditDetails();
+                auditDetails.setCreatedBy("pspcl-ifix-adapter");
+                auditDetails.setLastModifiedBy("pspcl-ifix-adapter");
+                auditDetails.setCreatedTime(new Date().getTime());
+                auditDetails.setLastModifiedTime(new Date().getTime());
+                challanRequestDTO.setAuditDetails(auditDetails);
 
                 if(challanRequestDTO.getChallanNo()!=null) {
                     Optional<SearchChallanResponseDTO> searchChallanResponseDTOOptional = mgramsevaChallanRepository.searchChallan(mgramsevaTenantId,applicationConfiguration.getMgramsevaPspclTypeOfExpense(),challanRequestDTO.getChallanNo());
@@ -148,11 +156,11 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                         List<ChallanResponseDTO> challanResponseDTOS = searchChallanResponseDTO.getChallans();
                        if(!challanResponseDTOS.isEmpty()) {
                            challanRequestDTO.setId(challanResponseDTOS.get(0).getId());
+                           challanRequestDTO.setAccountId(challanResponseDTOS.get(0).getAccountId());
                        }
                     }
                    if(!ObjectUtils.isEmpty(challanRequestDTO.getId())) {
-                       mgramsevaChallanRepository.pushMgramsevaUpdateChallanAPI(
-                               new CreateChallanRequestDTO(getMgramsevaRequestInfo(), challanRequestDTO));
+                       producer.push(applicationConfiguration.getUpdateChallanTopic(),challanRequestDTO);
                    }
 
                 }

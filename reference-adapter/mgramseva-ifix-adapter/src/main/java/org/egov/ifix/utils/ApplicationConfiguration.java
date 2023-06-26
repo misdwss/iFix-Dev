@@ -170,4 +170,7 @@ public class ApplicationConfiguration {
     @Value("${vendor.owner.number}")
     private String vendorNumber;
 
+    @Value("${persister.update.challan.topic}")
+    private  String updateChallanTopic;
+
 }
