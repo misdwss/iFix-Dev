@@ -75,8 +75,8 @@ public class CollectionServiceImpl implements CollectionService {
                                         PaymentDetailDTO paymentDetailDTO = createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().get(0);
                                         log.info("Payments details:" + paymentDetailDTO);
                                         if (!ObjectUtils.isEmpty(paymentDetailDTO.getBill()) && !paymentDetailDTO.getBill().getBillDetails().isEmpty()) {
-                                            //mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
-                                                   // paymentDetailDTO.getBill().getBillDetails().get(0));
+                                            mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
+                                                    paymentDetailDTO.getBill().getBillDetails().get(0));
                                         }
                                     }
                                 }
