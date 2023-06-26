@@ -15,6 +15,7 @@ import org.egov.ifix.service.PspclEventPersistenceService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
@@ -65,31 +66,33 @@ public class CollectionServiceImpl implements CollectionService {
                         CreatePaymentResponseDTO createPaymentResponseDTO = collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
                         log.info("Create Payment response : " + createPaymentResponseDTO.toString());
 
-                        if(createPaymentResponseDTO!=null && !createPaymentResponseDTO.getPayments().isEmpty()) {
-                            if(createPaymentResponseDTO.getPayments().get(0).getTotalDue()!=null && createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid()!=null) {
-                                Double dueAmount= createPaymentResponseDTO.getPayments().get(0).getTotalDue().doubleValue();
-                                Double totalPaidAmount= createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid();
-                                if(totalPaidAmount.equals(dueAmount)) {
-                                    if(!createPaymentRequestDTO.getPayment().getPaymentDetails().isEmpty())
-                                        if( !createPaymentRequestDTO.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().isEmpty()) {
-                                            mgramsevaChallanService.updateChallan(eventType,fiscalEvent,mgramsevaTenantId,billConsumerCode,
-                                                    createPaymentRequestDTO.getPayment().getPaymentDetails().get(0).getBill().getBillDetails().get(0));
+                        if (createPaymentResponseDTO != null && !createPaymentResponseDTO.getPayments().isEmpty()) {
+                            if (createPaymentResponseDTO.getPayments().get(0).getTotalDue() != null && createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid() != null) {
+                                Double dueAmount = createPaymentResponseDTO.getPayments().get(0).getTotalDue().doubleValue();
+                                Double totalPaidAmount = createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid();
+                                if (totalPaidAmount.equals(dueAmount)) {
+                                    if (!createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().isEmpty()) {
+                                        PaymentDetailDTO paymentDetailDTO = createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().get(0);
+                                        log.info("Payments details:" + paymentDetailDTO);
+                                        if (!ObjectUtils.isEmpty(paymentDetailDTO.getBill()) && !paymentDetailDTO.getBill().getBillDetails().isEmpty()) {
+                                            mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
+                                                    paymentDetailDTO.getBill().getBillDetails().get(0));
                                         }
+                                    }
                                 }
                             }
                         }
 
-                        pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
-                                eventType, fiscalEvent.getId(), billConsumerCode,
-                                fiscalEventAmount.getAmount().doubleValue());
+                            pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
+                                    eventType, fiscalEvent.getId(), billConsumerCode,
+                                    fiscalEventAmount.getAmount().doubleValue());
+                        }
+                    } else{
+                        throw new GenericCustomException(COLLECTION_SERVICE_PAYMENT_CREATE, "Unable to get bill id");
                     }
-                } else {
-                    throw new GenericCustomException(COLLECTION_SERVICE_PAYMENT_CREATE, "Unable to get bill id");
                 }
             }
         }
-    }
-
 
     private Set<String> getBillId(String tenantId, String consumerCode) {
         Set<String> billIdSet = new HashSet<>();
