@@ -109,7 +109,24 @@ public class CollectionServiceImpl implements CollectionService {
             } else {
                 FetchBillResponseDTO fetchBillResponseDTO = fetchBillResponseDTOOptional.get();
                 List<BillDTO> billDTOList = fetchBillResponseDTO.getBill();
-                log.info("billDTOlist:" +billDTOList);
+                log.info("billDTOlist: " + billDTOList);
+                Long latestBillDate = 0l;
+                BillDTO latestBillDTO = null;
+                for(BillDTO billDTO : billDTOList) {
+                    Long currentBillDate = billDTO.getBillDate();
+                    if(currentBillDate> latestBillDate) {
+                        latestBillDate=currentBillDate;
+                        latestBillDTO=billDTO;
+                    }
+                }
+                if(latestBillDTO != null) {
+                    String billId = latestBillDTO.getId();
+                    billDTOList.stream().filter(billDTO ->
+                         billDTO.getId().equals(billId)
+                    ).collect(Collectors.toList());
+
+                }
+                log.info("Latest Bill Detail: " + billDTOList);
                 billIdSet = billDTOList.stream()
                         .peek(billDTO -> {
                             if (billDTO.getBillDetails() == null || billDTO.getBillDetails().isEmpty()) {
