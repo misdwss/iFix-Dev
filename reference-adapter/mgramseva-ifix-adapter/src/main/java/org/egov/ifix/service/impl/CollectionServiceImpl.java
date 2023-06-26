@@ -109,7 +109,7 @@ public class CollectionServiceImpl implements CollectionService {
             } else {
                 FetchBillResponseDTO fetchBillResponseDTO = fetchBillResponseDTOOptional.get();
                 List<BillDTO> billDTOList = fetchBillResponseDTO.getBill();
-
+                log.info("billDTOlist:" +billDTOList);
                 billIdSet = billDTOList.stream()
                         .peek(billDTO -> {
                             if (billDTO.getBillDetails() == null || billDTO.getBillDetails().isEmpty()) {
