@@ -72,6 +72,7 @@ public class MgramsevaChallanRepository {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.info("Update Challan Request :" + createChallanRequestDTO);
 
         HttpEntity<CreateChallanRequestDTO> entity = new HttpEntity<>(createChallanRequestDTO, headers);
 
