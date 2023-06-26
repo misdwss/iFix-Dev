@@ -99,7 +99,7 @@ public class MgramsevaChallanRepository {
      * @param expenseType
      * @return
      */
-    public Optional<SearchChallanResponseDTO> searchChallan(String tenantId, String expenseType) {
+    public Optional<SearchChallanResponseDTO> searchChallan(String tenantId, String expenseType, String challanNumber) {
         SearchChallanResponseDTO searchChallanResponseDTO = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
@@ -109,6 +109,7 @@ public class MgramsevaChallanRepository {
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)
                 .queryParam(MGRAMSEVA_EXPENSE_TYPE, expenseType)
                 .queryParam(CHALLAN_IS_BILL_PAID, false)
+                .queryParam(CHALLAN_NUMBER,challanNumber)
                 .encode()
                 .toUriString();
 

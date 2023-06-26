@@ -21,6 +21,9 @@ import org.springframework.util.StringUtils;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.egov.ifix.utils.EventConstants.*;
 
@@ -139,11 +142,21 @@ public class MgramsevaChallanServiceImpl implements MgramsevaChallanService {
                 challanRequestDTO.setAmount(Collections.singletonList(amountDTO));
 
                 if(challanRequestDTO.getChallanNo()!=null) {
+                    Optional<SearchChallanResponseDTO> searchChallanResponseDTOOptional = mgramsevaChallanRepository.searchChallan(mgramsevaTenantId,applicationConfiguration.getMgramsevaPspclTypeOfExpense(),challanRequestDTO.getChallanNo());
+                    if(searchChallanResponseDTOOptional.isPresent()) {
+                        SearchChallanResponseDTO searchChallanResponseDTO= searchChallanResponseDTOOptional.get();
+                        List<ChallanResponseDTO> challanResponseDTOS = searchChallanResponseDTO.getChallans();
+                       if(!challanResponseDTOS.isEmpty()) {
+                           challanRequestDTO.setId(challanResponseDTOS.get(0).getId());
+                       }
+                    }
+                   if(!ObjectUtils.isEmpty(challanRequestDTO.getId())) {
+                       mgramsevaChallanRepository.pushMgramsevaUpdateChallanAPI(
+                               new CreateChallanRequestDTO(getMgramsevaRequestInfo(), challanRequestDTO));
+                   }
 
                 }
 
-                mgramsevaChallanRepository.pushMgramsevaUpdateChallanAPI(
-                        new CreateChallanRequestDTO(getMgramsevaRequestInfo(), challanRequestDTO));
 
             }
         } else {
