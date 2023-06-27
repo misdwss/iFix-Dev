@@ -193,8 +193,6 @@ public class FiscalEventUtil {
         //request
         HttpEntity<FiscalEventRequest> request = new HttpEntity<>(eventRequest, headers);
 
-        log.info("fiscal request  : " + request.toString());
-
         if (eventRequest != null && eventRequest.getFiscalEvent() != null && !eventRequest.getFiscalEvent().isEmpty()) {
             try {
                 ResponseEntity<FiscalEventResponse> responseEntity = restTemplate.postForEntity(getIfixPublishUrl(), request, FiscalEventResponse.class);
