@@ -64,8 +64,6 @@ public class CollectionServiceImpl implements CollectionService {
                                 mgramsevaTenantId, billId, fiscalEventAmount.getAmount().doubleValue());
 
                         CreatePaymentResponseDTO createPaymentResponseDTO = collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
-                        log.info("Create Payment response : " + createPaymentResponseDTO.toString());
-
                         if (createPaymentResponseDTO != null && !createPaymentResponseDTO.getPayments().isEmpty()) {
                             if (createPaymentResponseDTO.getPayments().get(0).getTotalDue() != null && createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid() != null) {
                                 Double dueAmount = createPaymentResponseDTO.getPayments().get(0).getTotalDue().doubleValue();
@@ -73,7 +71,6 @@ public class CollectionServiceImpl implements CollectionService {
                                 if (totalPaidAmount.equals(dueAmount)) {
                                     if (!createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().isEmpty()) {
                                         PaymentDetailDTO paymentDetailDTO = createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().get(0);
-                                        log.info("Payments details:" + paymentDetailDTO);
                                         if (!ObjectUtils.isEmpty(paymentDetailDTO.getBill()) && !paymentDetailDTO.getBill().getBillDetails().isEmpty()) {
                                             mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
                                                     paymentDetailDTO.getBill().getBillDetails().get(0));
@@ -109,7 +106,6 @@ public class CollectionServiceImpl implements CollectionService {
             } else {
                 FetchBillResponseDTO fetchBillResponseDTO = fetchBillResponseDTOOptional.get();
                 List<BillDTO> billDTOList = fetchBillResponseDTO.getBill();
-                log.info("billDTOlist: " + billDTOList);
                 Long latestBillDate = 0l;
                 BillDTO latestBillDTO = null;
                 for(BillDTO billDTO : billDTOList) {
@@ -126,7 +122,6 @@ public class CollectionServiceImpl implements CollectionService {
                     ).collect(Collectors.toList());
 
                 }
-                log.info("Latest Bill Detail: " + billDTOList);
                 billIdSet = billDTOList.stream()
                         .peek(billDTO -> {
                             if (billDTO.getBillDetails() == null || billDTO.getBillDetails().isEmpty()) {
