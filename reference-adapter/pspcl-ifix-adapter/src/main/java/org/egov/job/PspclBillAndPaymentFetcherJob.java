@@ -1,7 +1,9 @@
 package org.egov.job;
 
+import client.stub.BillResultData;
 import client.stub.GetBillResult;
 import client.stub.GetPaymentResult;
+import client.stub.PaymentsResultData;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +58,9 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
                 for (AccountNumberGpMappingVO acnGpMappingVO : acnGpMappingVOs) {
                     //get the bills And payments from PSPCL system
                     log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
-                    List<GetBillResult> pspclBillResults = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
-                    List<GetPaymentResult> pspclPaymentResults = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
-
-                    ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResults, pspclPaymentResults);
-
+                    List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
+                    List<PaymentsResultData> pspclPaymentResultData = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
+                    ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResultData, pspclPaymentResultData);
                     reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
                     reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 
@@ -89,8 +90,11 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             if (reconcileVO.getCurrentPspclBillDetail() != null) {
                 pspclBillDetails.add(reconcileVO.getCurrentPspclBillDetail());
             }
-            if (reconcileVO.getCurrentPspclPaymentDetail() != null) {
-                pspclPaymentDetails.add(reconcileVO.getCurrentPspclPaymentDetail());
+            if (!CollectionUtils.isEmpty(reconcileVO.getCurrentPspclPaymentDetails()) ) {
+                for (PspclPaymentDetail pspclPaymentDetail :  reconcileVO.getCurrentPspclPaymentDetails()) {
+                    pspclPaymentDetails.add(pspclPaymentDetail);
+
+                }
             }
         }
         if (!pspclBillDetails.isEmpty()) {

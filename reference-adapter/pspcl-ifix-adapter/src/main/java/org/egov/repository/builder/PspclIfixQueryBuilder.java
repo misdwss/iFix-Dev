@@ -79,6 +79,7 @@ public class PspclIfixQueryBuilder {
     public static final String LESS_THAN = " < ";
     public static final String AND = " AND ";
     public static final String DESC = " DESC ";
+    public static final String LIMIT = " LIMIT ";
     public static final String SINGLE_QUOTE = "'";
 
 
@@ -119,6 +120,18 @@ public class PspclIfixQueryBuilder {
         return (queryBuilder.toString());
     }
 
+    public String getLastPspclBillQueryForAccountNumber(String accountNumber) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(SELECT_QUERY_FROM_PSPCL_BILL_DETAIL)
+                .append(WHERE_CLAUSE)
+                .append(ACCOUNT_NO).append(EQUAL_TO)
+                .append(SINGLE_QUOTE).append(accountNumber).append(SINGLE_QUOTE)
+                .append(ORDER_BY_CLAUSE).append(BILL_ISSUE_DATE)
+                .append(DESC)
+                .append(LIMIT).append(" 1 ;");
+        return (queryBuilder.toString());
+    }
+
 
     public String getPspclBillQueryForOrderByColumnAndAccountNumber(String orderByColumn, String accountNumber) {
         StringBuilder queryBuilder = new StringBuilder();
@@ -130,6 +143,27 @@ public class PspclIfixQueryBuilder {
                 .append(SINGLE_QUOTE).append(accountNumber).append(SINGLE_QUOTE);
         return (queryBuilder.toString());
     }
+
+
+    public String getPspclBillQueryForBillNumberAndAccountNumber(String billNumber, String accountNumber) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(SELECT_QUERY_FROM_PSPCL_BILL_DETAIL)
+                .append(WHERE_CLAUSE).append(BILL_NO).append(EQUAL_TO)
+                .append(SINGLE_QUOTE).append(billNumber).append(SINGLE_QUOTE)
+                .append(AND)
+                .append(ACCOUNT_NO).append(EQUAL_TO)
+                .append(SINGLE_QUOTE).append(accountNumber).append(SINGLE_QUOTE);
+        return (queryBuilder.toString());
+    }
+
+    public String getPspclBillQueryForAccountNumber(String accountNumber) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append(SELECT_QUERY_FROM_PSPCL_BILL_DETAIL)
+                .append(WHERE_CLAUSE).append(ACCOUNT_NO).append(EQUAL_TO)
+                .append(SINGLE_QUOTE).append(accountNumber).append(SINGLE_QUOTE);
+        return (queryBuilder.toString());
+    }
+
 
     public String getPspclPaymentQueryForTxnIdAndAccountNumber(String txnId, String accountNumber) {
         StringBuilder queryBuilder = new StringBuilder();
@@ -184,7 +218,7 @@ public class PspclIfixQueryBuilder {
 
                 String jsonData = "";
                 try {
-                    jsonData = objectMapper.writeValueAsString(pspclBillDetail.getBillJsonData());
+                    jsonData = objectMapper.writeValueAsString(pspclBillDetail.getBillDetailJson());
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
@@ -221,7 +255,7 @@ public class PspclIfixQueryBuilder {
 
                 String jsonData = "";
                 try {
-                    jsonData = objectMapper.writeValueAsString(pspclPaymentDetail.getPaymentJsonData());
+                    jsonData = objectMapper.writeValueAsString(pspclPaymentDetail.getPaymentDetailJson());
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }

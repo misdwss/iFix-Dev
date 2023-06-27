@@ -4,8 +4,10 @@ package org.egov.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.egov.tracer.model.CustomException;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor;
 import org.w3c.dom.Document;
 
 import java.io.BufferedReader;
@@ -38,7 +40,7 @@ public class SoapServiceRequestRepository {
 
                 // Set the appropriate HTTP parameters.
                 httpConn.setRequestProperty("Content-Length", String.valueOf(buffer.length));
-                httpConn.setRequestProperty("Content-Type", "text/xml; charset=iso-8859-1");
+                httpConn.setRequestProperty("Content-Type", "application/soap+xml");
                 httpConn.setRequestMethod(HttpMethod.POST.name());
                 httpConn.setDoOutput(true);
                 httpConn.setDoInput(true);
@@ -57,7 +59,7 @@ public class SoapServiceRequestRepository {
                         return null;
                     }
                 }
-                
+
                 try {
                     isr = new InputStreamReader(httpConn.getInputStream());
                     in = new BufferedReader(isr);
@@ -66,7 +68,7 @@ public class SoapServiceRequestRepository {
                     }
                 } catch (Exception e) {
                     log.error("Exception occurred while reading the response content from {} : {}", uri, e);
-                    throw new CustomException("PSPCL_API_CALL",e.getMessage());
+                    throw new CustomException("PSPCL_API_CALL", e.getMessage());
                 } finally {
                     if (isr != null) {
                         isr.close();
@@ -77,7 +79,7 @@ public class SoapServiceRequestRepository {
                 }
             } catch (Exception e) {
                 log.error("Exception occurred while fetching the details from other system", e);
-                throw new CustomException("PSPCL_API_CALL",e.getMessage());
+                throw new CustomException("PSPCL_API_CALL", e.getMessage());
             } finally {
                 if (httpConn != null) {
                     httpConn.disconnect();
@@ -88,4 +90,5 @@ public class SoapServiceRequestRepository {
 
         return outputString;
     }
+
 }
