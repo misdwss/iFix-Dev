@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.egov.common.contract.AuditDetails;
+
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class ChallanRequestDTO {
     @JsonProperty("citizen")
     private Object citizen;
     @JsonProperty("auditDetails")
-    private Object auditDetails;
+    private AuditDetails auditDetails;
     @JsonProperty("id")
     private Object id;
     @JsonProperty("tenantId")

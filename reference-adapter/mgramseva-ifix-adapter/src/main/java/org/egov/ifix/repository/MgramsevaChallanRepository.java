@@ -72,6 +72,7 @@ public class MgramsevaChallanRepository {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        log.info("Update Challan Request :" + createChallanRequestDTO);
 
         HttpEntity<CreateChallanRequestDTO> entity = new HttpEntity<>(createChallanRequestDTO, headers);
 
@@ -82,11 +83,11 @@ public class MgramsevaChallanRepository {
             createChallanResponseDTO = response.getBody();
 
             if (createChallanResponseDTO == null) {
-                throw new HttpCustomException(CREATE_CHALLAN, "Unable get response from update challan",
+                throw new HttpCustomException(UPDATE_CHALLAN, "Unable get response from update challan",
                         HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            throw new HttpCustomException(CREATE_CHALLAN, "Exception while sending request to update challan",
+            throw new HttpCustomException(UPDATE_CHALLAN, "Exception while sending request to update challan",
                     e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return createChallanResponseDTO;
@@ -98,7 +99,7 @@ public class MgramsevaChallanRepository {
      * @param expenseType
      * @return
      */
-    public Optional<SearchChallanResponseDTO> searchChallan(String tenantId, String expenseType) {
+    public Optional<SearchChallanResponseDTO> searchChallan(String tenantId, String expenseType, String challanNumber) {
         SearchChallanResponseDTO searchChallanResponseDTO = null;
 
         String url = applicationConfiguration.getMgramsevaHost()
@@ -108,6 +109,7 @@ public class MgramsevaChallanRepository {
                 .queryParam(MGRAMSEVA_TENANT_ID, tenantId)
                 .queryParam(MGRAMSEVA_EXPENSE_TYPE, expenseType)
                 .queryParam(CHALLAN_IS_BILL_PAID, false)
+                .queryParam(CHALLAN_NUMBER,challanNumber)
                 .encode()
                 .toUriString();
 

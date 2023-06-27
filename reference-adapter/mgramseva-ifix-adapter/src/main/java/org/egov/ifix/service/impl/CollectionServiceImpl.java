@@ -10,10 +10,12 @@ import org.egov.ifix.repository.BillingServiceRepository;
 import org.egov.ifix.repository.CollectionServiceRepository;
 import org.egov.ifix.service.AuthTokenService;
 import org.egov.ifix.service.CollectionService;
+import org.egov.ifix.service.MgramsevaChallanService;
 import org.egov.ifix.service.PspclEventPersistenceService;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
@@ -43,6 +45,10 @@ public class CollectionServiceImpl implements CollectionService {
     @Autowired
     private PspclEventPersistenceService pspclEventPersistenceService;
 
+    @Autowired
+    private MgramsevaChallanService mgramsevaChallanService;
+
+
     @Override
     public void makePspclPaymentByCollectionService(String eventType, FiscalEvent fiscalEvent, String mgramsevaTenantId,
                                                     @NotNull String billConsumerCode) {
@@ -57,21 +63,82 @@ public class CollectionServiceImpl implements CollectionService {
                         CreatePaymentRequestDTO createPaymentRequestDTO = wrapCreatePaymentRequest(
                                 mgramsevaTenantId, billId, fiscalEventAmount.getAmount().doubleValue());
 
-                        collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
+                        CreatePaymentResponseDTO createPaymentResponseDTO = collectionServiceRepository.createPaymentInCollectionService(createPaymentRequestDTO);
+                        if (createPaymentResponseDTO != null && !createPaymentResponseDTO.getPayments().isEmpty()) {
+                            if (createPaymentResponseDTO.getPayments().get(0).getTotalDue() != null && createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid() != null) {
+                                Double dueAmount = createPaymentResponseDTO.getPayments().get(0).getTotalDue().doubleValue();
+                                Double totalPaidAmount = createPaymentResponseDTO.getPayments().get(0).getTotalAmountPaid();
+                                if (totalPaidAmount.equals(dueAmount)) {
+                                    if (!createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().isEmpty()) {
+                                        PaymentDetailDTO paymentDetailDTO = createPaymentResponseDTO.getPayments().get(0).getPaymentDetails().get(0);
+                                        if (!ObjectUtils.isEmpty(paymentDetailDTO.getBill()) && !paymentDetailDTO.getBill().getBillDetails().isEmpty()) {
+                                            mgramsevaChallanService.updateChallan(eventType, fiscalEvent, mgramsevaTenantId, billConsumerCode,
+                                                    paymentDetailDTO.getBill().getBillDetails().get(0));
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                        pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
-                                eventType, fiscalEvent.getId(), billConsumerCode,
-                                fiscalEventAmount.getAmount().doubleValue());
+                            pspclEventPersistenceService.saveSuccessPspclEventDetail(mgramsevaTenantId,
+                                    eventType, fiscalEvent.getId(), billConsumerCode,
+                                    fiscalEventAmount.getAmount().doubleValue());
+                        }
+                    } else{
+                        throw new GenericCustomException(COLLECTION_SERVICE_PAYMENT_CREATE, "Unable to get bill id");
                     }
-                } else {
-                    throw new GenericCustomException(COLLECTION_SERVICE_PAYMENT_CREATE, "Unable to get bill id");
                 }
             }
         }
-    }
-
 
     private Set<String> getBillId(String tenantId, String consumerCode) {
+        Set<String> billIdSet = new HashSet<>();
+
+        if (!StringUtils.isEmpty(tenantId)) {
+            Optional<FetchBillResponseDTO> fetchBillResponseDTOOptional = billingServiceRepository
+                    .fetchBillFromBillingService(tenantId, consumerCode);
+
+            if (!fetchBillResponseDTOOptional.isPresent() || fetchBillResponseDTOOptional.get().getBill() == null
+                    || fetchBillResponseDTOOptional.get().getBill().isEmpty()) {
+
+                throw new GenericCustomException(BILLING_SERVICE_FETCH_BILL, "Unable to get data or /invalid data " +
+                        "from fetch bill of Billing Service");
+            } else {
+                FetchBillResponseDTO fetchBillResponseDTO = fetchBillResponseDTOOptional.get();
+                List<BillDTO> billDTOList = fetchBillResponseDTO.getBill();
+                Long latestBillDate = 0l;
+                BillDTO latestBillDTO = null;
+                for(BillDTO billDTO : billDTOList) {
+                    Long currentBillDate = billDTO.getBillDate();
+                    if(currentBillDate> latestBillDate) {
+                        latestBillDate=currentBillDate;
+                        latestBillDTO=billDTO;
+                    }
+                }
+                if(latestBillDTO != null) {
+                    String billId = latestBillDTO.getId();
+                    billDTOList.stream().filter(billDTO ->
+                         billDTO.getId().equals(billId)
+                    ).collect(Collectors.toList());
+
+                }
+                billIdSet = billDTOList.stream()
+                        .peek(billDTO -> {
+                            if (billDTO.getBillDetails() == null || billDTO.getBillDetails().isEmpty()) {
+                                log.error("Bill details is missing from Bill - while calling fetch bill");
+                            }
+                        })
+                        .filter(billDTO -> billDTO.getBillDetails() != null)
+                        .flatMap(billDTO -> billDTO.getBillDetails().stream())
+                        .map(BillDetailDTO::getBillId)
+                        .collect(Collectors.toSet());
+            }
+        }
+
+        return billIdSet;
+    }
+
+    private List<BillDTO> getBills(String tenantId, String consumerCode) {
         Set<String> billIdSet = new HashSet<>();
 
         if (!StringUtils.isEmpty(tenantId)) {
@@ -100,8 +167,9 @@ public class CollectionServiceImpl implements CollectionService {
             }
         }
 
-        return billIdSet;
+        return null;
     }
+
 
     /**
      * @param tenantId

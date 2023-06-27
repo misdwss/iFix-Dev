@@ -66,6 +66,7 @@ public class EventConstants {
     public static final String ACCESS_TOKEN = "Access Token";
     public static final String CACHED_MGRAMSEVA_ACCESS_TOKEN = "mgramsevaAccessToken";
     public static final String CREATE_CHALLAN = "Create Challan";
+    public static final String UPDATE_CHALLAN = "Update Challan";
     public static final String PSPCL = "PSPCL";
     public static final String MGRAMSEVA_TENANT_ID = "tenantId";
     public static final String MGRAMSEVA_EXPENSE_TYPE = "expenseType";
@@ -73,6 +74,7 @@ public class EventConstants {
     public static final String FISCAL_EVENT_DEMAND = "Demand";
     public static final String FISCAL_EVENT_RECEIPT = "Receipt";
     public static final String CHALLAN_IS_BILL_PAID = "isBillPaid";
+    public static final String CHALLAN_NUMBER = "challanNo";
     public static final String BILLING_SERVICE_CONSUMER_CODE = "consumerCode";
     public static final String EXPENSE_ELECTRICITY_BILL = "EXPENSE.ELECTRICITY_BILL";
     public static final String BILLING_SERVICE_BUSINESS_SERVICE = "businessService";

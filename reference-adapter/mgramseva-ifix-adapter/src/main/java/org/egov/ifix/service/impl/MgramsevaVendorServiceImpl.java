@@ -104,8 +104,9 @@ public class MgramsevaVendorServiceImpl implements MgramsevaVendorService {
         owner.setDob(Long.parseLong(applicationConfiguration.getVendorOwnerDob()));
         owner.setEmailId(applicationConfiguration.getVendorOwnerEmailId());
 //      It is not fixed yet, it's just providing random mobile no with 10 digit. Needs to be implemented by user info.
-        owner.setMobileNumber(
-                String.valueOf(ThreadLocalRandom.current().nextLong(10000_11111L, 10000_99999L)));
+        //owner.setMobileNumber(
+        //        String.valueOf(ThreadLocalRandom.current().nextLong(10000_11111L, 10000_99999L)));
+        owner.setMobileNumber(applicationConfiguration.getVendorNumber());
         owner.setRoles(Collections.singletonList(role));
 
         LocalityDTO locality = LocalityDTO.builder().build();
