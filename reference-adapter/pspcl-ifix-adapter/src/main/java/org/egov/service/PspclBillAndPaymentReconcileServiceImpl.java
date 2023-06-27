@@ -80,9 +80,7 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
         //1. sort bills result based on 'BILL_ISSUE_DATE' and payments result based on 'TXNDATE'
         sortBillResultsWRTLatestBillIssueDate(pspclBillResults);
-        log.info("pspclBillResults after sort by issue date" + pspclBillResults);
         sortPaymentResultsWRTTXNDate(pspclPaymentResults);
-        log.info("pspclPaymentResults after sort by issue date" + pspclPaymentResults);
         //Check if it is the first bill inn the system . if yes only send annd save bill  fiscal event  no need to save and send payment fisacal  event
         if(!pspclBillResults.isEmpty()) {
             if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
@@ -91,14 +89,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
             } else {
                 //Do reconcile bill to check if current bill already present in db
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-                log.info("reconcileVO after Bill Reconcile" + reconcileVO.isBillReconcile());
                 // if current bill is not present in db
                 if (reconcileVO.getCurrentPspclBillDetail() != null && !reconcileVO.isBillReconcile()) {
                     PspclBillDetail currentPspclBillDetail = reconcileVO.getCurrentPspclBillDetail();
                     String accountNumber = currentPspclBillDetail != null ? currentPspclBillDetail.getACCOUNT_NO() : null;
                     // we will send only the one result ill from db as it will be desc order and limit 1
                     lastBillDetail = getLastBillDetailByAccountNumber(accountNumber);
-                    log.info("last bill date Date :" + lastBillDetail.getBILL_ISSUE_DATE().toString());
                     DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
                     String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                     paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);

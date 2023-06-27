@@ -78,7 +78,6 @@ public class PspclUtil {
             String outputString = soapServiceRequestRepository.fetchResult(reqFetchPspclBill,
                     pspclIfixAdapterConfiguration.getUrlForFetchPspclBill()).toString();
 
-          log.info("output String " +outputString );
             if (StringUtils.isBlank(outputString)) {
                 log.debug("There is no response data from PSPCL system for fetch Bills");
                 return Collections.emptyList();
