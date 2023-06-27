@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.AuditDetails;
+import org.egov.entity.PaymentDetailJson;
 import org.egov.entity.PaymentJsonData;
 import org.egov.entity.PspclPaymentDetail;
 import org.egov.repository.builder.PspclIfixQueryBuilder;
@@ -46,7 +47,7 @@ public class PspclPaymentRowMapper implements ResultSetExtractor<List<PspclPayme
                     .build();
 
             Object jsonData = rs.getObject(PspclIfixQueryBuilder.JSON_DATA);
-            PaymentJsonData paymentJsonData = objectMapper.convertValue(jsonData, PaymentJsonData.class);
+            PaymentDetailJson paymentDetailJson = objectMapper.convertValue(jsonData, PaymentDetailJson.class);
 
             PspclPaymentDetail pspclPaymentDetail = PspclPaymentDetail.builder()
                     .id(rs.getLong(PspclIfixQueryBuilder.ID))
@@ -61,7 +62,7 @@ public class PspclPaymentRowMapper implements ResultSetExtractor<List<PspclPayme
                     .DUEDTCASH(rs.getDate(PspclIfixQueryBuilder.DUEDTCASH))
                     .DUEDTCHQ(rs.getDate(PspclIfixQueryBuilder.DUEDTCHQ))
                     .STATUS_P(rs.getString(PspclIfixQueryBuilder.STATUS_P))
-                    .paymentJsonData(paymentJsonData)
+                    .paymentDetailJson(paymentDetailJson)
                     .auditDetails(auditDetails)
                     .build();
 

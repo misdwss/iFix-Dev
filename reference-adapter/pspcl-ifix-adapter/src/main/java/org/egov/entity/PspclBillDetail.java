@@ -27,7 +27,7 @@ public class PspclBillDetail {
     private String PAYABLE_AMOUNT_UPTO_15_DAYS;
     private String BILL_NO;
 
-    private BillJsonData billJsonData;
+    private BillDetailJson billDetailJson;
 
     private AuditDetails auditDetails;
 

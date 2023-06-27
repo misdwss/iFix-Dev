@@ -54,12 +54,41 @@ public class PspclBillDetailRepository {
         return Optional.empty();
     }
 
+    public Optional<PspclBillDetail> findLastBillDetailsByAccountNumber(String accountNumber) {
+        if (accountNumber != null) {
+            List<PspclBillDetail> pspclBillDetails = jdbcTemplate.query(queryBuilder.getLastPspclBillQueryForAccountNumber(accountNumber), billRowMapper);
+            return (pspclBillDetails != null && !pspclBillDetails.isEmpty() ? Optional.of(pspclBillDetails.get(0)) : Optional.empty());
+        }
+        return Optional.empty();
+    }
+
     public List<PspclBillDetail> findByORDERBYCOLUMNAndAccountNumber(String orderByColumn, String accountNumber) {
         List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
         if (StringUtils.isNotBlank(orderByColumn)) {
             pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForOrderByColumnAndAccountNumber(orderByColumn, accountNumber), billRowMapper);
+            //pspclBillDetails.
         }
         return pspclBillDetails;
     }
+
+
+    public List<PspclBillDetail> findByBillNumberAndAccountNumber(String billNumber, String accountNumber) {
+        List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
+        if (StringUtils.isNotBlank(billNumber)) {
+            pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForBillNumberAndAccountNumber(billNumber, accountNumber), billRowMapper);
+            //pspclBillDetails.
+        }
+        return pspclBillDetails;
+    }
+
+    public List<PspclBillDetail> findByAccountNumber(String accountNumber) {
+        List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
+        if (StringUtils.isNotBlank(accountNumber)) {
+            pspclBillDetails = jdbcTemplate.query(queryBuilder.getPspclBillQueryForAccountNumber(accountNumber), billRowMapper);
+            //pspclBillDetails.
+        }
+        return pspclBillDetails;
+    }
+
 
 }

@@ -60,55 +60,61 @@ public class FiscalEventUtil {
      * @param billAndPaymentEventDetail
      * @return
      */
-    public FiscalEvent getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
+    public List<FiscalEvent> getReceiptFiscalEvent(ReconcileVO billAndPaymentEventDetail) {
+        List<FiscalEvent> paymentFiscalEvents = new ArrayList<>();
         FiscalEvent paymentFiscalEvent = null;
-        List<Amount> amounts = new ArrayList<>();
 
-        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetail() != null) {
-            PspclPaymentDetail pspclPaymentDetail = billAndPaymentEventDetail.getCurrentPspclPaymentDetail();
 
-            //mandatory condition check
-            if (StringUtils.isBlank(adapterConfiguration.getReceiptCoaCode())
-                    && StringUtils.isBlank(adapterConfiguration.getTenantId())
-                    && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
-                    && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
-                return paymentFiscalEvent;
+        if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclPaymentDetails() != null) {
+            List<PspclPaymentDetail> pspclPaymentDetails = billAndPaymentEventDetail.getCurrentPspclPaymentDetails();
+
+            if(!pspclPaymentDetails.isEmpty()) {
+              for(PspclPaymentDetail pspclPaymentDetail : pspclPaymentDetails) {
+
+                  //mandatory condition check
+                  if (StringUtils.isBlank(adapterConfiguration.getReceiptCoaCode())
+                          && StringUtils.isBlank(adapterConfiguration.getTenantId())
+                          && StringUtils.isBlank(pspclPaymentDetail.getTXNID())
+                          && StringUtils.isBlank(pspclPaymentDetail.getAMT())) {
+                      return paymentFiscalEvents;
+                  }
+                  paymentFiscalEvent = new FiscalEvent();
+                  List<Amount> amounts = new ArrayList<>();
+                  Amount paymentAmount = new Amount();
+                  if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
+                      paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
+                  }
+                  paymentAmount.setFromBillingPeriod(pspclPaymentDetail.getBILISSDT().getTime());//missing
+                  paymentAmount.setToBillingPeriod(pspclPaymentDetail.getBILISSDT().getTime());//missing
+                  paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
+                  amounts.add(paymentAmount);
+
+                  if (pspclPaymentDetail.getTXNDATE() != null) {
+                      paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
+                  }
+                  paymentFiscalEvent.setEventType(EVENT_TYPE_RECEIPT);
+                  paymentFiscalEvent.setReferenceId(pspclPaymentDetail.getTXNID());
+                  paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
+
+                  List<String> receivers = new ArrayList<>();
+                  receivers.add(adapterConfiguration.getFiscalEventReceiver());
+                  paymentFiscalEvent.setReceivers(receivers);
+
+                  ObjectNode additionalAttributes = objectMapper.createObjectNode();
+                  ObjectNode departmentEntity = objectMapper.createObjectNode();
+                  departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE, billAndPaymentEventDetail.getDepartmentEntityCode());
+                  departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_NAME, billAndPaymentEventDetail.getDepartmentEntityName());
+
+                  additionalAttributes.put(FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER, pspclPaymentDetail.getACNO());
+                  additionalAttributes.set(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY, departmentEntity);
+
+                  paymentFiscalEvent.setAttributes(additionalAttributes);
+                  paymentFiscalEvent.setAmountDetails(amounts);
+                  paymentFiscalEvents.add(paymentFiscalEvent);
+              }
             }
-            paymentFiscalEvent = new FiscalEvent();
-
-            Amount paymentAmount = new Amount();
-            if (StringUtils.isNotBlank(pspclPaymentDetail.getAMT())) {
-                paymentAmount.setAmount(new BigDecimal(pspclPaymentDetail.getAMT()));
-            }
-//            paymentAmount.setFromBillingPeriod();//missing
-//            paymentAmount.setToBillingPeriod();//missing
-            paymentAmount.setCoaCode(adapterConfiguration.getReceiptCoaCode());
-            amounts.add(paymentAmount);
-
-            if (pspclPaymentDetail.getTXNDATE() != null) {
-                paymentFiscalEvent.setEventTime(ifixAdapterUtil.format(TXN_DATE_FORMAT, pspclPaymentDetail.getTXNDATE()).getTime());
-            }
-            paymentFiscalEvent.setEventType(EVENT_TYPE_RECEIPT);
-            paymentFiscalEvent.setReferenceId(pspclPaymentDetail.getTXNID());
-            paymentFiscalEvent.setTenantId(adapterConfiguration.getTenantId());
-
-            List<String> receivers = new ArrayList<>();
-            receivers.add(adapterConfiguration.getFiscalEventReceiver());
-            paymentFiscalEvent.setReceivers(receivers);
-
-            ObjectNode additionalAttributes = objectMapper.createObjectNode();
-            ObjectNode departmentEntity = objectMapper.createObjectNode();
-            departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_CODE, billAndPaymentEventDetail.getDepartmentEntityCode());
-            departmentEntity.put(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY_NAME, billAndPaymentEventDetail.getDepartmentEntityName());
-
-            additionalAttributes.put(FE_ADDITIONAL_ATTRIBUTE_ACCOUNT_NUMBER, pspclPaymentDetail.getACNO());
-            additionalAttributes.set(FE_ADDITIONAL_ATTRIBUTE_DEPARTMENT_ENTITY, departmentEntity);
-
-            paymentFiscalEvent.setAttributes(additionalAttributes);
-            paymentFiscalEvent.setAmountDetails(amounts);
-
         }
-        return paymentFiscalEvent;
+        return paymentFiscalEvents;
     }
 
     /**
@@ -136,9 +142,13 @@ public class FiscalEventUtil {
             billAmount.setAmount(billAndPaymentEventDetail.getCurrentCalculatedBillAmt());
             if (pspclBillDetail.getDATE_READING_PREV() != null) {
                 billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_PREV()).getTime());
+            } else {
+                billAmount.setFromBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getBILL_ISSUE_DATE()).getTime());
             }
             if (pspclBillDetail.getDATE_READING_CURR() != null) {
                 billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getDATE_READING_CURR()).getTime());
+            } else {
+                billAmount.setToBillingPeriod(ifixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, pspclBillDetail.getBILL_ISSUE_DATE()).getTime());
             }
             billAmount.setCoaCode(adapterConfiguration.getDemandCoaCode());
             amounts.add(billAmount);
@@ -190,7 +200,7 @@ public class FiscalEventUtil {
                 eventPostingDetailList = wrapEventResponse(responseEntity, eventRequest);
                 log.info("Posting to iFix - status : " + responseEntity.getStatusCode());
             } catch (RestClientException e) {
-                log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR + e.getMessage(), e);
+                log.error(LOG_ERROR_PREFIX + RECOVERABLE_ERROR + e.getMessage(), e.getCause());
 
                 eventPostingDetailList = composeEventPostingDetail(eventRequest.getFiscalEvent(), HttpStatus.BAD_REQUEST,
                         e.getMessage());

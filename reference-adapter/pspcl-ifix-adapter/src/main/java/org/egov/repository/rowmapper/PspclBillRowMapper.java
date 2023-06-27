@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.AuditDetails;
+import org.egov.entity.BillDetailJson;
 import org.egov.entity.BillJsonData;
 import org.egov.entity.PspclBillDetail;
 import org.egov.repository.builder.PspclIfixQueryBuilder;
@@ -48,7 +49,7 @@ public class PspclBillRowMapper implements ResultSetExtractor<List<PspclBillDeta
                     .build();
 
             Object jsonData = rs.getObject(PspclIfixQueryBuilder.JSON_DATA);
-            BillJsonData billJsonData = objectMapper.convertValue(jsonData, BillJsonData.class);
+            BillDetailJson billDetailJson = objectMapper.convertValue(jsonData, BillDetailJson.class);
 
 
             PspclBillDetail pspclBillDetail = PspclBillDetail.builder()
@@ -64,7 +65,7 @@ public class PspclBillRowMapper implements ResultSetExtractor<List<PspclBillDeta
                     .PAYABLE_AMOUNT_UPTO_15_DAYS(rs.getString(PspclIfixQueryBuilder.PAYABLE_AMOUNT_UPTO_15_DAYS))
                     .TARIFF_TYPE(rs.getString(PspclIfixQueryBuilder.TARIFF_TYPE))
                     .ORDERBYCOLUMN(rs.getString(PspclIfixQueryBuilder.ORDERBYCOLUMN))
-                    .billJsonData(billJsonData)
+                    .billDetailJson(billDetailJson)
                     .auditDetails(auditDetails)
                     .build();
 

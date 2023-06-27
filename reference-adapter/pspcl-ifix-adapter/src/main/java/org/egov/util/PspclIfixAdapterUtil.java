@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static org.egov.util.PspclIfixAdapterConstant.DEFAULT_DATE_FORMAT;
+import static org.egov.util.PspclIfixAdapterConstant.TXN_DATE_FORMAT;
 
 @Component
 @Slf4j
@@ -60,6 +61,24 @@ public class PspclIfixAdapterUtil {
                 log.error("Exception occurred while formatting the date : {}", date, e);
             }
         }
+        return null;
+    }
+
+
+    public Date formatTxnDate (String inputDate) {
+        String outputFormat =TXN_DATE_FORMAT;
+
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat(outputFormat);
+        Date date;
+        try {
+             date = inputDateFormat.parse(inputDate);
+           // String formattedDate = outputDateFormat.format(date);
+            return date;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
