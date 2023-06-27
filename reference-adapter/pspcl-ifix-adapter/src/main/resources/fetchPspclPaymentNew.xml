@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+               xmlns:tns="http://tempuri.org/"
+               xmlns:a="http://www.w3.org/2005/08/addressing">
+    <soap:Header>
+        <a:Action>http://tempuri.org/IPunjabDWSS/requestRecentPayments</a:Action>
+        <a:To>https://devapi.pspcl.in/Services/PunjabDWSS.svc</a:To>
+    </soap:Header>
+    <soap:Body>
+        <tns:requestRecentPayments>
+            <!--Optional:-->
+            <tns:requestJSON>
+                {
+                "USERNAME": "${userName}",
+                "HASHEDDATA": "${accountNo}"
+                }
+            </tns:requestJSON>
+        </tns:requestRecentPayments>
+    </soap:Body>
+</soap:Envelope>

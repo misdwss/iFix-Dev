@@ -28,7 +28,7 @@ public class PspclPaymentDetail {
     private Date DUEDTCHQ;
     private String STATUS_P;
 
-    private PaymentJsonData paymentJsonData;
+    private PaymentDetailJson paymentDetailJson;
 
     private AuditDetails auditDetails;
 }
