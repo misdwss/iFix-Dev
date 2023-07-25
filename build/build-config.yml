@@ -41,6 +41,8 @@ config:
       - work-dir: "core/egov-indexer"
         image-name: "egov-indexer"
         dockerfile: "build/maven/Dockerfile"
+      - work-dir: "core/egov-indexer/src/main/resources/db"
+        image-name: "egov-indexer-db"
   - name: "builds/iFix/core/dashboard-analytics"
     build:
       - work-dir: "core/dashboard-analytics"
