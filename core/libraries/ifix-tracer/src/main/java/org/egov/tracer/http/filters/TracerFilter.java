@@ -52,7 +52,7 @@ public class TracerFilter implements Filter {
      * Cache the request for future body reads in case the body is compatible [json]
      * Retrieves correlation id
      * - From header
-     * - if not exists, attempt to retrieve from body RequestHeader
+     * - if not exists, attempt to retrieve from body RequestHeader/RequestInfo
      * - if not exists, generate a uuid
      * <p>
      * Set correlation id in MDC for future use, like logging etc
@@ -168,14 +168,28 @@ public class TracerFilter implements Filter {
         try {
             final HashMap<String, Object> requestMap = (HashMap<String, Object>)
                     objectMapper.readValue(httpServletRequest.getInputStream(), HashMap.class);
-            Object requestHeader = requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
-                    (REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_HEADER_IN_CAMEL_CASE);
 
-            if (isNull(requestHeader))
-                return null;
-            else {
-                if (requestHeader instanceof Map) {
-                    correlationId = (String) ((Map) requestHeader).get(CORRELATION_ID_FIELD_NAME);
+            if(requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) || requestMap.containsKey(REQUEST_HEADER_IN_CAMEL_CASE)) {
+                Object requestHeader = requestMap.containsKey(REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
+                        (REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_HEADER_IN_CAMEL_CASE);
+
+                if (isNull(requestHeader))
+                    return null;
+                else {
+                    if (requestHeader instanceof Map) {
+                        correlationId = (String) ((Map) requestHeader).get(CORRELATION_ID_FIELD_NAME);
+                    }
+                }
+            }else{
+                Object requestInfo = requestMap.containsKey(REQUEST_INFO_FIELD_NAME_IN_JAVA_CLASS_CASE) ? requestMap.get
+                        (REQUEST_INFO_FIELD_NAME_IN_JAVA_CLASS_CASE) : requestMap.get(REQUEST_INFO_IN_CAMEL_CASE);
+
+                if (isNull(requestInfo))
+                    return null;
+                else {
+                    if (requestInfo instanceof Map) {
+                        correlationId = (String) ((Map) requestInfo).get(CORRELATION_ID_FIELD_NAME);
+                    }
                 }
             }
         } catch (IOException ignored) {

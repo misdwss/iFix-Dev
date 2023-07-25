@@ -9,6 +9,8 @@ public class TracerConstants {
     public static final String TIME_ZONE_PROPERTY = "app.timezone";
     public static final String REQUEST_HEADER_FIELD_NAME_IN_JAVA_CLASS_CASE = "RequestHeader";
     public static final String REQUEST_HEADER_IN_CAMEL_CASE = "requestHeader";
+    public static final String REQUEST_INFO_FIELD_NAME_IN_JAVA_CLASS_CASE = "RequestInfo";
+    public static final String REQUEST_INFO_IN_CAMEL_CASE = "requestInfo";
 
     private TracerConstants() {
     }
