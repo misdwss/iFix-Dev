@@ -74,11 +74,14 @@ public class AuthTokenRepository {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add(USERNAME, applicationConfiguration.getMgramsevaOauthTokenUsername());
+        log.info("USERNAME:" +applicationConfiguration.getMgramsevaOauthTokenUsername());
         map.add(PASSWORD, applicationConfiguration.getMgramsevaOauthTokenPassword());
+        log.info("PASSWORD:" +applicationConfiguration.getMgramsevaOauthTokenPassword());
         map.add(SCOPE, applicationConfiguration.getMgramsevaOauthTokenScope());
         map.add(GRANT_TYPE, applicationConfiguration.getMgramsevaOauthTokenGrantType());
         map.add(TENANT_ID, applicationConfiguration.getMgramsevaOauthTokenTenantId());
         map.add(USER_TYPE, applicationConfiguration.getMgramsevaOauthTokenUserType());
+
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(map, headers);
 

@@ -77,7 +77,7 @@ public class CollectionServiceImpl implements CollectionService {
         if (!StringUtils.isEmpty(tenantId)) {
             Optional<FetchBillResponseDTO> fetchBillResponseDTOOptional = billingServiceRepository
                     .fetchBillFromBillingService(tenantId, consumerCode);
-
+            log.info("tenantID:" +tenantId +" consumerCode:"+consumerCode);
             if (!fetchBillResponseDTOOptional.isPresent() || fetchBillResponseDTOOptional.get().getBill() == null
                     || fetchBillResponseDTOOptional.get().getBill().isEmpty()) {
 
