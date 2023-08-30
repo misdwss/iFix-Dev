@@ -83,10 +83,11 @@ public class FiscalEventRepository {
         FiscalEventSearchRequestDTO fiscalEventSearchRequestDTO = new FiscalEventSearchRequestDTO();
 
         Long intervalTimeInMilliSecond = dataWrapper.translateCronExpressionIntoMilliSecond();
+        log.info("intervalTimeInMilliSecond:"+intervalTimeInMilliSecond);
 
         Long toIngestionTime = System.currentTimeMillis();
         Long fromIngestionTime = toIngestionTime - intervalTimeInMilliSecond;
-
+        log.info("fromIngestionTime:"+fromIngestionTime);
         FiscalSearchCriteriaDTO fiscalSearchCriteriaDTO = new FiscalSearchCriteriaDTO();
         fiscalSearchCriteriaDTO.setTenantId(applicationConfiguration.getTenantId());
         fiscalSearchCriteriaDTO.setEventType(eventType);

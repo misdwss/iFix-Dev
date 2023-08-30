@@ -112,11 +112,13 @@ public class DataWrapper {
 
             CronSequenceGenerator generator = new CronSequenceGenerator(cronExpression);
             Date nextRunTime = generator.next(new Date());
+            log.info("nextRunTime:"+nextRunTime);
 
             Date nextToNextExecution = generator.next(nextRunTime);
+            log.info("nextToNextExecution:" +nextToNextExecution);
             Duration durationBetweenExecutions = Duration.between(nextRunTime.toInstant(),
                     nextToNextExecution.toInstant());
-
+            log.info("translateCronExpressionIntoMilliSecond:" +durationBetweenExecutions.toMillis()+ " : " +overlapTime);
             return durationBetweenExecutions.toMillis() + overlapTime;
         }
     }
@@ -129,7 +131,6 @@ public class DataWrapper {
     private String getValidatedCronExpression(@NonNull String expression) {
         StringBuilder cronExpBuilder = new StringBuilder();
         String[] fields = StringUtils.tokenizeToStringArray(expression, " ");
-
         if (fields.length > 6) {
             log.warn(">>>>> Cron expression elements are more than six and we are considering only six element other " +
                     "elements will be ignored");
@@ -144,7 +145,7 @@ public class DataWrapper {
         }else {
             cronExpBuilder = cronExpBuilder.append(expression);
         }
-
+       log.info("cron expression builder:"+cronExpBuilder.toString());
         return cronExpBuilder.toString();
     }
 

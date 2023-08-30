@@ -1,5 +1,6 @@
 package org.egov.ifix.quartz.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.quartz.JobScheduleCreator;
 import org.egov.ifix.quartz.SchedulerJobFactory;
 import org.egov.ifix.quartz.SearchJob;
@@ -20,6 +21,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@Slf4j
 public class SchedulerConfig {
     @Autowired
     private DataSource dataSource;
@@ -57,6 +59,7 @@ public class SchedulerConfig {
     @Bean(name = "searchJobTrigger")
     public CronTriggerFactoryBean sampleJobTrigger(@Qualifier("quartzJobDetail") JobDetail jobDetail,
                                                    @Value("${samplejob.frequency}") String frequency) {
+        log.info("searchJobTrigger is Running"+ frequency);
         return createCronTrigger(jobDetail, frequency);
     }
 
