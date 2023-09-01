@@ -66,7 +66,7 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
                         reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
                         reconcileVOS.add(reconcileVO);
                     } catch (Exception e) {
-                        System.out.println("Account Number:"+acnGpMappingVO.getAccountNumber());
+                        System.out.println("Found Exception in these Account Number in pspcl Api Calls :"+acnGpMappingVO.getAccountNumber());
                     }
 
 
