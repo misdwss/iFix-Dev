@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PspclBillAndPaymentReconcileService {
 
-    ReconcileVO reconcile(List<BillResultData> pspclBillResults, List<PaymentsResultData> pspclPaymentResults);
+    ReconcileVO reconcile(List<BillResultData> pspclBillResults, List<PaymentsResultData> pspclPaymentResults) throws  Exception;
 
     void publishFiscalEvent(List<ReconcileVO> reconcileVOS);
 }
