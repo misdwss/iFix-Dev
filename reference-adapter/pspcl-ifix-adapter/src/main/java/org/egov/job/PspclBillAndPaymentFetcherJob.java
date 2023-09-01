@@ -76,10 +76,10 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             }
 
             //save to DB
-           // savePspclDetails(reconcileVOS);
+            savePspclDetails(reconcileVOS);
 
             //publish the events
-            //pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);
+            pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);
 
         } catch (Exception e) {
             log.error("Exception occurred while running PspclBillAndPaymentFetcherJob", e);
