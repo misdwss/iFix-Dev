@@ -30,7 +30,9 @@ public class DepartmentEntityFetcher {
 
     public ObjectNode getDepartmentEntityDetailsFromCode(String code) {
         String tenantId = applicationConfiguration.getTenantId();
+        log.info("code:"+code);
         JsonNode searchRequest = createDepartmentEntitySearchRequest(tenantId, code);
+        log.info("search request:"+searchRequest);
         Object response = serviceRequestRepository.fetchResult(createDepartmentEntitySearchUrl(), searchRequest);
         JsonNode responseJson = objectMapper.convertValue(response, JsonNode.class);
         log.info("responseJson:"+responseJson);
