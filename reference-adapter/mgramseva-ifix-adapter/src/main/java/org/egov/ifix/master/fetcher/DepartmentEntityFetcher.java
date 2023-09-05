@@ -25,12 +25,15 @@ public class DepartmentEntityFetcher {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    DepartmentFetcher departmentFetcher;
+
     public ObjectNode getDepartmentEntityDetailsFromCode(String code) {
         String tenantId = applicationConfiguration.getTenantId();
         JsonNode searchRequest = createDepartmentEntitySearchRequest(tenantId, code);
         Object response = serviceRequestRepository.fetchResult(createDepartmentEntitySearchUrl(), searchRequest);
         JsonNode responseJson = objectMapper.convertValue(response, JsonNode.class);
-
+        log.info("responseJson:"+responseJson);
         JsonNode departmentEntityNode = responseJson.get("departmentEntity");
 
         if (departmentEntityNode == null || departmentEntityNode.size() == 0) {
@@ -42,7 +45,7 @@ public class DepartmentEntityFetcher {
         }
 
         JsonNode departmentEntityDetails = departmentEntityNode.get(0);
-
+        log.info("departmentEntityDetails:"+departmentEntityDetails);
         ObjectNode departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
         departmentEntity.set("ancestry", createAncestryArrayFor(departmentEntityDetails));
         log.info("DEPARTMENT ENTITY:"+departmentEntity);
@@ -84,6 +87,7 @@ public class DepartmentEntityFetcher {
 
     private ArrayNode createAncestryArrayFor(JsonNode departmentEntityDetails) {
         ArrayNode ancestry = objectMapper.createArrayNode();
+        log.info("departmentEntityDetails" + departmentEntityDetails);
         while (departmentEntityDetails != null) {
             ObjectNode departmentEntityAttributes = objectMapper.createObjectNode();
             departmentEntityAttributes.put("id", departmentEntityDetails.get("id").asText());
@@ -97,6 +101,7 @@ public class DepartmentEntityFetcher {
             else
                 departmentEntityDetails = null;
         }
+        //ObjectNode departmentDetails = departmentFetcher.getDepartmentDetails(departmentUuid);
         return ancestry;
     }
 

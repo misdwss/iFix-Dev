@@ -50,6 +50,7 @@ public class MasterDataEnricher {
         // 4 - Get Department Details (based on department uuid extracted from department entity details)
         ObjectNode departmentDetails = departmentFetcher.getDepartmentDetails(departmentUuid);
 
+
         // 5 - Add all these details to a json object
         ObjectNode additionalAttributes = objectMapper.createObjectNode();
         additionalAttributes.set("departmentEntity", departmentEntityDetails);
