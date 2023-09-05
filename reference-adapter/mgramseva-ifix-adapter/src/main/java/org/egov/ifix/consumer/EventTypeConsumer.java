@@ -98,7 +98,7 @@ public class EventTypeConsumer {
             fiscalEvents.forEach(fiscalEvent -> fiscalEvent.setAttributes(additionalAttributes));
 
             fiscalEventRequest.setFiscalEvent(fiscalEvents);
-
+            log.info("fiscalEventRequest:"+fiscalEvents);
             postFiscalEvent(record, eventId, fiscalEventRequest,
                     eventJsonObject.get(EVENT_TYPE).getAsString());
 

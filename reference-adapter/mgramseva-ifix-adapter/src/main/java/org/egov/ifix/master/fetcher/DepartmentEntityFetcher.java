@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
 import org.egov.ifix.exception.HttpCustomException;
 import org.egov.ifix.utils.ApplicationConfiguration;
 import org.egov.ifix.utils.ServiceRequestRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import static org.egov.ifix.utils.EventConstants.DEPARTMENT_ENTITY_CODE;
 
 @Component
+@Slf4j
 public class DepartmentEntityFetcher {
 
     @Autowired
@@ -43,6 +45,7 @@ public class DepartmentEntityFetcher {
 
         ObjectNode departmentEntity = getCurrentDepartmentEntity(departmentEntityDetails);
         departmentEntity.set("ancestry", createAncestryArrayFor(departmentEntityDetails));
+        log.info("DEPARTMENT ENTITY:"+departmentEntity);
 
         return departmentEntity;
     }

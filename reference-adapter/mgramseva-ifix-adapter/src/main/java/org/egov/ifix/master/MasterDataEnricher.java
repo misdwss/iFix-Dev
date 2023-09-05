@@ -31,8 +31,10 @@ public class MasterDataEnricher {
 
         ObjectNode departmentEntityDetails =
                 departmentEntityFetcher.getDepartmentEntityDetailsFromCode(departmentEntityCode);
+        log.info("DEPARTMENT ENTITY :"+departmentEntityDetails);
 
         String departmentUuid = departmentEntityDetails.get("departmentId").asText();
+        log.info("departmentUuid:"+departmentUuid);
         departmentEntityDetails.remove("departmentId");
 
         // 2 - Get Project Details (based on department entity uuid)
