@@ -51,7 +51,7 @@ public interface ElasticProperties {
     	final String PATH ="PATH";
     	final String MIN = "MIN";
     	final String MAX = "MAX";
-    	final String INTERVAL = "INTERVAL";
+    	final String INTERVAL = "calendar_interval";
     	final String HOUR ="HOUR";
     	final String DAY ="DAY";
     	final String DAY_OF_WEEK ="dayOfWeek";

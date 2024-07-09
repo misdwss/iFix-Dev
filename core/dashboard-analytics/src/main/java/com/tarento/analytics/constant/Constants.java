@@ -78,7 +78,7 @@ public class Constants {
 		final static String AGGREGATIONS = "aggregations" ;
 		final static String MODULE = "module";
 		final static String INTERVAL_VAL = "intervalvalue";
-		final static String INTERVAL = "interval";
+		final static String INTERVAL = "calendar_interval";
 		final static String IS_MDMS_ENABALED = "isMdmsEnabled";
 		final static String INSIGHT = "insight";
 		final static String DAYS = "days";
