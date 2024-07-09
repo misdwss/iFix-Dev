@@ -7,13 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +40,12 @@ public class RestService {
     @Value("${egov.es.password}")
     private String password;
 
+    @Value("${egov.indexer.es.username}")
+    private String esUsername;
+
+    @Value("${egov.indexer.es.password}")
+    private String esPassword;
+
     @Autowired
     private RetryTemplate retryTemplate;
 
@@ -50,16 +60,19 @@ public class RestService {
     public JsonNode search(String index, String searchQuery) {
 
         String url =( indexServiceHost) + index + indexServiceHostSearch;
-        HttpHeaders headers = getHttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        LOGGER.info("Index Name : " + index); 
-        LOGGER.info("Searching ES for Query: " + searchQuery); 
+        headers.add("Authorization", getESEncodedCredentials());
+        final HttpEntity entity = new HttpEntity( headers);
+        // response = restTemplate.exchange(url.toString(), HttpMethod.GET, entity, Map.class);
         HttpEntity<String> requestEntity = new HttpEntity<>(searchQuery, headers);
+        LOGGER.info("Index Name : " + index);
+        LOGGER.info("Searching ES for Query: " + searchQuery);
         String reqBody = requestEntity.getBody();
         JsonNode responseNode = null;
 
         try {
-            ResponseEntity<Object> response = retryTemplate.postForEntity(url, requestEntity);
+            ResponseEntity<Object> response = this.restTemplate().postForEntity(url, requestEntity, Object.class);
             responseNode = new ObjectMapper().convertValue(response.getBody(), JsonNode.class);
             LOGGER.info("RestTemplate response :- "+responseNode);
 
@@ -153,6 +166,45 @@ public class RestService {
         String authString = String.format("%s:%s", userName, password);
         byte[] encodedAuthString = Base64.encodeBase64(authString.getBytes(Charset.forName(US_ASCII)));
         return String.format(BASIC_AUTH, new String(encodedAuthString));
+    }
+    @Primary
+    public RestTemplate restTemplate() {
+        trustSelfSignedSSL();
+        return new RestTemplate();
+    }
+    public static void trustSelfSignedSSL() {
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            X509TrustManager tm = new X509TrustManager() {
+                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
+
+                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
+                }
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            };
+            ctx.init(null, new TrustManager[]{tm}, null);
+            SSLContext.setDefault(ctx);
+
+            // Disable hostname verification
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String getESEncodedCredentials() {
+        String credentials = esUsername + ":" + esPassword;
+        byte[] credentialsBytes = credentials.getBytes();
+        byte[] base64CredentialsBytes = java.util.Base64.getEncoder().encode(credentialsBytes);
+        return "Basic " + new String(base64CredentialsBytes);
     }
 
 }
