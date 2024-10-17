@@ -24,6 +24,9 @@ public class BillDetailJson {
         @JsonProperty("ADDRESS")
         private String address;
 
+        @JsonProperty("CURRAMT")
+        private String currentAmount;
+
         @JsonProperty("SUBDIVISION")
         private String subDivision;
 
@@ -69,6 +72,5 @@ public class BillDetailJson {
 
         @JsonProperty("CONSUMEDUNITS")
         private String cosumedUnit;
-
 
 }
