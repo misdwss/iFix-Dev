@@ -26,6 +26,9 @@ public class BillResultData {
     @JsonProperty("ADDRESS")
     private String address;
 
+    @JsonProperty("CURRAMT")
+    private String currentAmount;
+
     @JsonProperty("SUBDIVISION")
     private String subDivision;
 

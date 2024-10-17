@@ -18,6 +18,7 @@ public class PspclBillDetail {
     private String ORDERBYCOLUMN;
     private String TARIFF_TYPE;
     private Date BILL_ISSUE_DATE;
+    private String CURRAMT;
     private Date DATE_READING_CURR;
     private Date DATE_READING_PREV;
     private String DUE_DATE_CASH_ONLINE;
