@@ -56,7 +56,6 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             List<AccountNumberGpMappingVO> acnGpMappingVOs = mdmsClient.getAcnGpMappingVOs();
             if (!acnGpMappingVOs.isEmpty()) {
                 for (AccountNumberGpMappingVO acnGpMappingVO : acnGpMappingVOs) {
-                    if(acnGpMappingVO.getAccountNumber().equalsIgnoreCase("3000607536")) {
                         //get the bills And payments from PSPCL system
                         log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
                         List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
@@ -66,7 +65,6 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
                         reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 
                         reconcileVOS.add(reconcileVO);
-                    }
 
                 }
 
