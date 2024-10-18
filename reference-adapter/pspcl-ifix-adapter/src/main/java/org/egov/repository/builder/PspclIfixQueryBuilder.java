@@ -43,7 +43,7 @@ public class PspclIfixQueryBuilder {
     public static final String PAYABLE_AMOUNT_UPTO_15_DAYS = "payable_amount_upto_15_days";
     public static final String TARIFF_TYPE = "tariff_type";
 
-    public static final String CURRAMT = "current_amount";
+    public static final String CURRAMT = "curramt";
     public static final String JSON_DATA = "json_data";
 
     //pspcl payment prepared statement param name
