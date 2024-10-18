@@ -85,7 +85,9 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         if(!pspclBillResults.isEmpty()) {
             if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-                reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getCURRAMT()));
+                if(!ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail()) && !ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail().getCURRAMT()))
+                    reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getCURRAMT()));
+
             } else {
                 //Do reconcile bill to check if current bill already present in db
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
