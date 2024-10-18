@@ -99,7 +99,7 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                     String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                     paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
                   /*  currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults, lastBillIssueDate);*/
-                    if(ObjectUtils.isEmpty(currentPspclBillDetail.getCURRAMT()))
+                    if(!ObjectUtils.isEmpty(currentPspclBillDetail.getCURRAMT()))
                         currentMonthBillAmt =  new BigDecimal(currentPspclBillDetail.getCURRAMT());
                     reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
                     return reconcileVO;
