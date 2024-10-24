@@ -58,11 +58,11 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
                 for (AccountNumberGpMappingVO acnGpMappingVO : acnGpMappingVOs) {
                         //get the bills And payments from PSPCL system
                         log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
-                        List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
-                        List<PaymentsResultData> pspclPaymentResultData = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
-                        ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResultData, pspclPaymentResultData);
-                        reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
-                        reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
+                    List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
+                    List<PaymentsResultData> pspclPaymentResultData = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
+                    ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResultData, pspclPaymentResultData);
+                    reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
+                    reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 
                         reconcileVOS.add(reconcileVO);
 
@@ -72,7 +72,7 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
 
             //save to DB
             log.info("reconcile ::"+reconcileVOS);
-            //savePspclDetails(reconcileVOS);
+            savePspclDetails(reconcileVOS);
 
             //publish the events
             pspclBillAndPaymentReconcileService.publishFiscalEvent(reconcileVOS);

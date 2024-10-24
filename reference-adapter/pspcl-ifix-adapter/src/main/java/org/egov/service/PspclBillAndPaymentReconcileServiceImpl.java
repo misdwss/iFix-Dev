@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,9 +86,10 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         if(!pspclBillResults.isEmpty()) {
             if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-                if(!ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail()) && !ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail().getCURRAMT()))
-                    reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getCURRAMT()));
-
+                if(!ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail()) && !ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE())
+                        && (Double.parseDouble(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()) > 0.0) ) {
+                    reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
+                }
             } else {
                 //Do reconcile bill to check if current bill already present in db
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
@@ -100,9 +102,13 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                     DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
                     String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                     paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
-                  /*  currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults, lastBillIssueDate);*/
-                    if(!ObjectUtils.isEmpty(currentPspclBillDetail.getCURRAMT()))
-                        currentMonthBillAmt =  new BigDecimal(currentPspclBillDetail.getCURRAMT());
+                    if(!ObjectUtils.isEmpty(currentPspclBillDetail.getCURRAMT())) {
+                        currentMonthBillAmt = new BigDecimal(currentPspclBillDetail.getCURRAMT());
+                        currentMonthBillAmt= roundToNearestTen(currentMonthBillAmt);
+                    } else  {
+                        currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults, lastBillIssueDate);
+                    }
+                    if(currentMonthBillAmt.signum()>=0)
                     reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
                     return reconcileVO;
                 } else {
@@ -116,7 +122,14 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
         return reconcileVO;
     }
-
+    public  BigDecimal roundToNearestTen(BigDecimal amount) {
+        // Scale down the amount, get the nearest integer
+        BigDecimal rounded = amount.setScale(0, RoundingMode.HALF_UP);
+        // Divide by 10, round to the nearest integer, then multiply back by 10
+        BigDecimal nearestTen = rounded.divide(new BigDecimal("10"), 0, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("10"));
+        return nearestTen;
+    }
     @Override
     public void publishFiscalEvent(List<ReconcileVO> reconcileVOS) {
         log.info("Preparing for fiscal event publish to iFix...");

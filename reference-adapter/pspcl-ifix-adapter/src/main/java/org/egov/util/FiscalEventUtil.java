@@ -128,7 +128,7 @@ public class FiscalEventUtil {
         List<Amount> amounts = new ArrayList<>();
         if (billAndPaymentEventDetail != null && billAndPaymentEventDetail.getCurrentPspclBillDetail() != null
                 && billAndPaymentEventDetail.getCurrentCalculatedBillAmt() != null
-                && billAndPaymentEventDetail.getCurrentCalculatedBillAmt().compareTo(BigDecimal.ZERO) != 0) {
+                && billAndPaymentEventDetail.getCurrentCalculatedBillAmt().signum() > 0) {
 
             PspclBillDetail pspclBillDetail = billAndPaymentEventDetail.getCurrentPspclBillDetail();
             //mandatory condition check
