@@ -91,7 +91,7 @@ public class PspclIfixQueryBuilder {
             "(ORDERBYCOLUMN,TARIFF_TYPE,BILL_ISSUE_DATE,DATE_READING_CURR,DATE_READING_PREV,DUE_DATE_CASH_ONLINE,DUE_DATE_CHEQUE_DD,CURRAMT," +
             "ACCOUNT_NO,PAYABLE_AMOUNT_BY_DUE_DATE,PAYABLE_AMOUNT_UPTO_15_DAYS,BILL_NO,json_data,createdby,createdtime,lastmodifiedby,lastmodifiedtime) " +
             "VALUES" +
-            "(:orderbycolumn,:tariff_type,:bill_issue_date,:date_reading_curr,:date_reading_prev,:due_date_cash_online,:due_date_cheque_dd,:current_amount," +
+            "(:orderbycolumn,:tariff_type,:bill_issue_date,:date_reading_curr,:date_reading_prev,:due_date_cash_online,:due_date_cheque_dd,:curramt," +
             " :account_no,:payable_amount_by_due_date,:payable_amount_upto_15_days,:bill_no,:json_data,:createdby,:createdtime,:lastmodifiedby,:lastmodifiedtime);";
 
     public static final String INSERT_QUERY_FOR_PSPCL_PAYMENT_DETAIL = "INSERT INTO pspcl_payment_detail" +

@@ -56,22 +56,21 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             List<AccountNumberGpMappingVO> acnGpMappingVOs = mdmsClient.getAcnGpMappingVOs();
             if (!acnGpMappingVOs.isEmpty()) {
                 for (AccountNumberGpMappingVO acnGpMappingVO : acnGpMappingVOs) {
-                        //get the bills And payments from PSPCL system
-                        log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
+                    //get the bills And payments from PSPCL system
+                    log.info("Get pspcl details for account number : {}", acnGpMappingVO.getAccountNumber());
                     List<BillResultData> pspclBillResultData = pspclUtil.getBillsFromPspcl(acnGpMappingVO.getAccountNumber());
                     List<PaymentsResultData> pspclPaymentResultData = pspclUtil.getPaymentsFromPspcl(acnGpMappingVO.getAccountNumber());
                     ReconcileVO reconcileVO = pspclBillAndPaymentReconcileService.reconcile(pspclBillResultData, pspclPaymentResultData);
                     reconcileVO.setDepartmentEntityCode(acnGpMappingVO.getDepartmentEntityCode());
                     reconcileVO.setDepartmentEntityName(acnGpMappingVO.getDepartmentEntityName());
 
-                        reconcileVOS.add(reconcileVO);
+                    reconcileVOS.add(reconcileVO);
 
                 }
 
             }
 
             //save to DB
-            log.info("reconcile ::"+reconcileVOS);
             savePspclDetails(reconcileVOS);
 
             //publish the events
@@ -99,11 +98,9 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
             }
         }
         if (!pspclBillDetails.isEmpty()) {
-            log.info("pspclBillDetails"+pspclBillDetails);
             billDetailRepository.save(pspclBillDetails);
         }
         if (!pspclPaymentDetails.isEmpty()) {
-            log.info("pspclBillDetails"+pspclPaymentDetails);
             paymentDetailRepository.save(pspclPaymentDetails);
         }
     }
