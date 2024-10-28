@@ -64,6 +64,7 @@ public class PspclBillRowMapper implements ResultSetExtractor<List<PspclBillDeta
                     .PAYABLE_AMOUNT_BY_DUE_DATE(rs.getString(PspclIfixQueryBuilder.PAYABLE_AMOUNT_BY_DUE_DATE))
                     .PAYABLE_AMOUNT_UPTO_15_DAYS(rs.getString(PspclIfixQueryBuilder.PAYABLE_AMOUNT_UPTO_15_DAYS))
                     .TARIFF_TYPE(rs.getString(PspclIfixQueryBuilder.TARIFF_TYPE))
+                    .CURRAMT(rs.getString(PspclIfixQueryBuilder.CURRAMT))
                     .ORDERBYCOLUMN(rs.getString(PspclIfixQueryBuilder.ORDERBYCOLUMN))
                     .billDetailJson(billDetailJson)
                     .auditDetails(auditDetails)

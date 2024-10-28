@@ -54,7 +54,7 @@ public class PspclIfixAdapterUtil {
             dateFormat = format;
         }
         if (StringUtils.isNotBlank(date)) {
-            DateFormat dateFormatter = new SimpleDateFormat(dateFormat, Locale.getDefault());
+            DateFormat dateFormatter = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
             try {
                 return (dateFormatter.parse(date));
             } catch (ParseException e) {
