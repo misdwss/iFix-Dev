@@ -72,4 +72,7 @@ public class BillResultData {
     @JsonProperty("CONSUMEDUNITS")
     private String cosumedUnit;
 
+    @JsonProperty("CURRAMT")
+    private String currentAmount;
+
 }

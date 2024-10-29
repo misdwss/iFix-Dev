@@ -42,6 +42,8 @@ public class PspclIfixQueryBuilder {
     public static final String ORDERBYCOLUMN = "orderbycolumn";
     public static final String PAYABLE_AMOUNT_UPTO_15_DAYS = "payable_amount_upto_15_days";
     public static final String TARIFF_TYPE = "tariff_type";
+
+    public static final String CURRAMT = "curramt";
     public static final String JSON_DATA = "json_data";
 
     //pspcl payment prepared statement param name
@@ -86,10 +88,10 @@ public class PspclIfixQueryBuilder {
     //Query
 
     public static final String INSERT_QUERY_FOR_PSPCL_BILL_DETAIL = "INSERT INTO pspcl_bill_detail" +
-            "(ORDERBYCOLUMN,TARIFF_TYPE,BILL_ISSUE_DATE,DATE_READING_CURR,DATE_READING_PREV,DUE_DATE_CASH_ONLINE,DUE_DATE_CHEQUE_DD," +
+            "(ORDERBYCOLUMN,TARIFF_TYPE,BILL_ISSUE_DATE,DATE_READING_CURR,DATE_READING_PREV,DUE_DATE_CASH_ONLINE,DUE_DATE_CHEQUE_DD,CURRAMT," +
             "ACCOUNT_NO,PAYABLE_AMOUNT_BY_DUE_DATE,PAYABLE_AMOUNT_UPTO_15_DAYS,BILL_NO,json_data,createdby,createdtime,lastmodifiedby,lastmodifiedtime) " +
             "VALUES" +
-            "(:orderbycolumn,:tariff_type,:bill_issue_date,:date_reading_curr,:date_reading_prev,:due_date_cash_online,:due_date_cheque_dd," +
+            "(:orderbycolumn,:tariff_type,:bill_issue_date,:date_reading_curr,:date_reading_prev,:due_date_cash_online,:due_date_cheque_dd,:curramt," +
             " :account_no,:payable_amount_by_due_date,:payable_amount_upto_15_days,:bill_no,:json_data,:createdby,:createdtime,:lastmodifiedby,:lastmodifiedtime);";
 
     public static final String INSERT_QUERY_FOR_PSPCL_PAYMENT_DETAIL = "INSERT INTO pspcl_payment_detail" +
@@ -210,7 +212,7 @@ public class PspclIfixQueryBuilder {
                 param.addValue(PspclIfixQueryBuilder.ORDERBYCOLUMN, pspclBillDetail.getORDERBYCOLUMN());
                 param.addValue(PspclIfixQueryBuilder.PAYABLE_AMOUNT_UPTO_15_DAYS, pspclBillDetail.getPAYABLE_AMOUNT_UPTO_15_DAYS());
                 param.addValue(PspclIfixQueryBuilder.TARIFF_TYPE, pspclBillDetail.getTARIFF_TYPE());
-
+                param.addValue(PspclIfixQueryBuilder.CURRAMT,pspclBillDetail.getCURRAMT());
                 param.addValue(PspclIfixQueryBuilder.CREATEDBY, pspclBillDetail.getAuditDetails().getCreatedBy());
                 param.addValue(PspclIfixQueryBuilder.CREATEDTIME, pspclBillDetail.getAuditDetails().getCreatedTime());
                 param.addValue(PspclIfixQueryBuilder.LASTMODIFIEDBY, pspclBillDetail.getAuditDetails().getLastModifiedBy());
