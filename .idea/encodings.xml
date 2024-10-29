@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/core/ifix-zuul/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/libraries/ifix-services-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/libraries/ifix-services-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/libraries/ifix-tracer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain-services/fiscal-event-post-processor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain-services/fiscal-event-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain-services/ifix-master-data-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reference-adapter/adapter-master-data-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reference-adapter/ifix-department-entity-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reference-adapter/mgramseva-ifix-adapter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reference-adapter/pspcl-ifix-adapter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reference-dashboard/fiscal-event-aggregator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/utilities/mongodb-kafka-source-connector/src/main/java" charset="UTF-8" />
+  </component>
+</project>
