@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,7 +86,10 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         if(!pspclBillResults.isEmpty()) {
             if (billReconcileService.getBillByAccountNumber(pspclBillResults.get(0).getAccountNumber()) == 0) {
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
-                reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
+                if(!ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail()) && !ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE())
+                        && (Double.parseDouble(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()) > 0.0) ) {
+                    reconcileVO.setCurrentCalculatedBillAmt(new BigDecimal(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()));
+                }
             } else {
                 //Do reconcile bill to check if current bill already present in db
                 billReconcileService.reconcileBill(pspclBillResults, reconcileVO);
@@ -99,7 +103,8 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                     String lastBillIssueDate = dateFormat.format(lastBillDetail.getBILL_ISSUE_DATE());
                     paymentReconcileService.reconcilePaymentV2(pspclPaymentResults, reconcileVO, lastBillIssueDate);
                     currentMonthBillAmt = getCurrentBillAmount(currentPspclBillDetail, pspclPaymentResults, lastBillIssueDate);
-                    reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
+                    if(currentMonthBillAmt.signum()>=0)
+                        reconcileVO.setCurrentCalculatedBillAmt(currentMonthBillAmt);
                     return reconcileVO;
                 } else {
                     // if current bill present in db, Check for any new payments done after the current bill date
@@ -113,6 +118,14 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         return reconcileVO;
     }
 
+    public  BigDecimal roundToNearestTen(BigDecimal amount) {
+        // Scale down the amount, get the nearest integer
+        BigDecimal rounded = amount.setScale(0, RoundingMode.HALF_UP);
+        // Divide by 10, round to the nearest integer, then multiply back by 10
+        BigDecimal nearestTen = rounded.divide(new BigDecimal("10"), 0, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("10"));
+        return nearestTen;
+    }
     @Override
     public void publishFiscalEvent(List<ReconcileVO> reconcileVOS) {
         log.info("Preparing for fiscal event publish to iFix...");
@@ -229,7 +242,7 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
         // it will fetch the last generated bill only
         PspclBillDetail lastBillDetail = getLastBillDetailByAccountNumber(currentPspclBillDetail.getACCOUNT_NO());
         BigDecimal  lastBillAmt ;
-        BigDecimal currentMonthBillAmt;
+        BigDecimal currentMonthBillAmt =new BigDecimal(0);
         BigDecimal currentBillAmt ;
         BigDecimal lastPaymentAmt = new BigDecimal(0);
         Date lastBillIssueInDate = pspclIfixAdapterUtil.format(BILL_ISSUE_DATE_FORMAT, lastBillIssueDate);
@@ -241,18 +254,17 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
-        currentBillAmt = new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-        if (lastBillDetail != null) {
-            lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-        } else {
-            lastBillAmt = new BigDecimal("0");
-        }
-        //3. calculate the current bill and current payment
-        if(lastBillAmt.subtract(lastPaymentAmt).doubleValue() < 0) {
-            //to handle advance case
-            currentMonthBillAmt = currentBillAmt;
-        } else {
+        if(!ObjectUtils.isEmpty(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE())) {
+            currentBillAmt= new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+            if (lastBillDetail != null) {
+                lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+            } else {
+                lastBillAmt = new BigDecimal("0");
+            }
             currentMonthBillAmt = (currentBillAmt.subtract(lastBillAmt.subtract(lastPaymentAmt)));
+            if(currentMonthBillAmt.signum()< 0){
+                currentMonthBillAmt= new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+            }
         }
         return currentMonthBillAmt;
     }

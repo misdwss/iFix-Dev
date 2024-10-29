@@ -70,5 +70,8 @@ public class BillDetailJson {
     @JsonProperty("CONSUMEDUNITS")
     private String cosumedUnit;
 
+    @JsonProperty("CURRAMT")
+    private String currentAmount;
+
 
 }

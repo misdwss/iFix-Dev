@@ -53,6 +53,7 @@ public class PspclDataEntityMapper {
         pspclBillDetail.setTARIFF_TYPE(currentMonthBill.getTariffType());
         pspclBillDetail.setPAYABLE_AMOUNT_UPTO_15_DAYS(currentMonthBill.getGrossAmount());
         pspclBillDetail.setPAYABLE_AMOUNT_BY_DUE_DATE(currentMonthBill.getDueAmount());
+        pspclBillDetail.setCURRAMT(currentMonthBill.getCurrentAmount());
         //pspclBillDetail.setORDERBYCOLUMN(currentMonthBill.getORDERBYCOLUMN());
 
         AuditDetails auditDetails = new AuditDetails();
