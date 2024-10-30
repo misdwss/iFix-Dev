@@ -74,6 +74,7 @@ public class PspclEventServiceImpl implements PspclEventService {
     public void processPspclEventForMgramseva(String eventType) {
         FiscalEventResponseDTO fiscalEventResponseDTO = fiscalEventRepository
                 .collectFiscalEvent(applicationConfiguration.getPspclIfixEventReceiverName(), eventType);
+        log.info("fiscalEventResponseDTO"+fiscalEventResponseDTO);
 
         if (fiscalEventResponseDTO == null || fiscalEventResponseDTO.getFiscalEvent() == null
                 || fiscalEventResponseDTO.getFiscalEvent().isEmpty()) {

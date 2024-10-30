@@ -50,8 +50,10 @@ public class FiscalEventRepository {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authTokenService.getKeyCloakAuthToken());
-
+        log.info("authTokenService.getKeyCloakAuthToken():"+authTokenService.getKeyCloakAuthToken());
+        log.info("URL:"+url);
         FiscalEventSearchRequestDTO fiscalEventSearchRequestDTO = wrapFiscalEventSearchRequest(receivers, eventType);
+        log.info("fiscalEventSearchRequestDTO"+fiscalEventSearchRequestDTO);
 
         HttpEntity<FiscalEventSearchRequestDTO> entity = new HttpEntity<>(fiscalEventSearchRequestDTO, headers);
 
