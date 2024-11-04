@@ -256,8 +256,12 @@ public class PspclBillAndPaymentReconcileServiceImpl implements PspclBillAndPaym
 
         if(!ObjectUtils.isEmpty(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE())) {
             currentBillAmt= new BigDecimal(currentPspclBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
-            if (lastBillDetail != null) {
-                lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+            if (lastBillDetail != null ) {
+                if(!ObjectUtils.isEmpty(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE()) && Double.parseDouble(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE()) > 0.0) {
+                    lastBillAmt = new BigDecimal(lastBillDetail.getPAYABLE_AMOUNT_BY_DUE_DATE());
+                } else {
+                    lastBillAmt = new BigDecimal("0");
+                }
             } else {
                 lastBillAmt = new BigDecimal("0");
             }
