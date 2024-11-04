@@ -22,6 +22,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +93,9 @@ public class PspclBillAndPaymentFetcherJob implements ApplicationRunner {
         List<PspclBillDetail> pspclBillDetails = new ArrayList<>();
         List<PspclPaymentDetail> pspclPaymentDetails = new ArrayList<>();
         for (ReconcileVO reconcileVO : reconcileVOS) {
-            if (reconcileVO.getCurrentPspclBillDetail() != null) {
-                pspclBillDetails.add(reconcileVO.getCurrentPspclBillDetail());
+            if (reconcileVO.getCurrentPspclBillDetail() != null && !ObjectUtils.isEmpty(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE())) {
+                if(Double.parseDouble(reconcileVO.getCurrentPspclBillDetail().getPAYABLE_AMOUNT_BY_DUE_DATE()) > 0.0)
+                    pspclBillDetails.add(reconcileVO.getCurrentPspclBillDetail());
             }
             if (!CollectionUtils.isEmpty(reconcileVO.getCurrentPspclPaymentDetails()) ) {
                 for (PspclPaymentDetail pspclPaymentDetail :  reconcileVO.getCurrentPspclPaymentDetails()) {
