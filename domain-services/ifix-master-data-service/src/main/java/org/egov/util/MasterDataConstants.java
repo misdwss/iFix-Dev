@@ -11,8 +11,6 @@ public class MasterDataConstants {
 
 
     public static final String USER_INFO = "USER_INFO";
-    public static final String GOVERNMENT_ID = "GOVERNMENT_ID";
-    public static final String GOVERNMENT_NAME = "GOVERNMENT_NAME";
     public static final String TENANT_ID = "TENANT_ID";
     public static final String EXPENDITURE_NAME = "EXPENDITURE_NAME";
     public static final String EXPENDITURE_CODE = "EXPENDITURE_CODE";

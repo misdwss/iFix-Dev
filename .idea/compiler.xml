@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="fiscal-event-service" />
+        <module name="pspcl-ifix-adapter" />
+        <module name="ifix-department-entity-service" />
+        <module name="ifix-zuul" />
+        <module name="ifix-tracer" />
+        <module name="mgramseva-ifix-adapter" />
+        <module name="ifix-services-common" />
+        <module name="fiscal-event-aggregator" />
+        <module name="ifix-master-data-service" />
+        <module name="fiscal-event-post-processor" />
+        <module name="adapter-master-data-service" />
+        <module name="mongodb-kafka-source-connector" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="adapter-master-data-service" options="-parameters" />
+      <module name="fiscal-event-aggregator" options="-parameters" />
+      <module name="fiscal-event-post-processor" options="-parameters" />
+      <module name="fiscal-event-service" options="-parameters" />
+      <module name="ifix-department-entity-service" options="-parameters" />
+      <module name="ifix-master-data-service" options="-parameters" />
+      <module name="ifix-tracer" options="-parameters" />
+      <module name="ifix-zuul" options="-parameters" />
+      <module name="mgramseva-ifix-adapter" options="-parameters" />
+      <module name="mongodb-kafka-source-connector" options="-parameters" />
+      <module name="pspcl-ifix-adapter" options="-parameters" />
+    </option>
+  </component>
+</project>

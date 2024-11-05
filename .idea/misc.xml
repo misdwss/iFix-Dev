@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/core/ifix-zuul/pom.xml" />
+        <option value="$PROJECT_DIR$/core/libraries/ifix-tracer/pom.xml" />
+        <option value="$PROJECT_DIR$/core/libraries/ifix-services-common/pom.xml" />
+        <option value="$PROJECT_DIR$/utilities/mongodb-kafka-source-connector/pom.xml" />
+        <option value="$PROJECT_DIR$/domain-services/fiscal-event-service/pom.xml" />
+        <option value="$PROJECT_DIR$/domain-services/ifix-master-data-service/pom.xml" />
+        <option value="$PROJECT_DIR$/domain-services/fiscal-event-post-processor/pom.xml" />
+        <option value="$PROJECT_DIR$/reference-adapter/pspcl-ifix-adapter/pom.xml" />
+        <option value="$PROJECT_DIR$/reference-adapter/mgramseva-ifix-adapter/pom.xml" />
+        <option value="$PROJECT_DIR$/reference-adapter/adapter-master-data-service/pom.xml" />
+        <option value="$PROJECT_DIR$/reference-adapter/ifix-department-entity-service/pom.xml" />
+        <option value="$PROJECT_DIR$/reference-dashboard/fiscal-event-aggregator/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
