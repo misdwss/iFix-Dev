@@ -59,7 +59,7 @@ public class MgramsevaVendorRepository {
         SearchVendorRequestDTO searchVendorRequestDTO = wrapSearchVendorRequestDTO();
 
         HttpEntity<SearchVendorRequestDTO> entity = new HttpEntity<>(searchVendorRequestDTO, headers);
-
+        log.info("url template : " + urlTemplate);
         try {
 
             ResponseEntity<SearchVendorResponseDTO> response = restTemplate.exchange(urlTemplate, HttpMethod.POST, entity,
@@ -72,6 +72,7 @@ public class MgramsevaVendorRepository {
                         HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+            log.info("ERROR" + e.getMessage());
             throw new HttpCustomException(CREATE_CHALLAN, "Exception while sending request to search vendor",
                     e.getMessage(), HttpStatus.BAD_REQUEST);
         }
